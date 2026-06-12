@@ -1,0 +1,6 @@
+,Major Power Plants Commissioned 2020-2025 — 출처검증 보강분 (NOT exhaustive),Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11
+0,"WRI DB는 v1.3.0(2022초)에서 중단. 본 시트는 2020년 이후 준공된 주요 대형 발전소를 web 출처로 개별 확인해 보강한 것으로, 전수가 아님. gppd_idnr=NEW_*",,,,,,,,,,,
+1,,,,,,,,,,,,
+2,country,country_long,name,gppd_idnr,capacity_mw,latitude,longitude,primary_fuel,commissioning_year,owner,status,source_ref
+3,ARE,United Arab Emirates,Barakah NPP (Units1-4),NEW_ARE_001,5600,23.96778,52.23167,Nuclear,2020,ENEC,Operational,"Wikipedia/ENEC; U1 2020,U4 2024"
+4,USA,United States of America,Vogtle Units 3-4,NEW_USA_001,2234,33.1437,-81.7611,Nuclear,2023,Georgia Power,Operational,World Nuclear Report 2024

@@ -1,0 +1,7 @@
+<div class="sv" data-tip="전 세계 데이터센터 투자 파이프라인
+class="su">USD</div><div class="sl">글로벌 파이프라인</div></div>
+6rem;color:#8b949e;line-height:1.6">글로벌 파이프라인: <span style="color:#c9d1d9;font-weight
+12%",projects:["일본 — 1.7GW+ 기존 용량, APAC 파이프라인 20%","말레이시아 조호르 — 2.8GW 파이프라인 (AWS, Mic
+akefield 1H 2025: GSA 533 MW 운영, 715 MW 파이프라인 / SK-AWS 율산 1GW 개발계획"},
+{rd.pipeline}</span><span class="rds-l">파이프라인</span></div>
+ <div class="tip-r"><span class="tip-l">파이프라인</span><span class="tip-v">${rd.pipeline

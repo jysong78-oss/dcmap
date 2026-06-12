@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Excel/Data files that might be too large or temporary
+temp.xlsx
+temp_dc_copy.xlsx
+global_datacenter_2026.xlsx
+Global_DataCenter_PowerPlant_Dashboard_2026_v3.xlsx
+global_power_plants_merged.csv
+
+# Optional: Ignore other generated output files if they are recreated by scripts
+# *.json
+# *.csv
+
+# OS generated files
+.DS_Store
+Thumbs.db

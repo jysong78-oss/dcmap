@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>GridX: Watt & Byte (2026)</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;background:#0d1117;color:#e6edf3;font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+a{color:#58a6ff;text-decoration:none}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+
+/* TOP PANEL (20%) */
+.top-panel{height:20%;min-height:140px;background:#0d1117;border-bottom:1px solid #30363d;display:flex;flex-direction:column}
+.hdr{padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.site-t{font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;color:#e6edf3}
+.site-s{font-size:0.7rem;color:#8b949e}
+.vtog{display:flex;background:#21262d;border-radius:8px;padding:3px;gap:3px;border:1px solid #30363d}
+.vbtn{padding:6px 14px;font-size:0.75rem;font-weight:600;border-radius:6px;color:#8b949e;transition:all .2s;white-space:nowrap}
+.vbtn.active-dc{background:linear-gradient(135deg, #1f6feb, #3b82f6);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.3)}
+.vbtn.active-pp{background:linear-gradient(135deg, #d97706, #f97316);color:#fff;box-shadow:0 2px 8px rgba(249,115,22,0.3)}
+.vbtn.active-info{background:linear-gradient(135deg, #8957e5, #a371f7);color:#fff;box-shadow:0 2px 8px rgba(137,87,229,0.3)}
+.vbtn:hover:not(.active-dc):not(.active-pp):not(.active-info){color:#e6edf3;background:#30363d}
+
+.global-stats{flex:1;display:flex;align-items:center;padding:0 20px;gap:15px;overflow-x:auto}
+.gcard{background:rgba(22,27,34,0.6);border:1px solid #21262d;border-radius:8px;padding:12px 16px;min-width:180px;display:flex;flex-direction:column;justify-content:center}
+.gc-title{font-size:0.7rem;color:#8b949e;margin-bottom:4px;font-weight:600}
+.gc-val{font-size:1.4rem;font-weight:800;color:#e6edf3;line-height:1}
+.gc-val span{font-size:0.7rem;font-weight:500;color:#8b949e;margin-left:4px}
+.gc-val.blue{color:#58a6ff}
+.gc-val.orange{color:#f97316}
+
+/* BOTTOM PANEL (80%) */
+.bottom-panel{height:80%;display:flex;width:100%}
+
+/* LEFT (MAP) 70% */
+.map-container{width:70%;position:relative;background:#0d1117;border-right:1px solid #30363d}
+#wmap{width:100%;height:100%;display:block;touch-action:none}
+.mtip{position:absolute;pointer-events:none;background:rgba(22,27,34,0.95);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:8px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,0.7);font-size:0.75rem;width:240px;opacity:0;transition:opacity .15s;z-index:50;line-height:1.5}
+.mtip.vis{opacity:1}
+.tip-t{font-weight:700;font-size:0.85rem;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #30363d;word-break:break-word}
+.tip-r{display:flex;justify-content:space-between;gap:8px;margin-bottom:2px}
+.tip-l{color:#8b949e}
+.tip-v{font-weight:600;text-align:right;color:#e6edf3}
+
+.mleg{position:absolute;bottom:20px;left:20px;background:rgba(22,27,34,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:10px;padding:10px 14px;font-size:0.7rem;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:40;pointer-events:none}
+.leg-t{font-weight:700;margin-bottom:6px;color:#c9d1d9}
+.leg-items{display:flex;flex-direction:column;gap:5px}
+.leg-item{display:flex;align-items:center;gap:6px}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.zctr{position:absolute;top:20px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:40}
+.zctr button{width:32px;height:32px;background:rgba(22,27,34,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:6px;font-size:16px;font-weight:700;color:#e6edf3;display:flex;align-items:center;justify-content:center;transition:background .2s;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.zctr button:active{background:#30363d}
+
+.country{stroke:#2d333b;stroke-width:0.5px;transition:all 0.2s;cursor:pointer}
+.country:hover{filter:brightness(1.5)}
+.bubble{cursor:pointer;transition:transform 0.1s}
+.bubble:hover{stroke:#fff;stroke-width:2px;opacity:1}
+
+/* RIGHT (DASHBOARD) 30% */
+.dashboard-container{width:30%;background:#161b22;display:flex;flex-direction:column;border-left:1px solid #30363d}
+.dashboard-content{flex:1;overflow-y:auto;padding:20px}
+.dash-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#8b949e;text-align:center;padding:20px}
+.dash-empty svg{width:48px;height:48px;margin-bottom:15px;opacity:0.5}
+
+/* Chatbot UI */
+.chatbot-container{height:50%;min-height:220px;border-top:1px solid #30363d;display:flex;flex-direction:column;background:#0d1117}
+.chat-messages{flex:1;overflow-y:auto;padding:15px;font-size:0.8rem;display:flex;flex-direction:column;gap:10px}
+.chat-msg{padding:8px 12px;border-radius:8px;max-width:90%;line-height:1.4;word-break:break-word}
+.msg-user{align-self:flex-end;background:#1f6feb;color:#fff;border-bottom-right-radius:2px}
+.msg-bot{align-self:flex-start;background:#21262d;color:#e6edf3;border:1px solid #30363d;border-bottom-left-radius:2px}
+.chat-input-area{display:flex;padding:12px;gap:8px;border-top:1px solid #30363d;background:#161b22}
+.chat-input-area input{flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:8px 12px;font-size:0.8rem;outline:none;transition:border .2s}
+.chat-input-area input:focus{border-color:#58a6ff}
+.chat-input-area button{background:#238636;color:#fff;border:none;border-radius:6px;padding:0 16px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s}
+.chat-input-area button:hover{background:#2ea043}
+
+/* Dashboard Cards */
+.d-card{background:rgba(13,17,23,0.6);border:1px solid #30363d;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.d-title{font-size:1.1rem;font-weight:800;color:#e6edf3;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #30363d;word-break:break-word}
+.d-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(48,54,61,0.5)}
+.d-row:last-child{border-bottom:none;padding-bottom:0}
+
+/* News Ticker */
+.news-ticker-wrap{display:flex;align-items:center;background:#0d1117;border-bottom:1px solid #30363d;height:42px;overflow:visible;position:relative}
+.news-tooltip{visibility:hidden;opacity:0;position:absolute;top:45px;left:15px;background:rgba(22,27,34,0.95);border:1px solid #3b82f6;border-radius:8px;padding:10px 14px;color:#e6edf3;font-size:0.8rem;width:340px;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,0.5);transition:opacity 0.2s, visibility 0.2s;pointer-events:none;line-height:1.5}
+.news-ticker-wrap:hover .news-tooltip{visibility:visible;opacity:1}
+.news-tooltip::before{content:"";position:absolute;top:-6px;left:20px;border-width:0 6px 6px 6px;border-style:solid;border-color:transparent transparent #3b82f6 transparent}
+.ticker-label{background:#1f6feb;color:#fff;font-size:0.8rem;font-weight:700;padding:0 15px;height:100%;display:flex;align-items:center;z-index:2}
+.ticker-content{flex:1;white-space:nowrap;overflow:hidden;position:relative;height:100%;display:flex;align-items:center}
+.ticker-track{display:inline-block;white-space:nowrap;animation:ticker 140s linear infinite;padding-left:100%}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{display:inline-block;margin-right:70px;font-size:0.9rem;color:#c9d1d9}
+.ticker-item a{color:#e6edf3;text-decoration:none}
+.ticker-item a:hover{color:#58a6ff;text-decoration:underline}
+.ticker-time{color:#8b949e;font-size:0.75rem;margin-left:8px}
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* News List inside Info Pane */
+.news-list-item{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.05);padding:12px 15px;border-radius:8px;border:1px solid #30363d;}
+.news-list-text{flex:1;margin-right:15px;word-break:keep-all;}
+.news-list-text a{color:#58a6ff;font-weight:700;display:block;margin-bottom:4px;font-size:0.95rem;line-height:1.4;}
+.news-list-orig{font-size:0.75rem;color:#8b949e;line-height:1.3;}
+.kw-badge{background:rgba(88,166,255,0.15);color:#58a6ff;padding:2px 6px;border-radius:4px;font-size:0.7rem;margin-right:5px;display:inline-block;border:1px solid rgba(88,166,255,0.3);}
+.chat-sum-btn{background:#a371f7;color:#fff;border:none;border-radius:6px;padding:8px 12px;font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.2s;white-space:nowrap;box-shadow:0 2px 8px rgba(137,87,229,0.3);}
+.chat-sum-btn:hover{background:#8957e5;transform:translateY(-1px);}
+.d-l{color:#8b949e;font-size:0.75rem}
+.d-v{color:#c9d1d9;font-weight:600;font-size:0.8rem;text-align:right}
+.badge-blue{color:#3b82f6;background:rgba(59,130,246,0.15);padding:2px 6px;border-radius:4px;font-size:0.7rem}
+.badge-orange{color:#f97316;background:rgba(249,115,22,0.15);padding:2px 6px;border-radius:4px;font-size:0.7rem}
+
+/* KPI Dropdown */
+.top-panel{position:relative;z-index:100}
+.kpi-dropdown{position:absolute;top:100%;left:0;width:100%;background:rgba(13,17,23,0.95);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid #30363d;max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);display:flex;justify-content:center;box-shadow:0 15px 40px rgba(0,0,0,0.6)}
+.kpi-dropdown.open{max-height:60vh;overflow-y:auto}
+.kpi-dd-content{width:100%;max-width:1200px;padding:0 20px;color:#c9d1d9;position:relative}
+.kpi-dd-content.p-active{padding:25px 20px 30px}
+.kpi-dd-close{position:absolute;top:20px;right:20px;width:30px;height:30px;border-radius:50%;background:#21262d;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#8b949e;cursor:pointer;transition:all 0.2s;border:1px solid #30363d;z-index:10}
+.kpi-dd-close:hover{color:#fff;background:#30363d;transform:rotate(90deg)}
+.kpi-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:0.85rem}
+.kpi-table th{border-bottom:2px solid #30363d;padding:12px 10px;text-align:left;color:#8b949e;font-weight:700}
+.kpi-table td{border-bottom:1px solid rgba(48,54,61,0.5);padding:12px 10px;color:#e6edf3}
+.kpi-table tr:hover td{background:rgba(255,255,255,0.03)}
+.kpi-table tr:last-child td{border-bottom:none}
+
+.gcard{cursor:pointer;transition:transform 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s}
+.gcard:hover{transform:translateY(-2px);background:rgba(30,35,45,0.8);box-shadow:0 6px 16px rgba(0,0,0,0.4)}
+.gcard.g-dc:hover{border-color:#3b82f6}
+.gcard.g-pp:hover{border-color:#f97316}
+
+/* PP Filter Slide */
+.pp-filter-slide{max-height:0;overflow:hidden;transition:max-height 0.3s ease;background:#0d1117;border-bottom:1px solid #30363d;position:relative;z-index:90}
+.pp-filter-slide.open{max-height:60px;overflow-x:auto}
+.pp-filter-content{display:flex;align-items:center;gap:15px;padding:10px 20px;white-space:nowrap;min-width:max-content}
+.pp-filter-label{font-size:0.85rem;font-weight:700;color:#f97316;margin-right:10px}
+.pp-cb-lbl{display:flex;align-items:center;gap:5px;font-size:0.8rem;color:#c9d1d9;cursor:pointer}
+.pp-cb-lbl input{accent-color:#f97316;cursor:pointer;width:14px;height:14px}
+
+.b-row{display:flex;align-items:center;margin-bottom:12px}
+.b-lbl{width:140px;font-weight:600;font-size:0.85rem;color:#c9d1d9;flex-shrink:0}
+.b-trk{flex:1;height:24px;background:rgba(255,255,255,0.05);border-radius:4px;position:relative;overflow:hidden;display:flex}
+.b-fil{height:100%;transition:width 0.6s cubic-bezier(0.16, 1, 0.3, 1)}
+.b-val{width:90px;text-align:right;font-size:0.85rem;font-weight:700;color:#e6edf3;flex-shrink:0;margin-left:10px}
+.b-ref{font-size:0.75rem;color:#8b949e;margin-top:20px;padding-top:10px;border-top:1px dashed rgba(48,54,61,0.5)}
+
+/* General Info Pane */
+#info-pane{display:none;padding:40px;overflow-y:auto;color:#e6edf3;background:#0d1117;width:100%;height:100%;position:absolute;top:0;left:0;z-index:60;box-sizing:border-box}
+.info-header{font-size:1.8rem;font-weight:800;color:#e6edf3;margin-bottom:30px;padding-bottom:15px;border-bottom:1px solid #30363d}
+.info-section{margin-bottom:40px}
+.info-sec-title{font-size:1.3rem;font-weight:700;color:#58a6ff;margin-bottom:20px}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:20px}
+.info-card{background:rgba(22,27,34,0.6);border:1px solid #30363d;border-radius:10px;padding:24px;transition:border-color 0.2s}
+.info-card:hover{border-color:#58a6ff}
+.ic-title{font-size:1.2rem;font-weight:700;color:#e6edf3;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.ic-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.9rem;border-bottom:1px dashed rgba(48,54,61,0.5);padding-bottom:10px}
+.ic-row:last-child{margin-bottom:0;border-bottom:none;padding-bottom:0}
+.ic-label{color:#8b949e}
+.ic-val{font-weight:600;color:#c9d1d9}
+.info-text{font-size:0.95rem;line-height:1.6;color:#c9d1d9;margin-bottom:15px}
+.info-text strong{color:#e6edf3}
+.info-code{background:rgba(255,255,255,0.05);padding:10px 15px;border-radius:6px;font-family:monospace;font-size:0.9rem;color:#f97316;margin-bottom:15px;display:inline-block;border:1px solid #30363d}
+
+@media(max-width:900px){
+  body{overflow:auto}
+  .bottom-panel{flex-direction:column;height:auto}
+  .map-container{width:100%;height:60vh;border-right:none;border-bottom:1px solid #30363d}
+  .dashboard-container{width:100%;height:auto;min-height:40vh}
+}
+</style>
+</head>
+<body>
+
+<div class="top-panel">
+  <header class="hdr">
+    <div class="logo-g">
+      <div>
+        <div class="site-t">GridX: Watt & Byte</div>
+        <div class="site-s">전세계 데이터센터 & 주요 발전소 공간 시각화</div>
+      </div>
+    </div>
+    <div class="vtog">
+      <button class="vbtn active-dc" data-view="dc">데이터센터</button>
+      <button class="vbtn" data-view="pp">발전소 (50MW+)</button>
+      <button class="vbtn" data-view="info" style="margin-left:5px;border-left:1px solid #30363d;padding-left:14px;border-radius:0 6px 6px 0">General Information</button>
+    </div>
+  </header>
+  
+  <div class="pp-filter-slide" id="pp-filter-slide">
+    <div class="pp-filter-content">
+      <span class="pp-filter-label">발전소 필터:</span>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Coal" checked> 석탄(Coal)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Gas" checked> 가스(Gas)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Nuclear" checked> 원자력(Nuclear)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Solar" checked> 태양광(Solar)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Wind" checked> 풍력(Wind)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Hydro" checked> 수력(Hydro)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Oil" checked> 석유(Oil)</label>
+      <label class="pp-cb-lbl"><input type="checkbox" value="Other" checked> 기타(Other)</label>
+    </div>
+  </div>
+
+  <div class="global-stats">
+    <div class="gcard g-dc" id="kpi-dc-cnt">
+      <div class="gc-title">총 데이터센터 수</div>
+      <div class="gc-val blue" id="g-dc-cnt">0</div>
+    </div>
+    <div class="gcard g-dc" id="kpi-dc-cap">
+      <div class="gc-title">데이터센터 누적 용량</div>
+      <div class="gc-val blue" id="g-dc-cap">0 <span>MW</span></div>
+    </div>
+    <div class="gcard g-pl" id="kpi-pl" title="글로벌 데이터센터 투자 파이프라인 (계획/건설 단계 합산)">
+      <div class="gc-title">데이터센터 파이프라인</div>
+      <div class="gc-val blue">$2.3~3 <span>T</span></div>
+    </div>
+    <div class="gcard g-pp" id="kpi-pp-cnt">
+      <div class="gc-title">주요 발전소 수 (50MW+)</div>
+      <div class="gc-val orange" id="g-pp-cnt">0</div>
+    </div>
+    <div class="gcard g-pp" id="kpi-pp-cap">
+      <div class="gc-title">발전소 누적 용량</div>
+      <div class="gc-val orange" id="g-pp-cap">0 <span>GW</span></div>
+    </div>
+  </div>
+  
+  <div class="kpi-dropdown" id="kpi-dropdown">
+    <div class="kpi-dd-close" id="kpi-dd-close">&times;</div>
+    <div class="kpi-dd-content" id="kpi-dd-content"></div>
+  </div>
+</div>
+
+<div class="news-ticker-wrap">
+  <div class="ticker-label">NEWS</div>
+  <div class="ticker-content" id="news-ticker">
+     <span class="ticker-item" style="color:#8b949e;padding-left:15px">실시간 글로벌 뉴스 피드를 불러오는 중입니다...</span>
+  </div>
+  <div class="news-tooltip">
+    <strong style="color:#58a6ff;font-size:0.85rem">뉴스 수집 방식:</strong><br>
+    구글 뉴스(Google News)에서 <code>"Data Center" OR "AI Infrastructure"</code> 키워드로 최신 영문 기사를 실시간 검색한 뒤, <b>Google Translate API</b>를 통해 한국어로 자동 번역하여 제공합니다.
+  </div>
+</div>
+
+<div class="bottom-panel">
+  <div class="map-container" id="map-wrap">
+    <svg id="wmap"></svg>
+    <div class="mtip" id="tip"></div>
+    <div class="mleg" id="mleg"></div>
+    <div class="zctr" id="zctr">
+      <button id="zi" aria-label="확대">+</button>
+      <button id="zr" aria-label="초기화">⟲</button>
+      <button id="zo" aria-label="축소">−</button>
+    </div>
+    
+    <div id="info-pane">
+      <div class="info-header">데이터센터 지식 베이스 (General Information)</div>
+
+      <div class="info-section" id="news-list-section" style="display:none;">
+        <div class="info-sec-title" style="color:#58a6ff;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
+          <span id="news-section-title">실시간 글로벌 주요 뉴스</span>
+          <button id="toggle-past-news-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;">지난뉴스 보기</button>
+        </div>
+        <div id="info-news-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+      
+      <div class="info-section">
+        <div class="info-sec-title">1. 글로벌 빅테크 데이터센터 주요 지표 (2026년 기준)</div>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-title" style="color:#58a6ff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z"/></svg> Microsoft</div>
+            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">15 개소</span></div>
+            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">3,433 MW</span></div>
+            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.12 - 1.16</span></div>
+            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.40 - 0.55</span></div>
+            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 6.4M ㎥</span></div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title" style="color:#f97316"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 21.6c-5.302 0-9.6-4.298-9.6-9.6S6.698 2.4 12 2.4s9.6 4.298 9.6 9.6-4.298 9.6-9.6 9.6zm-1.8-14.4l7.2 4.8-7.2 4.8V7.2z"/></svg> Amazon (AWS)</div>
+            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">15 개소</span></div>
+            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">2,285 MW</span></div>
+            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.11 - 1.15</span></div>
+            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.13 - 0.89</span></div>
+            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 5.0M ㎥</span></div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title" style="color:#22c55e"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.02 10.18v3.72h7.06c-.28 1.58-1.07 2.72-1.92 3.58-.98.98-2.58 2.06-5.14 2.06-4.12 0-7.38-3.38-7.38-7.54s3.26-7.54 7.38-7.54c2.22 0 3.84.88 4.96 1.94l2.64-2.64C17.64 1.84 15.16 0 12.02 0 5.4 0 0 5.38 0 12s5.4 12 12.02 12c3.52 0 6.64-1.16 8.94-3.56 2.38-2.4 3.04-5.74 3.04-8.26 0-.66-.06-1.32-.16-2H12.02z"/></svg> Google</div>
+            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">12 개소</span></div>
+            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">2,195 MW</span></div>
+            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.08 - 1.10</span></div>
+            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.05 - 1.80</span></div>
+            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 5.7M ㎥</span></div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title" style="color:#3b82f6"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Meta</div>
+            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">6 개소</span></div>
+            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">1,635 MW</span></div>
+            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.07 - 1.11</span></div>
+            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.03 - 1.40</span></div>
+            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 2.6M ㎥</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-sec-title">2. 핵심 용어 정리</div>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-title">Hyperscale vs Colocation</div>
+            <div class="info-text">
+              <strong>하이퍼스케일(Hyperscale):</strong> 클라우드 서비스 제공자(AWS, Google 등)가 수만 대 이상의 서버를 운영하기 위해 자체적으로 구축한 초대형 데이터센터입니다. IT 인프라를 유연하게 확장(Scale-out)할 수 있는 아키텍처가 특징입니다.
+            </div>
+            <div class="info-text">
+              <strong>코로케이션(Colocation):</strong> 기업 고객들에게 서버를 설치할 수 있는 공간, 전력, 네트워크, 쿨링 등의 물리적 인프라를 임대해주는 상업용 데이터센터입니다. (예: Equinix, Digital Realty)
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title">냉각 방식 (Cooling Technologies)</div>
+            <div class="info-text">
+              <strong>공랭식 (Air Cooling):</strong> 차가운 공기를 불어넣어 서버의 열을 식히는 전통적인 방식입니다. 외기를 직접 끌어오는 Free Cooling과 결합하여 효율을 높이기도 합니다.
+            </div>
+            <div class="info-text">
+              <strong>수랭식/액침 (Liquid/Immersion):</strong> 물이나 특수 냉각액(Dielectric fluid)을 활용하여 직접 서버의 열을 식힙니다. 고발열 AI 서버(GPU)의 등장으로 액침 냉각 등 차세대 수랭식 기술이 필수로 자리 잡고 있습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-sec-title">3. 효율성 지표 (Efficiency Metrics)</div>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-title">PUE (전력 사용 효율)</div>
+            <div class="info-text">데이터센터가 에너지를 얼마나 효율적으로 사용하는지 나타내는 가장 대표적인 지표입니다. 1에 가까울수록 전력 낭비가 없음을 의미합니다.</div>
+            <div class="info-code">PUE = 데이터센터 전체 사용 전력 / IT 장비 사용 전력</div>
+            <div class="info-text">
+              예를 들어 PUE가 1.5라면, 서버가 100W를 쓸 때 냉각 및 조명 등에 추가로 50W가 낭비되고 있다는 뜻입니다. (글로벌 평균 약 1.5, 하이퍼스케일 평균 1.1~1.2)
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title">WUE (물 사용 효율)</div>
+            <div class="info-text">데이터센터의 냉각 과정에서 소비되는 수자원의 효율성을 나타내는 지표입니다. 숫자가 낮을수록 물을 적게 소모하는 친환경 센터입니다.</div>
+            <div class="info-code">WUE = 냉각 과정 연간 총 물 사용량(L) / IT 장비 연간 사용 전력(kWh)</div>
+            <div class="info-text">
+              수자원 고갈이 심각한 사막 지역 등에서는 물 대신 공기를 사용하는 증발식/건식 냉각(Air/Dry Cooling)을 채택하여 WUE를 0에 가깝게 유지하려고 노력합니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-sec-title">4. 데이터센터 냉각 기술 동향 (2024~2025)</div>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-title" style="color:#38bdf8">공랭식 (Air Cooling)</div>
+            <div class="info-text">
+              <strong>특징:</strong> 차가운 공기를 서버 랙(Rack)에 불어넣어 열을 식히는 전통적인 방식. 구축 비용이 저렴하고 관리가 익숙하지만, 랙당 20kW 이상의 고밀도 발열을 감당하기 어렵습니다.
+            </div>
+            <div class="info-text">
+              <strong>최근 적용 현황:</strong> 여전히 전 세계 데이터센터의 다수를 차지하지만(약 70% 이상), 생성형 AI용 고사양 GPU 랙에는 한계가 있어 수랭식과 혼용(하이브리드)되는 추세입니다.
+            </div>
+            <div class="info-ref" style="font-size:0.75rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
+              * Ref: Uptime Institute 2024 Data Center Cooling Survey
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title" style="color:#3b82f6">D2C 수랭식 (Direct-to-Chip Liquid Cooling)</div>
+            <div class="info-text">
+              <strong>특징:</strong> 발열이 심한 CPU/GPU 표면에 직접 냉각판(Cold Plate)을 부착해 냉각수가 열을 흡수하는 방식. 공랭식 대비 냉각 효율이 매우 높고 PUE 절감 효과가 큽니다.
+            </div>
+            <div class="info-text">
+              <strong>최근 적용 현황:</strong> NVIDIA H100/B200 등 고성능 AI 서버 도입으로 인해 '선택'이 아닌 '필수'로 자리매김 중입니다. 기존 인프라 개조가 용이해 가장 빠르게 성장 중입니다.
+            </div>
+            <div class="info-ref" style="font-size:0.75rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
+              * Ref: Gartner & Vertiv AI Infrastructure Report 2024
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-title" style="color:#a855f7">액침 냉각 (Immersion Cooling)</div>
+            <div class="info-text">
+              <strong>특징:</strong> 전기가 통하지 않는 특수 용액(유전체 액체)에 서버를 통째로 담가 열을 식히는 혁신적 방식. 공기가 전혀 필요 없어 쿨링팬이 제거되며, 밀도를 극한(랙당 100kW 이상)으로 높일 수 있습니다.
+            </div>
+            <div class="info-text">
+              <strong>최근 적용 현황:</strong> 마이크로소프트, 메타 등 빅테크가 주도하여 모듈형 AI 데이터센터에 적극 테스트 및 적용 중입니다. 최고의 에너지 효율(PUE 1.0x 대)을 자랑합니다.
+            </div>
+            <div class="info-ref" style="font-size:0.75rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
+              * Ref: Global Market Insights, Immersion Cooling Market 2025
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-container">
+    <div class="dashboard-content" id="side-panel">
+      <div class="dash-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+          <path d="M2 12h20"></path>
+        </svg>
+        <div>지도에서 데이터센터, 발전소<br>또는 국가를 클릭하여 상세 정보를 확인하세요.</div>
+      </div>
+    </div>
+    <div class="chatbot-container">
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-msg msg-bot">안녕하세요! 지도 데이터에 대해 무엇이든 물어보세요. (예: "미국 데이터센터 수 알려줘", "가장 큰 발전소는 어디야?")</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="궁금한 내용을 물어보세요..." autocomplete="off" />
+        <button id="chat-send">전송</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="world_topo.js?v=20260612_1"></script>
+<script src="continent_map.js?v=20260612_1"></script>
+<script src="map_data.js?v=20260612_1"></script>
+<script>
+let curView = "dc"; // "dc" or "pp"
+let currentZoomK = 1;
+let svg, g, proj, pathFn, zm;
+const tip = document.getElementById("tip");
+const mleg = document.getElementById("mleg");
+const wrap = document.getElementById("map-wrap");
+const sidePanel = document.getElementById("side-panel");
+
+// Data validation
+const validDC = typeof DC_DATA !== 'undefined' ? DC_DATA.filter(d => !isNaN(d.lat) && !isNaN(d.lng)) : [];
+const basePP = typeof PP_DATA !== 'undefined' ? PP_DATA.filter(d => !isNaN(d.lat) && !isNaN(d.lng) && d.cap > 0) : [];
+let validPP = [...basePP];
+
+function applyPPFilter() {
+  const checked = Array.from(document.querySelectorAll('#pp-filter-slide input:checked')).map(cb => cb.value);
+  validPP = basePP.filter(d => {
+    let f = d.fuel || "Other";
+    if(!["Coal","Gas","Nuclear","Solar","Wind","Hydro","Oil"].includes(f)) f = "Other";
+    return checked.includes(f);
+  });
+  initGlobalStats();
+  if(curView === 'pp') {
+    updateBubbles();
+  }
+}
+
+// Initialize Global Stats
+function initGlobalStats() {
+  const dcCap = d3.sum(validDC, d=>d.cap);
+  const ppCap = d3.sum(validPP, d=>d.cap);
+  
+  document.getElementById("g-dc-cnt").innerText = validDC.length.toLocaleString();
+  document.getElementById("g-dc-cap").innerHTML = dcCap.toLocaleString() + " <span>MW</span>";
+  
+  document.getElementById("g-pp-cnt").innerText = validPP.length.toLocaleString();
+  document.getElementById("g-pp-cap").innerHTML = (ppCap/1000).toLocaleString(undefined, {maximumFractionDigits:1}) + " <span>GW</span>";
+}
+
+// KPI Dropdown Logic
+const kpiDd = document.getElementById("kpi-dropdown");
+const kpiDdContent = document.getElementById("kpi-dd-content");
+document.getElementById("kpi-dd-close").addEventListener("click", () => {
+  kpiDd.classList.remove("open");
+  kpiDdContent.classList.remove("p-active");
+});
+
+function openKPIDropdown(type) {
+  let html = "";
+  if (type === 'dc-cnt') {
+    const grouped = d3.rollup(validDC, v => v.length, d => normalizeCountry(d.country));
+    const arr = Array.from(grouped, ([region, count]) => ({ region, val: count })).sort((a,b) => b.val - a.val);
+    const maxVal = arr[0]?.val || 1;
+    
+    html = `<h3 style="color:#58a6ff;margin-bottom:20px;font-size:1.2rem">총 데이터센터 수 (대륙별)</h3>`;
+    arr.forEach(d => {
+      const w = (d.val / maxVal * 100).toFixed(1);
+      const color = COLOR_THEMES[d.region]?.dc || '#58a6ff';
+      const label = COLOR_THEMES[d.region]?.name || d.region;
+      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div><div class="b-val">${d.val.toLocaleString()} 개소</div></div>`;
+    });
+  } else if (type === 'dc-cap') {
+    const grouped = d3.rollup(validDC, v => d3.sum(v, d=>d.cap), d => normalizeCountry(d.country));
+    const arr = Array.from(grouped, ([region, val]) => ({ region, val })).sort((a,b) => b.val - a.val);
+    const maxVal = arr[0]?.val || 1;
+    
+    html = `<h3 style="color:#58a6ff;margin-bottom:20px;font-size:1.2rem">데이터센터 누적 용량 (대륙별)</h3>`;
+    arr.forEach(d => {
+      const w = (d.val / maxVal * 100).toFixed(1);
+      const color = COLOR_THEMES[d.region]?.dc || '#58a6ff';
+      const label = COLOR_THEMES[d.region]?.name || d.region;
+      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div><div class="b-val">${d.val.toLocaleString()} MW</div></div>`;
+    });
+  } else if (type === 'pipeline') {
+    html = `<h3 style="color:#58a6ff;margin-bottom:20px;font-size:1.2rem">글로벌 파이프라인 (대륙별 점유율 추정)</h3>`;
+    const plData = [
+      { region: "North America", val: 50, label: "북미" },
+      { region: "Asia Pacific", val: 25, label: "아태지역" },
+      { region: "Europe", val: 20, label: "유럽" },
+      { region: "Unknown", val: 5, label: "기타 (중동/남미 등)" }
+    ];
+    plData.forEach(d => {
+      const w = d.val;
+      const color = COLOR_THEMES[d.region]?.dc || '#58a6ff';
+      html += `<div class="b-row"><div class="b-lbl">${d.label}</div><div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div><div class="b-val">약 ${d.val}%</div></div>`;
+    });
+    html += `<div class="b-ref">※ Reference: Synergy Research Group, JLL 등 글로벌 시장 조사 기관의 2024~2026 파이프라인 지역별 투자 점유율 추정치 기반. (내부 DB에 파이프라인 국가별 세부 데이터는 포함되어 있지 않아 비율로 환산됨)</div>`;
+  } else if (type === 'pp-cnt') {
+    html = `<h3 style="color:#f97316;margin-bottom:20px;font-size:1.2rem">발전소 수 (대륙별/종류별)</h3>`;
+    
+    const regionGroup = d3.group(validPP, d => normalizeCountry(d.country));
+    const regions = Array.from(regionGroup.keys());
+    regions.sort((a,b) => regionGroup.get(b).length - regionGroup.get(a).length);
+    const maxTotal = regionGroup.get(regions[0])?.length || 1;
+    
+    regions.forEach(region => {
+      const items = regionGroup.get(region);
+      const total = items.length;
+      const fuelRollup = d3.rollup(items, v => v.length, d => d.fuel || "미상");
+      const fuels = Array.from(fuelRollup, ([f, val]) => ({f, val})).sort((a,b) => b.val - a.val);
+      
+      let bars = "";
+      const fColors = { "Nuclear": "#a855f7", "Solar": "#eab308", "Wind": "#3b82f6", "Gas": "#ef4444", "Coal": "#57534e", "Hydro": "#06b6d4", "미상": "#8b949e" };
+      fuels.forEach(fuel => {
+         const fw = (fuel.val / maxTotal * 100).toFixed(1);
+         const fCol = fColors[fuel.f] || fColors["미상"];
+         bars += `<div class="b-fil" style="width:${fw}%;background:${fCol};border-right:1px solid #161b22" title="${fuel.f}: ${fuel.val}개"></div>`;
+      });
+      
+      const label = COLOR_THEMES[region]?.name || region;
+      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk">${bars}</div><div class="b-val">${total.toLocaleString()} 개소</div></div>`;
+    });
+    
+  } else if (type === 'pp-cap') {
+    html = `<h3 style="color:#f97316;margin-bottom:20px;font-size:1.2rem">발전소 용량 (대륙별/종류별)</h3>`;
+    
+    const regionGroup = d3.group(validPP, d => normalizeCountry(d.country));
+    const regionTotals = [];
+    regionGroup.forEach((items, region) => {
+      regionTotals.push({ region, total: d3.sum(items, d=>d.cap) });
+    });
+    regionTotals.sort((a,b) => b.total - a.total);
+    const maxTotal = regionTotals[0]?.total || 1;
+    
+    regionTotals.forEach(rt => {
+      const items = regionGroup.get(rt.region);
+      const fuelRollup = d3.rollup(items, v => d3.sum(v, d=>d.cap), d => d.fuel || "미상");
+      const fuels = Array.from(fuelRollup, ([f, val]) => ({f, val})).sort((a,b) => b.val - a.val);
+      
+      let bars = "";
+      const fColors = { "Nuclear": "#a855f7", "Solar": "#eab308", "Wind": "#3b82f6", "Gas": "#ef4444", "Coal": "#57534e", "Hydro": "#06b6d4", "미상": "#8b949e" };
+      fuels.forEach(fuel => {
+         const fw = (fuel.val / maxTotal * 100).toFixed(1);
+         const fCol = fColors[fuel.f] || fColors["미상"];
+         bars += `<div class="b-fil" style="width:${fw}%;background:${fCol};border-right:1px solid #161b22" title="${fuel.f}: ${fuel.val}MW"></div>`;
+      });
+      
+      const label = COLOR_THEMES[rt.region]?.name || rt.region;
+      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk">${bars}</div><div class="b-val">${(rt.total/1000).toFixed(1)} GW</div></div>`;
+    });
+  }
+  
+  kpiDdContent.innerHTML = html;
+  kpiDd.classList.add("open");
+  kpiDdContent.classList.add("p-active");
+}
+
+document.getElementById('kpi-dc-cnt').addEventListener('click', () => openKPIDropdown('dc-cnt'));
+document.getElementById('kpi-dc-cap').addEventListener('click', () => openKPIDropdown('dc-cap'));
+document.getElementById('kpi-pl').addEventListener('click', () => openKPIDropdown('pipeline'));
+document.getElementById('kpi-pp-cnt').addEventListener('click', () => openKPIDropdown('pp-cnt'));
+document.getElementById('kpi-pp-cap').addEventListener('click', () => openKPIDropdown('pp-cap'));
+
+const dcScale = d3.scaleSqrt().domain([0, d3.max(validDC, d=>d.cap)||1000]).range([1.5, 12]);
+const ppScale = d3.scaleSqrt().domain([0, d3.max(validPP, d=>d.cap)||5000]).range([1, 9]);
+
+function getBubbleSize(d) {
+  return curView === 'dc' ? dcScale(d.cap) : ppScale(d.cap);
+}
+
+const COLOR_THEMES = {
+  "North America": { map: "#172338", dc: "#3b82f6", name: "북미" },
+  "Europe": { map: "#142a20", dc: "#22c55e", name: "유럽" },
+  "Asia": { map: "#321f15", dc: "#f97316", name: "아시아" },
+  "Asia Pacific": { map: "#321f15", dc: "#f97316", name: "아-태" },
+  "South America": { map: "#241838", dc: "#a855f7", name: "남미" },
+  "Latin America": { map: "#241838", dc: "#a855f7", name: "중남미" },
+  "Middle East": { map: "#2e2912", dc: "#eab308", name: "중동" },
+  "Africa": { map: "#132a32", dc: "#06b6d4", name: "아프리카" },
+  "Oceania": { map: "#1a252f", dc: "#38bdf8", name: "오세아니아" },
+  "Unknown": { map: "#1c2129", dc: "#58a6ff", name: "기타" }
+};
+
+function normalizeCountry(c) {
+  if (!c) return "Unknown";
+  const str = c.trim().toUpperCase();
+  
+  if(str.includes("AMERICA") && str.includes("NORTH")) return "North America";
+  if(str.includes("AMERICA") && (str.includes("SOUTH") || str.includes("LATIN"))) return "South America";
+  if(str.includes("ASIA") || str.includes("PACIFIC")) return "Asia";
+  if(str.includes("EUROPE")) return "Europe";
+  if(str.includes("MIDDLE EAST")) return "Middle East";
+  if(str.includes("AFRICA")) return "Africa";
+  
+  const isoMap = {
+    "USA": "North America", "CHN": "Asia", "GBR": "Europe", "PRT": "Europe",
+    "DEU": "Europe", "FRA": "Europe", "IRL": "Europe", "MYS": "Asia",
+    "AUS": "Oceania", "ARE": "Middle East", "SAU": "Middle East"
+  };
+  if(isoMap[str]) return isoMap[str];
+  
+  if(str === "UNITED STATES") return "United States of America";
+  const nameMap = {"SOUTH KOREA":"South Korea", "CHINA":"China", "AUSTRALIA":"Australia", "MALAYSIA":"Malaysia", "BELGIUM":"Belgium", "GERMANY":"Germany", "SINGAPORE":"Singapore", "FINLAND":"Finland", "TAIWAN":"Taiwan", "NETHERLANDS":"Netherlands", "JAPAN":"Japan", "IRELAND":"Ireland", "SWEDEN":"Sweden"};
+  if(nameMap[str]) return nameMap[str];
+  
+  return c;
+}
+
+function applyJitter(data, radiusDegree = 0.8) {
+  for (let iter = 0; iter < 30; iter++) {
+    for (let i = 0; i < data.length; i++) {
+      for (let j = i + 1; j < data.length; j++) {
+        let dx = data[i].lng - data[j].lng;
+        let dy = data[i].lat - data[j].lat;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist === 0) {
+          dx = (Math.random() - 0.5) * 0.1;
+          dy = (Math.random() - 0.5) * 0.1;
+          dist = Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        if (dist > 0 && dist < radiusDegree) {
+          const push = (radiusDegree - dist) / dist * 0.1;
+          data[i].lng += dx * push;
+          data[i].lat += dy * push;
+          data[j].lng -= dx * push;
+          data[j].lat -= dy * push;
+        }
+      }
+    }
+  }
+}
+
+// 겹치는 점들을 살짝 분산시켜 구분 가능하게 함 (데이터센터: 70% 겹치게 원래 위치 근처 유지, 발전소: 최소화)
+applyJitter(validDC, 0.15);
+applyJitter(validPP, 0.02);
+
+function getTheme(name) {
+  const norm = normalizeCountry(name);
+  if (COLOR_THEMES[norm]) return COLOR_THEMES[norm];
+  const cont = typeof CONTINENT_MAP !== 'undefined' ? (CONTINENT_MAP[name] || CONTINENT_MAP[norm] || "Unknown") : "Unknown";
+  return COLOR_THEMES[cont] || COLOR_THEMES["Unknown"];
+}
+
+function getDCBubbleColor(countryStr) {
+  return getTheme(countryStr).dc;
+}
+
+function getPPBubbleColor(fuel) {
+  const f = (fuel||"").toLowerCase();
+  if(f.includes("solar")) return "#fcd34d";
+  if(f.includes("wind")) return "#bae6fd";
+  if(f.includes("hydro")) return "#38bdf8";
+  if(f.includes("nuclear")) return "#a78bfa";
+  if(f.includes("gas") || f.includes("oil") || f.includes("coal")) return "#ef4444";
+  return "#fb923c";
+}
+
+function drawLegend() {
+  if(curView === 'dc') {
+    mleg.innerHTML = `
+      <div class="leg-t">대륙별 데이터센터</div>
+      <div class="leg-items" style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+        <div class="leg-item"><div class="leg-dot" style="background:#3b82f6;opacity:0.6;border:0.5px solid #3b82f6"></div> 북미</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#22c55e;opacity:0.6;border:0.5px solid #22c55e"></div> 유럽</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f97316;opacity:0.6;border:0.5px solid #f97316"></div> 아시아</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#eab308;opacity:0.6;border:0.5px solid #eab308"></div> 중동</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#a855f7;opacity:0.6;border:0.5px solid #a855f7"></div> 중남미</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#06b6d4;opacity:0.6;border:0.5px solid #06b6d4"></div> 아프리카</div>
+      </div>
+    `;
+  } else {
+    mleg.innerHTML = `
+      <div class="leg-t">발전원별 색상</div>
+      <div class="leg-items">
+        <div class="leg-item"><div class="leg-dot" style="background:#ef4444;opacity:0.6;border:0.5px solid #ef4444"></div> 화석연료 (석탄,가스)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#a78bfa;opacity:0.6;border:0.5px solid #a78bfa"></div> 원자력</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#38bdf8;opacity:0.6;border:0.5px solid #38bdf8"></div> 수력</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#fcd34d;opacity:0.6;border:0.5px solid #fcd34d"></div> 태양광</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#bae6fd;opacity:0.6;border:0.5px solid #bae6fd"></div> 풍력</div>
+      </div>
+    `;
+  }
+}
+function updateBubbles() {
+  const displayData = curView === 'dc' ? validDC : validPP;
+  const sizeScale = curView === 'dc' ? dcScale : ppScale;
+
+  displayData.sort((a,b) => b.cap - a.cap);
+
+  g.selectAll(".bubble").remove();
+  const bubbles = g.selectAll(".bubble").data(displayData);
+
+  bubbles.enter()
+    .append("circle")
+    .attr("class", "bubble")
+    .merge(bubbles)
+    .attr("cx", d => proj([d.lng, d.lat])[0])
+    .attr("cy", d => proj([d.lng, d.lat])[1])
+    .attr("r", d => {
+        const base = sizeScale(d.cap);
+        // 데이터센터는 50% 더 작게, 발전소는 기존 0.7 유지
+        if (curView === 'dc') {
+            return base / Math.pow(currentZoomK, 0.85);
+        } else {
+            return base / Math.pow(currentZoomK, 0.7); 
+        }
+    })
+    .attr("fill", d => {
+        if (curView === "dc") return getDCBubbleColor(d.country);
+        return getPPBubbleColor(d.fuel);
+    })
+    .attr("fill-opacity", 0.5)
+    .attr("stroke", d => {
+        if (curView === "dc") return getDCBubbleColor(d.country);
+        return getPPBubbleColor(d.fuel);
+    })
+    .attr("stroke-width", 0.5)
+    .on("mouseover", (e, d) => {
+        showTip(e, d);
+        showDashboard(d, curView);
+    })
+    .on("mousemove", moveTip)
+    .on("mouseout", () => tip.classList.remove("vis"))
+    .on("click", (e, d) => {
+      e.stopPropagation();
+      showDashboard(d, curView);
+    });
+  
+  drawLegend();
+}
+
+function showTip(e, d) {
+  if(curView === 'dc') {
+    tip.innerHTML = `
+      <div class="tip-t" style="color:#60a5fa">${d.name}</div>
+      <div class="tip-r"><span class="tip-l">운영사</span><span class="tip-v">${d.op}</span></div>
+      <div class="tip-r"><span class="tip-l">용량 (MW)</span><span class="tip-v" style="color:#3fb950">${d.cap.toLocaleString()} MW</span></div>
+      <div class="tip-r"><span class="tip-l">클릭하여 상세 보기</span></div>
+    `;
+  } else {
+    tip.innerHTML = `
+      <div class="tip-t" style="color:#f97316">${d.name}</div>
+      <div class="tip-r"><span class="tip-l">발전 방식</span><span class="tip-v">${d.fuel||'미상'}</span></div>
+      <div class="tip-r"><span class="tip-l">용량 (MW)</span><span class="tip-v" style="color:#3fb950">${d.cap.toLocaleString()} MW</span></div>
+      <div class="tip-r"><span class="tip-l">클릭하여 상세 보기</span></div>
+    `;
+  }
+  tip.classList.add("vis");
+  moveTip(e);
+}
+
+function moveTip(e) {
+  const rect = wrap.getBoundingClientRect();
+  const tipRect = tip.getBoundingClientRect();
+  let x = e.clientX - rect.left + 15;
+  let y = e.clientY - rect.top + 15;
+
+  if (x + tipRect.width > rect.width - 10) x = e.clientX - rect.left - tipRect.width - 15;
+  if (y + tipRect.height > rect.height - 10) y = e.clientY - rect.top - tipRect.height - 15;
+  
+  tip.style.transform = `translate(${Math.max(10, x)}px, ${Math.max(10, y)}px)`;
+}
+
+function showClusterDashboard(d) {
+  sidePanel.innerHTML = `
+    <div class="d-card">
+      <div class="d-title" style="color:#a855f7">${d.name} 현황</div>
+      <div style="font-size:0.7rem;color:#8b949e;margin-bottom:12px;line-height:1.4">※ 지도를 축소하여 대륙 단위로 병합된 데이터입니다.</div>
+      <div class="d-row"><span class="d-l">총 시설 수</span><span class="d-v">${d.count.toLocaleString()} 개소</span></div>
+      <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${d.cap.toLocaleString()} MW</span></div>
+      <div style="margin-top:16px;font-size:0.8rem;color:#58a6ff;text-align:center;background:rgba(88,166,255,0.1);padding:8px;border-radius:6px">지도에서 버블을 클릭하면 해당 대륙의 모든 시설이 자세히 표시되도록 확대됩니다.</div>
+    </div>
+  `;
+}
+
+// Show specific facility in Dashboard
+function showDashboard(d, type) {
+  if(type === 'dc') {
+    let extraHTML = "";
+    if (d.city) extraHTML += `<div class="d-row"><span class="d-l">도시/위치</span><span class="d-v">${d.city}</span></div>`;
+    if (d.type) extraHTML += `<div class="d-row"><span class="d-l">유형</span><span class="d-v">${d.type}</span></div>`;
+    if (d.pue && d.pue !== 'nan') extraHTML += `<div class="d-row"><span class="d-l">PUE</span><span class="d-v" style="color:#a78bfa;font-weight:700">${d.pue}</span></div>`;
+    if (d.wue && d.wue !== 'nan') extraHTML += `<div class="d-row"><span class="d-l">WUE (L/kWh)</span><span class="d-v" style="color:#38bdf8">${d.wue}</span></div>`;
+    if (d.notes && d.notes !== 'nan') extraHTML += `<div class="d-row"><span class="d-l" style="flex-shrink:0">비고</span><span class="d-v" style="font-size:0.7rem;max-width:75%;text-align:right">${d.notes}</span></div>`;
+
+    sidePanel.innerHTML = `
+      <div class="d-card">
+        <div class="d-title" style="color:#58a6ff">${d.name}</div>
+        <div class="d-row"><span class="d-l">구분</span><span class="d-v"><span class="badge-blue">데이터센터</span></span></div>
+        <div class="d-row"><span class="d-l">운영사</span><span class="d-v">${d.op}</span></div>
+        <div class="d-row"><span class="d-l">국가 (코드)</span><span class="d-v">${d.country||'Unknown'}</span></div>
+        ${extraHTML}
+        <div class="d-row"><span class="d-l">IT 용량</span><span class="d-v" style="color:#3fb950;font-size:1rem;font-weight:800">${d.cap.toLocaleString()} MW</span></div>
+        <div class="d-row"><span class="d-l">냉각 기술</span><span class="d-v">${d.cooling||'정보 없음'}</span></div>
+        <div class="d-row"><span class="d-l">좌표</span><span class="d-v">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
+      </div>
+    `;
+  } else {
+    sidePanel.innerHTML = `
+      <div class="d-card">
+        <div class="d-title" style="color:#f97316">${d.name}</div>
+        <div class="d-row"><span class="d-l">구분</span><span class="d-v"><span class="badge-orange">발전소</span></span></div>
+        <div class="d-row"><span class="d-l">소유/운영</span><span class="d-v">${d.owner||'Unknown'}</span></div>
+        <div class="d-row"><span class="d-l">국가 (코드)</span><span class="d-v">${d.country||'Unknown'}</span></div>
+        <div class="d-row"><span class="d-l">발전 용량</span><span class="d-v" style="color:#3fb950;font-size:1rem;font-weight:800">${d.cap.toLocaleString()} MW</span></div>
+        <div class="d-row"><span class="d-l">주요 연료/방식</span><span class="d-v">${d.fuel||'미상'}</span></div>
+        <div class="d-row"><span class="d-l">준공 연도</span><span class="d-v">${d.year ? d.year + '년' : '정보 없음'}</span></div>
+        <div class="d-row"><span class="d-l">좌표</span><span class="d-v">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
+      </div>
+    `;
+  }
+}
+
+// Show Country summary in Dashboard
+function showCountryDashboard(feature) {
+  const cName = feature.properties.name || 'Unknown Region';
+  
+  // Calculate stats for this country (rough approximation using bounding box or simple country name match if iso3 is available)
+  // Our data uses 3-letter codes for power plants and varied for DC. For a precise match, we need topojson iso3.
+  // We'll do a simple match if possible or just display a placeholder indicating region analysis.
+  // D3 TopoJSON features usually have 'id' as ISO numeric or alpha-3. We'll just show the clicked region name for now and aggregate if matched.
+  
+  let dcCount = 0, dcCap = 0;
+  let ppCount = 0, ppCap = 0;
+  
+  const b = d3.geoBounds(feature);
+  const wraps = b[0][0] > b[1][0];
+  
+  function inBounds(lng, lat) {
+    if (lat < b[0][1] || lat > b[1][1]) return false;
+    if (wraps) return lng >= b[0][0] || lng <= b[1][0];
+    return lng >= b[0][0] && lng <= b[1][0];
+  }
+  
+  validDC.forEach(d => {
+    if(inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat])) {
+      dcCount++; dcCap += d.cap;
+    }
+  });
+  
+  validPP.forEach(d => {
+    if(inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat])) {
+      ppCount++; ppCap += d.cap;
+    }
+  });
+
+  sidePanel.innerHTML = `
+    <div class="d-card">
+      <div class="d-title" style="color:#a78bfa">${cName} 지역 집계</div>
+      <div style="font-size:0.7rem;color:#8b949e;margin-bottom:12px;line-height:1.4">※ 선택한 지역의 지리적 경계 내에 위치한 인프라 추산치입니다.</div>
+      
+      <div style="margin-top:10px;margin-bottom:4px;font-weight:700;color:#58a6ff;font-size:0.8rem">데이터센터 현황</div>
+      <div class="d-row"><span class="d-l">시설 수</span><span class="d-v">${dcCount} 개소</span></div>
+      <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${dcCap.toLocaleString()} MW</span></div>
+      
+      <div style="margin-top:16px;margin-bottom:4px;font-weight:700;color:#f97316;font-size:0.8rem">발전소 현황 (50MW 이상)</div>
+      <div class="d-row"><span class="d-l">시설 수</span><span class="d-v">${ppCount} 개소</span></div>
+      <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${ppCap.toLocaleString()} MW</span></div>
+    </div>
+  `;
+}
+
+async function initMap() {
+  initGlobalStats();
+
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  svg = d3.select("#wmap").attr("width", W).attr("height", H);
+
+  proj = d3.geoNaturalEarth1().scale(W/5.5).translate([W/2, H/1.85]);
+  pathFn = d3.geoPath().projection(proj);
+
+  zm = d3.zoom().scaleExtent([0.8, 50]).on("zoom", e => {
+    g.attr("transform", e.transform);
+    tip.classList.remove("vis");
+    currentZoomK = e.transform.k;
+    
+    // 확대할수록 버블이 상대적으로 작아져서(비례 지수 0.4) 겹침을 방지
+    g.selectAll(".bubble").attr("r", d => {
+      const base = curView === 'dc' ? dcScale(d.cap) : ppScale(d.cap);
+      return base / Math.pow(currentZoomK, 0.4);
+    });
+  });
+  svg.call(zm);
+  g = svg.append("g");
+
+  d3.select("#zi").on("click", () => svg.transition().duration(300).call(zm.scaleBy, 2));
+  d3.select("#zo").on("click", () => svg.transition().duration(300).call(zm.scaleBy, 0.5));
+  d3.select("#zr").on("click", () => svg.transition().duration(300).call(zm.transform, d3.zoomIdentity));
+
+  const countries = topojson.feature(WORLD_TOPO, WORLD_TOPO.objects.countries);
+  
+  // COLOR_THEMES and getTheme moved to global scope
+
+  g.selectAll(".country")
+    .data(countries.features)
+    .join("path")
+    .attr("class", "country")
+    .attr("d", pathFn)
+    .attr("fill", d => getTheme(d.properties.name).map)
+    .on("click", (e, d) => {
+      e.stopPropagation();
+      showCountryDashboard(d);
+    });
+
+  // Clicking on empty map area resets dashboard
+  svg.on("click", () => {
+    sidePanel.innerHTML = `
+      <div class="dash-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+          <path d="M2 12h20"></path>
+        </svg>
+        <div>지도에서 데이터센터, 발전소<br>또는 국가를 클릭하여 상세 정보를 확인하세요.</div>
+      </div>
+    `;
+  });
+
+  updateBubbles();
+}
+
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const W = wrap.clientWidth, H = wrap.clientHeight;
+    svg.attr("width", W).attr("height", H);
+    proj.scale(W/5.5).translate([W/2, H/1.85]);
+    g.selectAll(".country").attr("d", pathFn);
+    g.selectAll(".bubble")
+      .attr("cx", d => proj([d.lng, d.lat])[0])
+      .attr("cy", d => proj([d.lng, d.lat])[1]);
+  }, 250);
+});
+
+document.querySelectorAll(".vbtn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    document.querySelectorAll(".vbtn").forEach(b => {
+      b.classList.remove("active-dc", "active-pp", "active-info");
+    });
+    const target = e.currentTarget;
+    const view = target.dataset.view;
+    if (view === 'dc') target.classList.add("active-dc");
+    else if (view === 'pp') target.classList.add("active-pp");
+    else target.classList.add("active-info");
+    
+    if (view === 'info') {
+      document.getElementById("wmap").style.display = "none";
+      if(document.getElementById("tip")) document.getElementById("tip").classList.remove("vis");
+      if(document.getElementById("mleg")) document.getElementById("mleg").style.display = "none";
+      if(document.getElementById("zctr")) document.getElementById("zctr").style.display = "none";
+      if(document.getElementById("info-pane")) document.getElementById("info-pane").style.display = "block";
+    } else {
+      document.getElementById("wmap").style.display = "block";
+      if(document.getElementById("mleg")) document.getElementById("mleg").style.display = "block";
+      if(document.getElementById("zctr")) document.getElementById("zctr").style.display = "flex";
+      if(document.getElementById("info-pane")) document.getElementById("info-pane").style.display = "none";
+      curView = view;
+      
+      if(view === 'pp') {
+        document.getElementById('pp-filter-slide').classList.add('open');
+      } else {
+        document.getElementById('pp-filter-slide').classList.remove('open');
+      }
+      
+      updateBubbles();
+      drawLegend();
+    }
+  });
+});
+
+document.querySelectorAll('#pp-filter-slide input[type="checkbox"]').forEach(cb => {
+  cb.addEventListener('change', applyPPFilter);
+});
+
+// Chatbot Logic
+const chatInput = document.getElementById("chat-input");
+const chatSend = document.getElementById("chat-send");
+const chatMessages = document.getElementById("chat-messages");
+
+function appendMessage(text, isUser) {
+  const div = document.createElement("div");
+  div.className = "chat-msg " + (isUser ? "msg-user" : "msg-bot");
+  div.innerHTML = text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function callGeminiAPI(query) {
+  let apiKey = localStorage.getItem("GEMINI_API_KEY");
+  if (!apiKey) {
+    apiKey = prompt("Google Gemini API 키를 입력해주세요 (로컬 브라우저에만 저장됩니다):");
+    if (!apiKey) {
+      return "API 키 입력이 취소되었습니다. 외부 AI 검색 기능을 사용할 수 없습니다.";
+    }
+    localStorage.setItem("GEMINI_API_KEY", apiKey.trim());
+  }
+  
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const systemPrompt = "당신은 데이터센터와 전력망(발전소) 전문가 AI입니다. 이 대시보드는 전 세계 데이터센터와 50MW 이상의 발전소 지도를 보여줍니다. 질문에 전문적이고 친절하게 답해주세요. 응답은 마크다운 대신 HTML 태그(<b>, <br> 등)를 사용하여 출력해주세요.";
+  
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: systemPrompt + "\n\n사용자 질문: " + query }] }]
+      })
+    });
+    
+    if (!response.ok) {
+      const errData = await response.json().catch(()=>({}));
+      if (response.status === 400 && errData.error && errData.error.message.includes("API key not valid")) {
+         localStorage.removeItem("GEMINI_API_KEY");
+         return "API 키가 유효하지 않습니다. 페이지를 새로고침하고 다시 시도해주세요.";
+      }
+      throw new Error(`API 오류: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    if (data.candidates && data.candidates[0].content.parts[0].text) {
+      return data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+    } else {
+      return "AI가 응답을 생성하지 못했습니다.";
+    }
+  } catch (err) {
+    console.error(err);
+    return "API 호출 중 오류가 발생했습니다: " + err.message;
+  }
+}
+
+async function processChatQuery(query) {
+  const q = query.toLowerCase();
+  
+  if (q.includes("가장 큰") || q.includes("제일 큰") || q.includes("최대")) {
+    if (q.includes("발전소")) {
+      const largest = [...validPP].sort((a,b)=>b.cap-a.cap)[0];
+      return `현재 등록된 가장 큰 발전소는 <b>${largest.name}</b> (${largest.country})이며, 용량은 ${largest.cap.toLocaleString()} MW입니다.`;
+    } else {
+      const largest = [...validDC].sort((a,b)=>b.cap-a.cap)[0];
+      return `현재 등록된 가장 큰 데이터센터는 <b>${largest.name}</b> (${largest.country})이며, 용량은 ${largest.cap.toLocaleString()} MW입니다.`;
+    }
+  }
+  
+  if (q.includes("미국") || q.includes("한국") || q.includes("중국") || q.includes("일본") || q.includes("유럽")) {
+    let target = "";
+    if (q.includes("미국")) target = "USA";
+    if (q.includes("한국")) target = "South Korea";
+    if (q.includes("중국")) target = "CHN";
+    if (q.includes("일본")) target = "Japan";
+    if (q.includes("유럽")) target = "Europe";
+    
+    if (q.includes("발전소")) {
+      const count = validPP.filter(d => normalizeCountry(d.country) === normalizeCountry(target)).length;
+      return `${target === 'USA' ? '미국' : target} 지역의 주요 발전소는 총 <b>${count}개</b>가 검색되었습니다.`;
+    } else {
+      const count = validDC.filter(d => normalizeCountry(d.country) === normalizeCountry(target) || d.country === target).length;
+      return `${target === 'USA' ? '미국' : target} 지역의 데이터센터는 총 <b>${count}개</b>가 검색되었습니다.`;
+    }
+  }
+  
+  if (q.includes("몇 개") || q.includes("몇개") || q.includes("총 몇")) {
+      return `현재 지도에는 데이터센터 <b>${validDC.length}개</b>, 주요 발전소 <b>${validPP.length}개</b>가 등록되어 있습니다.`;
+  }
+  
+  return await callGeminiAPI(query);
+}
+
+async function handleSend() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  
+  if (text === "/reset") {
+    localStorage.removeItem("GEMINI_API_KEY");
+    appendMessage(text, true);
+    appendMessage("API 키가 초기화되었습니다. 다음 질문 시 새로운 키를 입력해주세요.", false);
+    chatInput.value = "";
+    return;
+  }
+  
+  appendMessage(text, true);
+  chatInput.value = "";
+  
+  const loadingId = "load-" + Date.now();
+  const div = document.createElement("div");
+  div.className = "chat-msg msg-bot";
+  div.id = loadingId;
+  div.innerHTML = `<span style="opacity:0.6">AI가 웹 검색 및 답변을 생성 중입니다...</span>`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  const response = await processChatQuery(text);
+  
+  const loadingDiv = document.getElementById(loadingId);
+  if (loadingDiv) {
+    loadingDiv.innerHTML = response;
+  }
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+chatSend.addEventListener("click", handleSend);
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") handleSend();
+});
+
+// News Ticker Logic
+async function fetchNews() {
+  const ticker = document.getElementById("news-ticker");
+  try {
+    const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q="Data+Center"+OR+"AI+Infrastructure"&hl=en-US&gl=US&ceid=US:en');
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+    
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    if (data.status === 'ok' && data.items && data.items.length > 0) {
+      const items = data.items.slice(0, 15);
+      
+      let translatedTitles = [];
+      try {
+        const combinedText = items.map(item => item.title).join("\n");
+        const transRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(combinedText)}`);
+        const transData = await transRes.json();
+        let fullTrans = "";
+        transData[0].forEach(seg => { fullTrans += seg[0]; });
+        translatedTitles = fullTrans.split("\n");
+      } catch (e) { console.error("Translation error", e); }
+      
+      // Extract keywords (simple heuristic)
+      const extractKeywords = (str) => {
+        const words = str.replace(/[^\w\s]/g, '').split(/\s+/);
+        return words.filter(w => w.length > 3 && !['data','center','with','from','that','this','will'].includes(w.toLowerCase())).slice(0, 3);
+      };
+
+      const currentItems = items.map((item, i) => {
+        const pubDate = new Date(item.pubDate);
+        const timeStr = `${pubDate.getMonth()+1}/${pubDate.getDate()} ${pubDate.getHours().toString().padStart(2,'0')}:${pubDate.getMinutes().toString().padStart(2,'0')}`;
+        const koTitle = translatedTitles[i] ? translatedTitles[i].trim() : item.title;
+        return {
+           title: item.title,
+           koTitle: koTitle,
+           link: item.link,
+           author: item.author || timeStr,
+           keywords: extractKeywords(item.title)
+        };
+      });
+
+      // Update LocalStorage
+      let pastNews = [];
+      try { pastNews = JSON.parse(localStorage.getItem("dc_past_news")) || []; } catch(e){}
+      
+      currentItems.forEach(ci => {
+         if(!pastNews.find(p => p.link === ci.link)) {
+             pastNews.unshift(ci);
+         }
+      });
+      if(pastNews.length > 100) pastNews = pastNews.slice(0, 100);
+      localStorage.setItem("dc_past_news", JSON.stringify(pastNews));
+
+      // Build Ticker
+      let html = '<div class="ticker-track">';
+      currentItems.forEach((item, i) => {
+        const koTitleHtml = translatedTitles[i] ? `<span style="color:#58a6ff;margin-left:6px;font-weight:600;">(${item.koTitle})</span>` : '';
+        html += `<span class="ticker-item"><a href="${item.link}" target="_blank">${item.title}${koTitleHtml}</a> <span class="ticker-time">[${item.author}]</span></span>`;
+      });
+      html += '</div>';
+      ticker.innerHTML = html;
+      
+      // Build List UI
+      const newsSection = document.getElementById("news-list-section");
+      const newsList = document.getElementById("info-news-list");
+      const toggleBtn = document.getElementById("toggle-past-news-btn");
+      const titleSpan = document.getElementById("news-section-title");
+
+      if (newsSection && newsList && toggleBtn) {
+        const renderList = (dataToRender) => {
+          let listHtml = '';
+          dataToRender.forEach(item => {
+            const kwHtml = item.keywords ? item.keywords.map(k => `<span class="kw-badge">#${k}</span>`).join('') : '';
+            listHtml += `
+              <div class="news-list-item">
+                <div class="news-list-text">
+                  <a href="${item.link}" target="_blank">${item.koTitle}</a>
+                  <div class="news-list-orig">${item.title} - <span style="color:#a371f7">${item.author}</span></div>
+                  <div style="margin-top:6px;">${kwHtml}</div>
+                </div>
+                <button class="chat-sum-btn" data-url="${item.link}">챗봇 요약</button>
+              </div>
+            `;
+          });
+          newsList.innerHTML = listHtml;
+          
+          newsList.querySelectorAll('.chat-sum-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const url = e.target.getAttribute('data-url');
+              chatInput.value = `이 기사 요약해줘: ${url}`;
+              chatSend.click();
+            });
+          });
+        };
+
+        let showingPast = false;
+        toggleBtn.onclick = () => {
+          showingPast = !showingPast;
+          if(showingPast) {
+            titleSpan.innerText = "지난 글로벌 주요 뉴스 (저장됨)";
+            toggleBtn.innerText = "실시간 뉴스 보기";
+            renderList(pastNews);
+          } else {
+            titleSpan.innerText = "실시간 글로벌 주요 뉴스";
+            toggleBtn.innerText = "지난뉴스 보기";
+            renderList(currentItems);
+          }
+        };
+
+        renderList(currentItems);
+        newsSection.style.display = "block";
+      }
+    } else {
+      ticker.innerHTML = '<div class="ticker-track"><span class="ticker-item" style="color:#8b949e">뉴스를 불러올 수 없습니다.</span></div>';
+    }
+  } catch (err) {
+    ticker.innerHTML = '<div class="ticker-track"><span class="ticker-item" style="color:#8b949e">뉴스 로딩 오류</span></div>';
+    console.error("News Fetch Error:", err);
+  }
+}
+
+window.onload = () => {
+  initMap();
+  fetchNews();
+};
+</script>
+</body>
+</html>
