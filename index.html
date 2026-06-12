@@ -6,6 +6,7 @@
 <title>GridX: Watt & Byte (2026)</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
+<script src="changelog.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
@@ -173,15 +174,127 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   .map-container{width:100%;height:60vh;border-right:none;border-bottom:1px solid #30363d}
   .dashboard-container{width:100%;height:auto;min-height:40vh}
 }
+
+/* Analysis Lab Drawer */
+.analysis-drawer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  min-height: 300px;
+  background: rgba(13, 17, 23, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid #30363d;
+  border-right: 1px solid #30363d;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+}
+.analysis-drawer.open {
+  transform: translateY(0);
+}
+.drawer-toggle {
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 17, 23, 0.9);
+  border: 1px solid #30363d;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 8px 24px;
+  color: #58a6ff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+.drawer-toggle:hover {
+  background: #1f6feb;
+  color: #fff;
+}
+.drawer-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+.al-card {
+  flex: 1;
+  min-width: 250px;
+  background: rgba(22, 27, 34, 0.6);
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+.al-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e6edf3;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 8px;
+}
+.al-title-r {
+  font-size: 0.75rem;
+  color: #8b949e;
+  font-weight: 500;
+}
+.al-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.al-chart-container {
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+  position: relative;
+}
+.al-empty {
+  color: #8b949e;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.al-value {
+  font-size: 2rem;
+  font-weight: 800;
+}
+.al-sub {
+  font-size: 0.75rem;
+  color: #8b949e;
+  margin-top: 5px;
+}
 </style>
 </head>
 <body>
 
 <div class="top-panel">
   <header class="hdr">
-    <div class="logo-g">
+    <div class="logo-g" style="display:flex; align-items:center;">
       <div>
-        <div class="site-t">GridX: Watt & Byte</div>
+        <div style="display:flex; align-items:center;">
+          <div class="site-t">GridX: Watt & Byte</div>
+        </div>
         <div class="site-s">전세계 데이터센터 & 주요 발전소 공간 시각화</div>
       </div>
     </div>
@@ -257,6 +370,58 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <button id="zo" aria-label="축소">−</button>
     </div>
     
+    <div class="analysis-drawer" id="analysis-drawer">
+      <button class="drawer-toggle" id="drawer-toggle">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        Analysis Lab (데이터 융합 분석)
+      </button>
+      <div class="drawer-content">
+        <!-- Card 1: Power Independence (DC vs PP) -->
+        <div class="al-card">
+          <div class="al-title">
+            <span>⚡ 전력 수급 안정성 (DC vs Power)</span>
+            <span class="al-title-r" id="al-region-name">Global</span>
+          </div>
+          <div class="al-body" id="al-body-1">
+            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          </div>
+        </div>
+        
+        <!-- Card 2: Green Energy Mix -->
+        <div class="al-card">
+          <div class="al-title">
+            <span>🌱 친환경 에너지 믹스</span>
+            <span class="al-title-r" id="al-region-name-2">Global</span>
+          </div>
+          <div class="al-body" id="al-body-2">
+            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Investment Pipeline Density -->
+        <div class="al-card">
+          <div class="al-title">
+            <span>🚀 데이터센터 성장 & 밀도</span>
+            <span class="al-title-r" id="al-region-name-3">Global</span>
+          </div>
+          <div class="al-body" id="al-body-3">
+            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          </div>
+        </div>
+
+        <!-- Card 4: Water Risk (WRI Aqueduct) -->
+        <div class="al-card">
+          <div class="al-title">
+            <span>💧 수자원 리스크 (Water Stress)</span>
+            <span class="al-title-r" id="al-region-name-4">Global</span>
+          </div>
+          <div class="al-body" id="al-body-4">
+            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="info-pane">
       <div class="info-header">데이터센터 지식 베이스 (General Information)</div>
 
@@ -266,6 +431,14 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
           <button id="toggle-past-news-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;">지난뉴스 보기</button>
         </div>
         <div id="info-news-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+      
+      <div class="info-section" id="intel-list-section" style="display:none; margin-top:20px;">
+        <div class="info-sec-title" style="color:#a855f7;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
+          <span id="intel-section-title">📚 자동 수집된 최신 학술/연구 리포트</span>
+          <span style="font-size:0.75rem;color:#8b949e">Automated Data Pipeline</span>
+        </div>
+        <div id="info-intel-list" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
       
       <div class="info-section">
@@ -393,8 +566,43 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
           </div>
         </div>
       </div>
+      <div style="padding:15px; text-align:center; color:#8b949e; font-size:0.75rem; border-top:1px solid #30363d">
+        데이터 출처: WRI Aqueduct, 자체 수집, Google News RSS, arXiv API 등
+      </div>
     </div>
   </div>
+
+  <!-- Release Notes Modal -->
+  <div id="changelog-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(13,17,23,0.8); backdrop-filter:blur(8px); z-index:9999; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s;">
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; width:90%; max-width:600px; max-height:80vh; overflow-y:auto; box-shadow:0 15px 35px rgba(0,0,0,0.5); display:flex; flex-direction:column; transform:translateY(20px); transition:transform 0.3s;">
+      
+      <!-- Modal Header -->
+      <div style="padding:20px; border-bottom:1px solid #30363d; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:rgba(22,27,34,0.95); backdrop-filter:blur(5px); z-index:10;">
+        <h2 style="font-size:1.3rem; color:#e6edf3; margin:0;">GridX: Watt & Byte <span id="cl-version" style="font-size:0.9rem; color:#a855f7; background:rgba(168,85,247,0.1); padding:2px 8px; border-radius:12px; margin-left:8px;"></span></h2>
+        <button id="cl-close-btn" style="color:#8b949e; font-size:1.5rem; background:none; border:none; cursor:pointer;">&times;</button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div style="padding:20px; color:#c9d1d9;">
+        <div style="margin-bottom:25px;">
+          <h3 style="color:#58a6ff; font-size:1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">💡 앱 주요 기능</h3>
+          <ul id="cl-features" style="padding-left:20px; line-height:1.7; font-size:0.9rem;"></ul>
+        </div>
+        
+        <div>
+          <h3 style="color:#3fb950; font-size:1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">🚀 최신 업데이트 내역 <span id="cl-date" style="font-size:0.75rem; color:#8b949e; font-weight:normal;"></span></h3>
+          <ul id="cl-updates" style="padding-left:20px; line-height:1.7; font-size:0.9rem;"></ul>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div style="padding:15px 20px; border-top:1px solid #30363d; text-align:right;">
+        <button id="cl-ok-btn" style="background:linear-gradient(135deg, #1f6feb, #3b82f6); color:#fff; border:none; padding:8px 24px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.9rem; box-shadow:0 4px 12px rgba(59,130,246,0.2);">확인</button>
+      </div>
+      
+    </div>
+  </div>
+
   <div class="dashboard-container">
     <div class="dashboard-content" id="side-panel">
       <div class="dash-empty">
@@ -420,7 +628,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 
 <script src="world_topo.js?v=20260612_1"></script>
 <script src="continent_map.js?v=20260612_1"></script>
-<script src="map_data.js?v=20260612_1"></script>
+<script src="map_data.js?t=20260612_2"></script>
+<script src="changelog.js?t=20260612_1"></script>
 <script>
 let curView = "dc"; // "dc" or "pp"
 let currentZoomK = 1;
@@ -853,9 +1062,13 @@ function showCountryDashboard(feature) {
     }
   });
   
+  let greenCap = 0;
   validPP.forEach(d => {
     if(inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat])) {
       ppCount++; ppCap += d.cap;
+      if(["Solar", "Wind", "Hydro", "Nuclear"].includes(d.fuel)) {
+        greenCap += d.cap;
+      }
     }
   });
 
@@ -873,6 +1086,10 @@ function showCountryDashboard(feature) {
       <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${ppCap.toLocaleString()} MW</span></div>
     </div>
   `;
+  
+  if (typeof updateAnalysisLab === 'function') {
+    updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap);
+  }
 }
 
 async function initMap() {
@@ -929,6 +1146,7 @@ async function initMap() {
         <div>지도에서 데이터센터, 발전소<br>또는 국가를 클릭하여 상세 정보를 확인하세요.</div>
       </div>
     `;
+    if (typeof resetAnalysisLab === 'function') resetAnalysisLab();
   });
 
   updateBubbles();
@@ -1243,7 +1461,203 @@ async function fetchNews() {
 window.onload = () => {
   initMap();
   fetchNews();
+  initAnalysisLab();
+  renderIntelData();
+  initChangelogModal();
 };
+
+function initChangelogModal() {
+  const modal = document.getElementById("changelog-modal");
+  const closeBtn = document.getElementById("cl-close-btn");
+  const okBtn = document.getElementById("cl-ok-btn");
+  
+  if(typeof APP_CHANGELOG !== 'undefined') {
+    document.getElementById("cl-version").innerText = APP_CHANGELOG.version;
+    document.getElementById("cl-date").innerText = `(${APP_CHANGELOG.date})`;
+    
+    document.getElementById("cl-features").innerHTML = APP_CHANGELOG.features.map(f => `<li>${f}</li>`).join('');
+    document.getElementById("cl-updates").innerHTML = APP_CHANGELOG.latestUpdates.map(u => `<li>${u}</li>`).join('');
+  }
+
+  function showModal() {
+    modal.style.display = "flex";
+    // Trigger reflow for animation
+    void modal.offsetWidth;
+    modal.style.opacity = "1";
+    modal.children[0].style.transform = "translateY(0)";
+  }
+
+  function hideModal() {
+    modal.style.opacity = "0";
+    modal.children[0].style.transform = "translateY(20px)";
+    setTimeout(() => { modal.style.display = "none"; }, 300);
+  }
+
+  closeBtn.addEventListener("click", hideModal);
+  okBtn.addEventListener("click", hideModal);
+  
+  // Close on backdrop click
+  modal.addEventListener("click", (e) => {
+    if(e.target === modal) hideModal();
+  });
+
+  // Auto-show logic based on localStorage
+  const lastSeenVersion = localStorage.getItem("gridx_last_version");
+  if(typeof APP_CHANGELOG !== 'undefined' && lastSeenVersion !== APP_CHANGELOG.version) {
+    setTimeout(() => {
+      showModal();
+      localStorage.setItem("gridx_last_version", APP_CHANGELOG.version);
+    }, 500); // slight delay for map to load first
+  }
+}
+
+function renderIntelData() {
+  const intelSection = document.getElementById("intel-list-section");
+  const intelList = document.getElementById("info-intel-list");
+  
+  if (typeof INTEL_DATA !== 'undefined' && INTEL_DATA.length > 0) {
+    let html = '';
+    INTEL_DATA.forEach(item => {
+      html += `
+        <div class="news-list-item" style="border-left: 3px solid #a855f7;">
+          <div class="news-list-text">
+            <a href="${item.link}" target="_blank" style="color:#e6edf3;font-weight:600">${item.title}</a>
+            <div class="news-list-orig" style="margin-top:4px;color:#8b949e;line-height:1.4">${item.summary}</div>
+            <div style="margin-top:6px;font-size:0.7rem;color:#a855f7">발행일: ${item.date} | 출처: arXiv API 자동 수집</div>
+          </div>
+        </div>
+      `;
+    });
+    intelList.innerHTML = html;
+    intelSection.style.display = "block";
+  } else {
+    // Fallback UI to force user to refresh cache
+    intelList.innerHTML = `
+      <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; padding:20px; border-radius:8px; text-align:center;">
+        <div style="color:#ef4444; font-weight:bold; font-size:1.1rem; margin-bottom:10px;">⚠️ 데이터 업데이트가 반영되지 않았습니다!</div>
+        <div style="color:#e6edf3; font-size:0.9rem;">
+          브라우저가 과거 데이터를 기억하고 있습니다.<br>
+          키보드에서 <b>Ctrl + Shift + R</b> 을 누르시거나 브라우저를 완전히 껐다가 다시 켜주세요.
+        </div>
+      </div>
+    `;
+    intelSection.style.display = "block";
+  }
+}
+
+function initAnalysisLab() {
+  const drawerToggle = document.getElementById("drawer-toggle");
+  const analysisDrawer = document.getElementById("analysis-drawer");
+  
+  if(drawerToggle && analysisDrawer) {
+    drawerToggle.addEventListener("click", () => {
+      analysisDrawer.classList.toggle("open");
+    });
+  }
+}
+
+function resetAnalysisLab() {
+  document.getElementById("al-region-name").innerText = "Global";
+  document.getElementById("al-region-name-2").innerText = "Global";
+  document.getElementById("al-region-name-3").innerText = "Global";
+  document.getElementById("al-region-name-4").innerText = "Global";
+  document.getElementById("al-body-1").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  document.getElementById("al-body-2").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  document.getElementById("al-body-3").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  document.getElementById("al-body-4").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+}
+
+function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
+  document.getElementById("al-region-name").innerText = cName;
+  document.getElementById("al-region-name-2").innerText = cName;
+  document.getElementById("al-region-name-3").innerText = cName;
+  document.getElementById("al-region-name-4").innerText = cName;
+
+  // Card 1: Power Independence
+  const ratio = ppCap > 0 ? ((dcCap / ppCap) * 100).toFixed(1) : (dcCap > 0 ? "초과" : "0.0");
+  let color = "#3fb950";
+  if (ratio > 50 || ratio === "초과") color = "#eab308";
+  if (ratio > 80 || ratio === "초과") color = "#ef4444";
+  
+  document.getElementById("al-body-1").innerHTML = `
+    <div class="al-value" style="color:${color}">${ratio}${ratio === '초과' ? '' : '%'}</div>
+    <div class="al-sub">발전 용량 대비 DC 필요 전력 비율</div>
+    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+      <div style="display:flex; justify-content:space-between"><span>DC 누적:</span> <strong>${dcCap.toLocaleString()} MW</strong></div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px"><span>발전 용량:</span> <strong>${ppCap.toLocaleString()} MW</strong></div>
+    </div>
+  `;
+
+  // Card 2: Green Energy Mix
+  const greenRatio = ppCap > 0 ? ((greenCap / ppCap) * 100).toFixed(1) : "0.0";
+  let gColor = "#ef4444";
+  if (greenRatio > 30) gColor = "#eab308";
+  if (greenRatio > 60) gColor = "#3fb950";
+  
+  document.getElementById("al-body-2").innerHTML = `
+    <div class="al-value" style="color:${gColor}">${greenRatio}%</div>
+    <div class="al-sub">지역 내 친환경 에너지 비율 (발전소)</div>
+    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+      <div style="display:flex; justify-content:space-between"><span>무탄소 에너지:</span> <strong style="color:#3fb950">${greenCap.toLocaleString()} MW</strong></div>
+      <div style="display:flex; justify-content:space-between; margin-top:4px"><span>화석/기타:</span> <strong>${(ppCap - greenCap).toLocaleString()} MW</strong></div>
+    </div>
+  `;
+
+  // Card 3: Investment Pipeline Density (Mocked logic for specific countries)
+  let pipeVal = "Low";
+  let pColor = "#8b949e";
+  if(dcCount > 100 || cName === "United States of America" || cName === "China") { pipeVal = "Extreme"; pColor = "#a855f7"; }
+  else if(dcCount > 30) { pipeVal = "High"; pColor = "#ef4444"; }
+  else if(dcCount > 10) { pipeVal = "Medium"; pColor = "#eab308"; }
+  
+  document.getElementById("al-body-3").innerHTML = `
+    <div class="al-value" style="color:${pColor}">${pipeVal}</div>
+    <div class="al-sub">향후 DC 투자 매력도 및 파이프라인</div>
+    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+      <div style="display:flex; justify-content:space-between"><span>현재 인프라 밀도:</span> <strong>${dcCount} 개소</strong></div>
+      <div style="margin-top:6px; color:#8b949e; font-size:0.75rem; text-align:center">전력/데이터 융합 점수 기반 산출</div>
+    </div>
+  `;
+
+  // Card 4: Water Stress (Mocked Data based on WRI Aqueduct)
+  let waterStress = "Medium";
+  let wColor = "#eab308";
+  let wMsg = "일반적인 수준의 수자원 관리가 필요합니다.";
+  
+  const highStressRegions = ["Middle East", "North Africa", "Saudi Arabia", "United Arab Emirates", "India", "Chile", "Spain", "Mexico", "South Africa", "Morocco", "Egypt", "Iran", "Iraq", "Pakistan", "Afghanistan", "Australia"];
+  const extremeStressRegions = ["Saudi Arabia", "United Arab Emirates", "Qatar", "Kuwait", "Oman", "Bahrain", "Israel", "Jordan", "Lebanon", "Libya", "Yemen"];
+  const lowStressRegions = ["Canada", "Russia", "Norway", "Sweden", "Finland", "Iceland", "New Zealand", "Brazil", "Colombia", "Peru", "Ireland", "Scotland"];
+  
+  let isHigh = highStressRegions.some(r => cName.includes(r) || normalizeCountry(cName) === "Middle East");
+  let isExtreme = extremeStressRegions.some(r => cName.includes(r));
+  let isLow = lowStressRegions.some(r => cName.includes(r));
+  
+  if (isExtreme) {
+    waterStress = "Extremely High";
+    wColor = "#ef4444";
+    wMsg = "물 부족이 극심합니다. 폐쇄형 수랭식(Closed-loop)이나 액침 냉각 도입이 필수적인 지역입니다.";
+  } else if (isHigh) {
+    waterStress = "High";
+    wColor = "#f97316";
+    wMsg = "수자원 리스크가 큽니다. 데이터센터 증설 시 물 사용 효율(WUE) 최적화가 강력히 요구됩니다.";
+  } else if (isLow) {
+    waterStress = "Low";
+    wColor = "#3fb950";
+    wMsg = "수자원이 풍부하고 안정적입니다. 자연 냉각(Free Cooling)을 활용하기 이상적인 환경입니다.";
+  } else if (cName === "United States of America" || cName === "China") {
+    waterStress = "Med-High";
+    wColor = "#f97316";
+    wMsg = "국가 내 지역 편차가 큽니다. 사막/내륙 지역의 데이터센터는 심각한 물 부족을 겪을 수 있습니다.";
+  }
+  
+  document.getElementById("al-body-4").innerHTML = `
+    <div class="al-value" style="color:${wColor}">${waterStress}</div>
+    <div class="al-sub">WRI Aqueduct 기준 수자원 스트레스</div>
+    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+      <div style="line-height:1.4">${wMsg}</div>
+    </div>
+  `;
+}
 </script>
 </body>
 </html>
