@@ -193,6 +193,15 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 .info-sec-title{font-size:1.49rem;font-weight:700;color:#58a6ff;margin-bottom:20px}
 .info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:20px}
 .info-card{background:rgba(22,27,34,0.6);border:1px solid #30363d;border-radius:10px;padding:24px;transition:border-color 0.2s}
+.ds-table{width:100%;border-collapse:collapse;font-size:0.88rem}
+.ds-table th{text-align:left;padding:8px 14px;color:#8b949e;font-weight:600;border-bottom:1px solid #30363d;white-space:nowrap}
+.ds-table td{padding:9px 14px;border-bottom:1px solid #21262d;vertical-align:middle}
+.ds-table tr:last-child td{border-bottom:none}
+.ds-table tr:hover td{background:rgba(255,255,255,0.03)}
+.ds-badge-static{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.76rem;font-weight:600;background:rgba(30,58,138,0.3);color:#93c5fd;border:1px solid rgba(59,130,246,0.3)}
+.ds-badge-auto{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.76rem;font-weight:600;background:rgba(20,83,45,0.3);color:#86efac;border:1px solid rgba(34,197,94,0.3)}
+.ds-badge-live{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.76rem;font-weight:600;background:rgba(88,20,20,0.3);color:#fca5a5;border:1px solid rgba(239,68,68,0.3);animation:ds-pulse 2s infinite}
+@keyframes ds-pulse{0%,100%{opacity:1}50%{opacity:0.6}}
 .info-card:hover{border-color:#58a6ff}
 .ic-title{font-size:1.38rem;font-weight:700;color:#e6edf3;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .ic-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:1.03rem;border-bottom:1px dashed rgba(48,54,61,0.5);padding-bottom:10px}
@@ -565,6 +574,51 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 
     <div id="info-pane">
       <div class="info-header">데이터센터 지식 베이스 (General Information)</div>
+
+      <div class="info-section">
+        <div class="info-sec-title" style="font-size:1.1rem;margin-bottom:14px">📊 데이터 출처 및 업데이트 현황</div>
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th>데이터 유형</th>
+              <th>출처</th>
+              <th>항목 수</th>
+              <th>업데이트 방식</th>
+              <th>최종 갱신</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🏢 데이터센터 (DC)</td>
+              <td style="color:#8b949e">수동 수집 (공개 보고서·뉴스 기반)</td>
+              <td id="ds-dc-cnt" style="color:#58a6ff;font-weight:600">—</td>
+              <td><span class="ds-badge-static">정적</span> 수동 편집</td>
+              <td style="color:#8b949e">2026-06-14</td>
+            </tr>
+            <tr>
+              <td>⚡ 발전소 (PP)</td>
+              <td style="color:#8b949e"><a href="https://datasets.wri.org/dataset/globalpowerplantdatabase" target="_blank" style="color:#8b949e">WRI GPPD v1.3.0</a></td>
+              <td id="ds-pp-cnt" style="color:#f97316;font-weight:600">—</td>
+              <td><span class="ds-badge-static">정적</span> 수동 편집</td>
+              <td style="color:#8b949e">2021-06-01</td>
+            </tr>
+            <tr>
+              <td>📚 학술·업계 인텔</td>
+              <td style="color:#8b949e">arXiv API + DC Dynamics/Knowledge RSS</td>
+              <td id="ds-intel-cnt" style="color:#a855f7;font-weight:600">—</td>
+              <td><span class="ds-badge-auto">자동</span> 매주 일요일</td>
+              <td id="ds-intel-date" style="color:#8b949e">—</td>
+            </tr>
+            <tr>
+              <td>📰 글로벌 뉴스 피드</td>
+              <td style="color:#8b949e">Google News RSS (영문 → 한국어 번역)</td>
+              <td style="color:#8b949e">최신 10건</td>
+              <td><span class="ds-badge-live">● LIVE</span> 실시간</td>
+              <td style="color:#8b949e">페이지 로드 시</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="info-section" id="news-list-section" style="display:none;">
         <div class="info-sec-title" style="color:#58a6ff;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
@@ -2177,6 +2231,7 @@ window.onload = async () => {
   renderIntelData();
   initChangelogModal();
   initAISelector();
+  initDataSourcePanel();
 
   setProgress(97, '발전소 데이터 선로딩...');
   loadPPData(() => {}); // 백그라운드, 완료 기다리지 않음
@@ -2187,6 +2242,33 @@ window.onload = async () => {
   await new Promise(r => setTimeout(r, Math.max(0, 5000 - elapsed)));
   hideLoading();
 };
+
+function initDataSourcePanel() {
+  // DC 수
+  const dcCnt = document.getElementById('ds-dc-cnt');
+  if (dcCnt && typeof DC_DATA !== 'undefined') dcCnt.textContent = DC_DATA.length + ' 개소';
+
+  // PP 수 (lazy 로드 완료 시 업데이트)
+  function updatePPCnt() {
+    const ppCnt = document.getElementById('ds-pp-cnt');
+    if (ppCnt) ppCnt.textContent = (basePP && basePP.length ? basePP.length.toLocaleString() : '10,741') + ' 개소';
+  }
+  updatePPCnt();
+  // PP 로드 완료 후 재갱신
+  const origLoadPP = window._ppLoadedHook;
+  const ppInterval = setInterval(() => { if (ppDataLoaded) { updatePPCnt(); clearInterval(ppInterval); } }, 1000);
+
+  // 인텔 수 + 최신 날짜
+  const intelCnt  = document.getElementById('ds-intel-cnt');
+  const intelDate = document.getElementById('ds-intel-date');
+  if (typeof INTEL_DATA !== 'undefined' && INTEL_DATA.length) {
+    if (intelCnt)  intelCnt.textContent  = INTEL_DATA.length + ' 건';
+    if (intelDate) {
+      const latest = INTEL_DATA.map(d => d.date || '').filter(Boolean).sort().reverse()[0];
+      intelDate.textContent = latest || '—';
+    }
+  }
+}
 
 function initChangelogModal() {
   const modal = document.getElementById("changelog-modal");
