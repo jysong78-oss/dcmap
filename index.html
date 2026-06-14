@@ -7,6 +7,7 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
 <script src="changelog.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
@@ -428,6 +429,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <div class="info-section" id="news-list-section" style="display:none;">
         <div class="info-sec-title" style="color:#58a6ff;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
           <span id="news-section-title">실시간 글로벌 주요 뉴스</span>
+          <button id="export-news-pdf-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;margin-right:5px;">PDF 출력</button>
           <button id="toggle-past-news-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;">지난뉴스 보기</button>
         </div>
         <div id="info-news-list" style="display:flex;flex-direction:column;gap:10px;"></div>
@@ -436,7 +438,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <div class="info-section" id="intel-list-section" style="display:none; margin-top:20px;">
         <div class="info-sec-title" style="color:#a855f7;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
           <span id="intel-section-title">📚 자동 수집된 최신 학술/연구 리포트</span>
-          <span style="font-size:0.75rem;color:#8b949e">Automated Data Pipeline</span>
+          <div><button id="export-intel-pdf-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;margin-right:5px;">PDF 출력</button><span style="font-size:0.75rem;color:#8b949e">Automated Data Pipeline</span></div>
         </div>
         <div id="info-intel-list" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
