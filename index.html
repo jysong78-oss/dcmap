@@ -11,17 +11,17 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-body{font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;background:#0d1117;color:#e6edf3;font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+body{font-family:-apple-system,'Helvetica Neue','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;background:#0d1117;color:#e6edf3;font-size:16px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 a{color:#58a6ff;text-decoration:none}
 button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 
 /* TOP PANEL (20%) */
 .top-panel{height:20%;min-height:140px;background:#0d1117;border-bottom:1px solid #30363d;display:flex;flex-direction:column}
 .hdr{padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.site-t{font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;color:#e6edf3}
-.site-s{font-size:0.7rem;color:#8b949e}
+.site-t{font-size:1.26rem;font-weight:700;letter-spacing:-0.02em;color:#e6edf3}
+.site-s{font-size:0.8rem;color:#8b949e}
 .vtog{display:flex;background:#21262d;border-radius:8px;padding:3px;gap:3px;border:1px solid #30363d}
-.vbtn{padding:6px 14px;font-size:0.75rem;font-weight:600;border-radius:6px;color:#8b949e;transition:all .2s;white-space:nowrap}
+.vbtn{padding:6px 14px;font-size:0.86rem;font-weight:600;border-radius:6px;color:#8b949e;transition:all .2s;white-space:nowrap}
 .vbtn.active-dc{background:linear-gradient(135deg, #1f6feb, #3b82f6);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.3)}
 .vbtn.active-pp{background:linear-gradient(135deg, #d97706, #f97316);color:#fff;box-shadow:0 2px 8px rgba(249,115,22,0.3)}
 .vbtn.active-info{background:linear-gradient(135deg, #8957e5, #a371f7);color:#fff;box-shadow:0 2px 8px rgba(137,87,229,0.3)}
@@ -29,9 +29,9 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 
 .global-stats{flex:1;display:flex;align-items:center;padding:0 20px;gap:15px;overflow-x:auto}
 .gcard{background:rgba(22,27,34,0.6);border:1px solid #21262d;border-radius:8px;padding:12px 16px;min-width:180px;display:flex;flex-direction:column;justify-content:center}
-.gc-title{font-size:0.7rem;color:#8b949e;margin-bottom:4px;font-weight:600}
-.gc-val{font-size:1.4rem;font-weight:800;color:#e6edf3;line-height:1}
-.gc-val span{font-size:0.7rem;font-weight:500;color:#8b949e;margin-left:4px}
+.gc-title{font-size:0.8rem;color:#8b949e;margin-bottom:4px;font-weight:600}
+.gc-val{font-size:1.61rem;font-weight:800;color:#e6edf3;line-height:1}
+.gc-val span{font-size:0.8rem;font-weight:500;color:#8b949e;margin-left:4px}
 .gc-val.blue{color:#58a6ff}
 .gc-val.orange{color:#f97316}
 
@@ -41,21 +41,21 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 /* LEFT (MAP) 70% */
 .map-container{width:70%;position:relative;background:#0d1117;border-right:1px solid #30363d}
 #wmap{width:100%;height:100%;display:block;touch-action:none}
-.mtip{position:absolute;pointer-events:none;background:rgba(22,27,34,0.95);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:8px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,0.7);font-size:0.75rem;width:240px;opacity:0;transition:opacity .15s;z-index:50;line-height:1.5}
+.mtip{position:absolute;pointer-events:none;background:rgba(22,27,34,0.95);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:8px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,0.7);font-size:0.86rem;width:240px;opacity:0;transition:opacity .15s;z-index:50;line-height:1.5}
 .mtip.vis{opacity:1}
-.tip-t{font-weight:700;font-size:0.85rem;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #30363d;word-break:break-word}
+.tip-t{font-weight:700;font-size:0.98rem;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #30363d;word-break:break-word}
 .tip-r{display:flex;justify-content:space-between;gap:8px;margin-bottom:2px}
 .tip-l{color:#8b949e}
 .tip-v{font-weight:600;text-align:right;color:#e6edf3}
 
-.mleg{position:absolute;bottom:20px;left:20px;background:rgba(22,27,34,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:10px;padding:10px 14px;font-size:0.7rem;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:40;pointer-events:none}
+.mleg{position:absolute;bottom:20px;left:20px;background:rgba(22,27,34,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:10px;padding:10px 14px;font-size:0.8rem;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:40;pointer-events:none}
 .leg-t{font-weight:700;margin-bottom:6px;color:#c9d1d9}
 .leg-items{display:flex;flex-direction:column;gap:5px}
 .leg-item{display:flex;align-items:center;gap:6px}
 .leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
 .zctr{position:absolute;top:20px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:40}
-.zctr button{width:32px;height:32px;background:rgba(22,27,34,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:6px;font-size:16px;font-weight:700;color:#e6edf3;display:flex;align-items:center;justify-content:center;transition:background .2s;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.zctr button{width:32px;height:32px;background:rgba(22,27,34,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:6px;font-size:18px;font-weight:700;color:#e6edf3;display:flex;align-items:center;justify-content:center;transition:background .2s;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
 .zctr button:active{background:#30363d}
 
 .country{stroke:#2d333b;stroke-width:0.5px;transition:all 0.2s;cursor:pointer}
@@ -71,35 +71,35 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 
 /* Chatbot UI */
 .chatbot-container{height:50%;min-height:220px;border-top:1px solid #30363d;display:flex;flex-direction:column;background:#0d1117}
-.chat-messages{flex:1;overflow-y:auto;padding:15px;font-size:0.8rem;display:flex;flex-direction:column;gap:10px}
+.chat-messages{flex:1;overflow-y:auto;padding:15px;font-size:0.92rem;display:flex;flex-direction:column;gap:10px}
 .chat-msg{padding:8px 12px;border-radius:8px;max-width:90%;line-height:1.4;word-break:break-word}
 .msg-user{align-self:flex-end;background:#1f6feb;color:#fff;border-bottom-right-radius:2px}
 .msg-bot{align-self:flex-start;background:#21262d;color:#e6edf3;border:1px solid #30363d;border-bottom-left-radius:2px}
 .chat-input-area{display:flex;padding:12px;gap:8px;border-top:1px solid #30363d;background:#161b22}
-.chat-input-area input{flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:8px 12px;font-size:0.8rem;outline:none;transition:border .2s}
+.chat-input-area input{flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:8px 12px;font-size:0.92rem;outline:none;transition:border .2s}
 .chat-input-area input:focus{border-color:#58a6ff}
-.chat-input-area button{background:#238636;color:#fff;border:none;border-radius:6px;padding:0 16px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s}
+.chat-input-area button{background:#238636;color:#fff;border:none;border-radius:6px;padding:0 16px;font-size:0.92rem;font-weight:600;cursor:pointer;transition:background 0.2s}
 .chat-input-area button:hover{background:#2ea043}
 
 /* Dashboard Cards */
 .d-card{background:rgba(13,17,23,0.6);border:1px solid #30363d;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
-.d-title{font-size:1.1rem;font-weight:800;color:#e6edf3;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #30363d;word-break:break-word}
+.d-title{font-size:1.26rem;font-weight:800;color:#e6edf3;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #30363d;word-break:break-word}
 .d-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(48,54,61,0.5)}
 .d-row:last-child{border-bottom:none;padding-bottom:0}
 
 /* News Ticker */
 .news-ticker-wrap{display:flex;align-items:center;background:#0d1117;border-bottom:1px solid #30363d;height:42px;overflow:visible;position:relative}
-.news-tooltip{visibility:hidden;opacity:0;position:absolute;top:45px;left:15px;background:rgba(22,27,34,0.95);border:1px solid #3b82f6;border-radius:8px;padding:10px 14px;color:#e6edf3;font-size:0.8rem;width:340px;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,0.5);transition:opacity 0.2s, visibility 0.2s;pointer-events:none;line-height:1.5}
+.news-tooltip{visibility:hidden;opacity:0;position:absolute;top:45px;left:15px;background:rgba(22,27,34,0.95);border:1px solid #3b82f6;border-radius:8px;padding:10px 14px;color:#e6edf3;font-size:0.92rem;width:340px;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,0.5);transition:opacity 0.2s, visibility 0.2s;pointer-events:none;line-height:1.5}
 .news-ticker-wrap:hover .news-tooltip{visibility:visible;opacity:1}
 .news-tooltip::before{content:"";position:absolute;top:-6px;left:20px;border-width:0 6px 6px 6px;border-style:solid;border-color:transparent transparent #3b82f6 transparent}
-.ticker-label{background:#1f6feb;color:#fff;font-size:0.8rem;font-weight:700;padding:0 15px;height:100%;display:flex;align-items:center;z-index:2}
+.ticker-label{background:#1f6feb;color:#fff;font-size:0.92rem;font-weight:700;padding:0 15px;height:100%;display:flex;align-items:center;z-index:2}
 .ticker-content{flex:1;white-space:nowrap;overflow:hidden;position:relative;height:100%;display:flex;align-items:center}
 .ticker-track{display:inline-block;white-space:nowrap;animation:ticker 140s linear infinite;padding-left:100%}
 .ticker-track:hover{animation-play-state:paused}
-.ticker-item{display:inline-block;margin-right:70px;font-size:0.9rem;color:#c9d1d9}
+.ticker-item{display:inline-block;margin-right:70px;font-size:1.03rem;color:#c9d1d9}
 .ticker-item a{color:#e6edf3;text-decoration:none}
 .ticker-item a:hover{color:#58a6ff;text-decoration:underline}
-.ticker-time{color:#8b949e;font-size:0.75rem;margin-left:8px}
+.ticker-time{color:#8b949e;font-size:0.86rem;margin-left:8px}
 @keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
@@ -108,15 +108,15 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 /* News List inside Info Pane */
 .news-list-item{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.05);padding:12px 15px;border-radius:8px;border:1px solid #30363d;}
 .news-list-text{flex:1;margin-right:15px;word-break:keep-all;}
-.news-list-text a{color:#58a6ff;font-weight:700;display:block;margin-bottom:4px;font-size:0.95rem;line-height:1.4;}
-.news-list-orig{font-size:0.75rem;color:#8b949e;line-height:1.3;}
-.kw-badge{background:rgba(88,166,255,0.15);color:#58a6ff;padding:2px 6px;border-radius:4px;font-size:0.7rem;margin-right:5px;display:inline-block;border:1px solid rgba(88,166,255,0.3);}
-.chat-sum-btn{background:#a371f7;color:#fff;border:none;border-radius:6px;padding:8px 12px;font-size:0.8rem;font-weight:700;cursor:pointer;transition:background 0.2s;white-space:nowrap;box-shadow:0 2px 8px rgba(137,87,229,0.3);}
+.news-list-text a{color:#58a6ff;font-weight:700;display:block;margin-bottom:4px;font-size:1.09rem;line-height:1.4;}
+.news-list-orig{font-size:0.86rem;color:#8b949e;line-height:1.3;}
+.kw-badge{background:rgba(88,166,255,0.15);color:#58a6ff;padding:2px 6px;border-radius:4px;font-size:0.8rem;margin-right:5px;display:inline-block;border:1px solid rgba(88,166,255,0.3);}
+.chat-sum-btn{background:#a371f7;color:#fff;border:none;border-radius:6px;padding:8px 12px;font-size:0.92rem;font-weight:700;cursor:pointer;transition:background 0.2s;white-space:nowrap;box-shadow:0 2px 8px rgba(137,87,229,0.3);}
 .chat-sum-btn:hover{background:#8957e5;transform:translateY(-1px);}
-.d-l{color:#8b949e;font-size:0.75rem}
-.d-v{color:#c9d1d9;font-weight:600;font-size:0.8rem;text-align:right}
-.badge-blue{color:#3b82f6;background:rgba(59,130,246,0.15);padding:2px 6px;border-radius:4px;font-size:0.7rem}
-.badge-orange{color:#f97316;background:rgba(249,115,22,0.15);padding:2px 6px;border-radius:4px;font-size:0.7rem}
+.d-l{color:#8b949e;font-size:0.86rem}
+.d-v{color:#c9d1d9;font-weight:600;font-size:0.92rem;text-align:right}
+.badge-blue{color:#3b82f6;background:rgba(59,130,246,0.15);padding:2px 6px;border-radius:4px;font-size:0.8rem}
+.badge-orange{color:#f97316;background:rgba(249,115,22,0.15);padding:2px 6px;border-radius:4px;font-size:0.8rem}
 
 /* KPI Dropdown */
 .top-panel{position:relative;z-index:100}
@@ -124,9 +124,9 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 .kpi-dropdown.open{max-height:60vh;overflow-y:auto}
 .kpi-dd-content{width:100%;max-width:1200px;padding:0 20px;color:#c9d1d9;position:relative}
 .kpi-dd-content.p-active{padding:25px 20px 30px}
-.kpi-dd-close{position:absolute;top:20px;right:20px;width:30px;height:30px;border-radius:50%;background:#21262d;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#8b949e;cursor:pointer;transition:all 0.2s;border:1px solid #30363d;z-index:10}
+.kpi-dd-close{position:absolute;top:20px;right:20px;width:30px;height:30px;border-radius:50%;background:#21262d;display:flex;align-items:center;justify-content:center;font-size:1.38rem;color:#8b949e;cursor:pointer;transition:all 0.2s;border:1px solid #30363d;z-index:10}
 .kpi-dd-close:hover{color:#fff;background:#30363d;transform:rotate(90deg)}
-.kpi-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:0.85rem}
+.kpi-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:0.98rem}
 .kpi-table th{border-bottom:2px solid #30363d;padding:12px 10px;text-align:left;color:#8b949e;font-weight:700}
 .kpi-table td{border-bottom:1px solid rgba(48,54,61,0.5);padding:12px 10px;color:#e6edf3}
 .kpi-table tr:hover td{background:rgba(255,255,255,0.03)}
@@ -141,33 +141,57 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 .pp-filter-slide{max-height:0;overflow:hidden;transition:max-height 0.3s ease;background:#0d1117;border-bottom:1px solid #30363d;position:relative;z-index:90}
 .pp-filter-slide.open{max-height:60px;overflow-x:auto}
 .pp-filter-content{display:flex;align-items:center;gap:15px;padding:10px 20px;white-space:nowrap;min-width:max-content}
-.pp-filter-label{font-size:0.85rem;font-weight:700;color:#f97316;margin-right:10px}
-.pp-cb-lbl{display:flex;align-items:center;gap:5px;font-size:0.8rem;color:#c9d1d9;cursor:pointer}
+.pp-filter-label{font-size:0.98rem;font-weight:700;color:#f97316;margin-right:10px}
+.pp-cb-lbl{display:flex;align-items:center;gap:5px;font-size:0.92rem;color:#c9d1d9;cursor:pointer}
 .pp-cb-lbl input{accent-color:#f97316;cursor:pointer;width:14px;height:14px}
 
 .b-row{display:flex;align-items:center;margin-bottom:12px}
-.b-lbl{width:140px;font-weight:600;font-size:0.85rem;color:#c9d1d9;flex-shrink:0}
+.b-lbl{width:140px;font-weight:600;font-size:0.98rem;color:#c9d1d9;flex-shrink:0}
 .b-trk{flex:1;height:24px;background:rgba(255,255,255,0.05);border-radius:4px;position:relative;overflow:hidden;display:flex}
 .b-fil{height:100%;transition:width 0.6s cubic-bezier(0.16, 1, 0.3, 1)}
-.b-val{width:90px;text-align:right;font-size:0.85rem;font-weight:700;color:#e6edf3;flex-shrink:0;margin-left:10px}
-.b-ref{font-size:0.75rem;color:#8b949e;margin-top:20px;padding-top:10px;border-top:1px dashed rgba(48,54,61,0.5)}
+.b-val{width:90px;text-align:right;font-size:0.98rem;font-weight:700;color:#e6edf3;flex-shrink:0;margin-left:10px}
+.b-ref{font-size:0.86rem;color:#8b949e;margin-top:20px;padding-top:10px;border-top:1px dashed rgba(48,54,61,0.5)}
+
+/* Status & AI badges */
+.badge-op{color:#3fb950;background:rgba(63,185,80,0.12);padding:2px 7px;border-radius:4px;font-size:0.8rem;font-weight:700;border:1px solid rgba(63,185,80,0.25)}
+.badge-uc{color:#eab308;background:rgba(234,179,8,0.12);padding:2px 7px;border-radius:4px;font-size:0.8rem;font-weight:700;border:1px solid rgba(234,179,8,0.25)}
+.badge-pl{color:#8b949e;background:rgba(139,148,158,0.12);padding:2px 7px;border-radius:4px;font-size:0.8rem;font-weight:700;border:1px solid rgba(139,148,158,0.25)}
+.badge-ai{color:#a855f7;background:rgba(168,85,247,0.12);padding:2px 7px;border-radius:4px;font-size:0.8rem;font-weight:700;border:1px solid rgba(168,85,247,0.3)}
+.gc-val.purple{color:#a855f7}
+@keyframes pulse-uc{0%,100%{opacity:0.35}50%{opacity:0.85}}
+@keyframes ai-glow{0%,100%{filter:drop-shadow(0 0 3px rgba(168,85,247,0.5))}50%{filter:drop-shadow(0 0 7px rgba(168,85,247,0.9))}}
+
+/* Country DC List Popup */
+#country-dc-popup{position:absolute;z-index:200;background:rgba(13,17,23,0.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid #30363d;border-radius:10px;width:280px;max-height:380px;display:none;flex-direction:column;overflow:hidden;box-shadow:0 16px 40px rgba(0,0,0,0.8);pointer-events:auto}
+#country-dc-popup.cdp-show{display:flex}
+.cdp-hdr{padding:10px 14px;border-bottom:1px solid #30363d;display:flex;justify-content:space-between;align-items:center;background:rgba(22,27,34,0.9);flex-shrink:0}
+.cdp-title{font-size:0.9rem;font-weight:700;color:#58a6ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.cdp-close-btn{width:22px;height:22px;border-radius:5px;background:#30363d;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8b949e;cursor:pointer;flex-shrink:0;border:none;transition:background .15s;line-height:1}
+.cdp-close-btn:hover{background:#484f58;color:#e6edf3}
+.cdp-list{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:#30363d transparent}
+.cdp-item{padding:9px 14px;border-bottom:1px solid #21262d;cursor:pointer;transition:background .15s}
+.cdp-item:last-child{border-bottom:none}
+.cdp-item:hover{background:rgba(88,166,255,0.09)}
+.cdp-item-name{font-size:0.86rem;font-weight:600;color:#e6edf3;margin-bottom:3px;line-height:1.3}
+.cdp-item-meta{font-size:0.75rem;color:#8b949e;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.cdp-cap{margin-left:auto;color:#3fb950;font-weight:600;font-size:0.78rem;white-space:nowrap}
 
 /* General Info Pane */
 #info-pane{display:none;padding:40px;overflow-y:auto;color:#e6edf3;background:#0d1117;width:100%;height:100%;position:absolute;top:0;left:0;z-index:60;box-sizing:border-box}
-.info-header{font-size:1.8rem;font-weight:800;color:#e6edf3;margin-bottom:30px;padding-bottom:15px;border-bottom:1px solid #30363d}
+.info-header{font-size:2.07rem;font-weight:800;color:#e6edf3;margin-bottom:30px;padding-bottom:15px;border-bottom:1px solid #30363d}
 .info-section{margin-bottom:40px}
-.info-sec-title{font-size:1.3rem;font-weight:700;color:#58a6ff;margin-bottom:20px}
+.info-sec-title{font-size:1.49rem;font-weight:700;color:#58a6ff;margin-bottom:20px}
 .info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:20px}
 .info-card{background:rgba(22,27,34,0.6);border:1px solid #30363d;border-radius:10px;padding:24px;transition:border-color 0.2s}
 .info-card:hover{border-color:#58a6ff}
-.ic-title{font-size:1.2rem;font-weight:700;color:#e6edf3;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.ic-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.9rem;border-bottom:1px dashed rgba(48,54,61,0.5);padding-bottom:10px}
+.ic-title{font-size:1.38rem;font-weight:700;color:#e6edf3;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.ic-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:1.03rem;border-bottom:1px dashed rgba(48,54,61,0.5);padding-bottom:10px}
 .ic-row:last-child{margin-bottom:0;border-bottom:none;padding-bottom:0}
 .ic-label{color:#8b949e}
 .ic-val{font-weight:600;color:#c9d1d9}
-.info-text{font-size:0.95rem;line-height:1.6;color:#c9d1d9;margin-bottom:15px}
+.info-text{font-size:1.09rem;line-height:1.6;color:#c9d1d9;margin-bottom:15px}
 .info-text strong{color:#e6edf3}
-.info-code{background:rgba(255,255,255,0.05);padding:10px 15px;border-radius:6px;font-family:monospace;font-size:0.9rem;color:#f97316;margin-bottom:15px;display:inline-block;border:1px solid #30363d}
+.info-code{background:rgba(255,255,255,0.05);padding:10px 15px;border-radius:6px;font-family:monospace;font-size:1.03rem;color:#f97316;margin-bottom:15px;display:inline-block;border:1px solid #30363d}
 
 @media(max-width:900px){
   body{overflow:auto}
@@ -191,7 +215,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   border: 1px solid #30363d;
   padding: 6px 16px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   font-weight: 600;
   transition: all 0.2s;
   white-space: nowrap;
@@ -249,7 +273,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   padding: 8px 24px;
   color: #58a6ff;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.98rem;
   cursor: pointer;
   box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
   display: flex;
@@ -281,7 +305,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   flex-direction: column;
 }
 .al-title {
-  font-size: 0.9rem;
+  font-size: 1.03rem;
   font-weight: 700;
   color: #e6edf3;
   margin-bottom: 10px;
@@ -292,7 +316,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   padding-bottom: 8px;
 }
 .al-title-r {
-  font-size: 0.75rem;
+  font-size: 0.86rem;
   color: #8b949e;
   font-weight: 500;
 }
@@ -312,15 +336,15 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 }
 .al-empty {
   color: #8b949e;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   text-align: center;
 }
 .al-value {
-  font-size: 2rem;
+  font-size: 2.3rem;
   font-weight: 800;
 }
 .al-sub {
-  font-size: 0.75rem;
+  font-size: 0.86rem;
   color: #8b949e;
   margin-top: 5px;
 }
@@ -345,6 +369,15 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
     </div>
   </header>
   
+  <div class="pp-filter-slide" id="dc-filter-slide">
+    <div class="pp-filter-content">
+      <span class="pp-filter-label" style="color:#58a6ff">DC 필터:</span>
+      <label class="pp-cb-lbl"><input type="checkbox" name="dc-status" value="Operational" checked autocomplete="off"> <span class="badge-op">운영중</span></label>
+      <label class="pp-cb-lbl"><input type="checkbox" name="dc-status" value="Under Construction" checked autocomplete="off"> <span class="badge-uc">건설중</span></label>
+      <label class="pp-cb-lbl"><input type="checkbox" name="dc-status" value="Planned" checked autocomplete="off"> <span class="badge-pl">계획</span></label>
+      <label class="pp-cb-lbl" style="margin-left:12px;border-left:1px solid #30363d;padding-left:12px"><input type="checkbox" name="dc-ai" value="ai" autocomplete="off"> <span class="badge-ai">⚡ AI 특화만 보기</span></label>
+    </div>
+  </div>
   <div class="pp-filter-slide" id="pp-filter-slide">
     <div class="pp-filter-content">
       <span class="pp-filter-label">발전소 필터:</span>
@@ -380,6 +413,10 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <div class="gc-title">발전소 누적 용량</div>
       <div class="gc-val orange" id="g-pp-cap">0 <span>GW</span></div>
     </div>
+    <div class="gcard" id="kpi-ai-cnt" title="AI 특화 또는 AI 인프라 주도 데이터센터 수">
+      <div class="gc-title">AI 특화 DC</div>
+      <div class="gc-val purple" id="g-ai-cnt">0 <span>개소</span></div>
+    </div>
   </div>
   
   <div class="kpi-dropdown" id="kpi-dropdown">
@@ -394,7 +431,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
      <span class="ticker-item" style="color:#8b949e;padding-left:15px">실시간 글로벌 뉴스 피드를 불러오는 중입니다...</span>
   </div>
   <div class="news-tooltip">
-    <strong style="color:#58a6ff;font-size:0.85rem">뉴스 수집 방식:</strong><br>
+    <strong style="color:#58a6ff;font-size:0.98rem">뉴스 수집 방식:</strong><br>
     구글 뉴스(Google News)에서 <code>"Data Center" OR "AI Infrastructure"</code> 키워드로 최신 영문 기사를 실시간 검색한 뒤, <b>Google Translate API</b>를 통해 한국어로 자동 번역하여 제공합니다.
   </div>
 </div>
@@ -403,6 +440,13 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   <div class="map-container" id="map-wrap">
     <svg id="wmap"></svg>
     <div class="mtip" id="tip"></div>
+    <div id="country-dc-popup">
+      <div class="cdp-hdr">
+        <span class="cdp-title" id="cdp-title">데이터센터 목록</span>
+        <button class="cdp-close-btn" id="cdp-close">✕</button>
+      </div>
+      <div class="cdp-list" id="cdp-list"></div>
+    </div>
     <div class="mleg" id="mleg"></div>
     <div class="zctr" id="zctr">
       <button id="zi" aria-label="확대">+</button>
@@ -475,8 +519,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <div class="info-section" id="news-list-section" style="display:none;">
         <div class="info-sec-title" style="color:#58a6ff;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
           <span id="news-section-title">실시간 글로벌 주요 뉴스</span>
-          <button id="export-news-pdf-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;margin-right:5px;">PDF 출력</button>
-          <button id="toggle-past-news-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;">지난뉴스 보기</button>
+          <button id="export-news-pdf-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.86rem;cursor:pointer;transition:background 0.2s;margin-right:5px;">PDF 출력</button>
+          <button id="toggle-past-news-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.86rem;cursor:pointer;transition:background 0.2s;">지난뉴스 보기</button>
         </div>
         <div id="info-news-list" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
@@ -484,7 +528,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <div class="info-section" id="intel-list-section" style="display:none; margin-top:20px;">
         <div class="info-sec-title" style="color:#a855f7;border-bottom:1px solid #30363d;padding-bottom:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
           <span id="intel-section-title">📚 자동 수집된 최신 학술/연구 리포트</span>
-          <div><button id="export-intel-pdf-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;transition:background 0.2s;margin-right:5px;">PDF 출력</button><span style="font-size:0.75rem;color:#8b949e">Automated Data Pipeline</span></div>
+          <div><button id="export-intel-pdf-btn" style="background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:4px 10px;border-radius:4px;font-size:0.86rem;cursor:pointer;transition:background 0.2s;margin-right:5px;">PDF 출력</button><span style="font-size:0.86rem;color:#8b949e">Automated Data Pipeline</span></div>
         </div>
         <div id="info-intel-list" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
@@ -584,7 +628,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
             <div class="info-text">
               <strong>최근 적용 현황:</strong> 여전히 전 세계 데이터센터의 다수를 차지하지만(약 70% 이상), 생성형 AI용 고사양 GPU 랙에는 한계가 있어 수랭식과 혼용(하이브리드)되는 추세입니다.
             </div>
-            <div class="info-ref" style="font-size:0.75rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
+            <div class="info-ref" style="font-size:0.86rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
               * Ref: Uptime Institute 2024 Data Center Cooling Survey
             </div>
           </div>
@@ -596,7 +640,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
             <div class="info-text">
               <strong>최근 적용 현황:</strong> NVIDIA H100/B200 등 고성능 AI 서버 도입으로 인해 '선택'이 아닌 '필수'로 자리매김 중입니다. 기존 인프라 개조가 용이해 가장 빠르게 성장 중입니다.
             </div>
-            <div class="info-ref" style="font-size:0.75rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
+            <div class="info-ref" style="font-size:0.86rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
               * Ref: Gartner & Vertiv AI Infrastructure Report 2024
             </div>
           </div>
@@ -608,13 +652,13 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
             <div class="info-text">
               <strong>최근 적용 현황:</strong> 마이크로소프트, 메타 등 빅테크가 주도하여 모듈형 AI 데이터센터에 적극 테스트 및 적용 중입니다. 최고의 에너지 효율(PUE 1.0x 대)을 자랑합니다.
             </div>
-            <div class="info-ref" style="font-size:0.75rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
+            <div class="info-ref" style="font-size:0.86rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
               * Ref: Global Market Insights, Immersion Cooling Market 2025
             </div>
           </div>
         </div>
       </div>
-      <div style="padding:15px; text-align:center; color:#8b949e; font-size:0.75rem; border-top:1px solid #30363d">
+      <div style="padding:15px; text-align:center; color:#8b949e; font-size:0.86rem; border-top:1px solid #30363d">
         데이터 출처: WRI Aqueduct, 자체 수집, Google News RSS, arXiv API 등
       </div>
     </div>
@@ -626,26 +670,26 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       
       <!-- Modal Header -->
       <div style="padding:20px; border-bottom:1px solid #30363d; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:rgba(22,27,34,0.95); backdrop-filter:blur(5px); z-index:10;">
-        <h2 style="font-size:1.3rem; color:#e6edf3; margin:0;">GridX: Watt & Byte <span id="cl-version" style="font-size:0.9rem; color:#a855f7; background:rgba(168,85,247,0.1); padding:2px 8px; border-radius:12px; margin-left:8px;"></span></h2>
-        <button id="cl-close-btn" style="color:#8b949e; font-size:1.5rem; background:none; border:none; cursor:pointer;">&times;</button>
+        <h2 style="font-size:1.49rem; color:#e6edf3; margin:0;">GridX: Watt & Byte <span id="cl-version" style="font-size:1.03rem; color:#a855f7; background:rgba(168,85,247,0.1); padding:2px 8px; border-radius:12px; margin-left:8px;"></span></h2>
+        <button id="cl-close-btn" style="color:#8b949e; font-size:1.72rem; background:none; border:none; cursor:pointer;">&times;</button>
       </div>
       
       <!-- Modal Body -->
       <div style="padding:20px; color:#c9d1d9;">
         <div style="margin-bottom:25px;">
-          <h3 style="color:#58a6ff; font-size:1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">💡 앱 주요 기능</h3>
-          <ul id="cl-features" style="padding-left:20px; line-height:1.7; font-size:0.9rem;"></ul>
+          <h3 style="color:#58a6ff; font-size:1.15rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">💡 앱 주요 기능</h3>
+          <ul id="cl-features" style="padding-left:20px; line-height:1.7; font-size:1.03rem;"></ul>
         </div>
         
         <div>
-          <h3 style="color:#3fb950; font-size:1rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">🚀 최신 업데이트 내역 <span id="cl-date" style="font-size:0.75rem; color:#8b949e; font-weight:normal;"></span></h3>
-          <ul id="cl-updates" style="padding-left:20px; line-height:1.7; font-size:0.9rem;"></ul>
+          <h3 style="color:#3fb950; font-size:1.15rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">🚀 최신 업데이트 내역 <span id="cl-date" style="font-size:0.86rem; color:#8b949e; font-weight:normal;"></span></h3>
+          <ul id="cl-updates" style="padding-left:20px; line-height:1.7; font-size:1.03rem;"></ul>
         </div>
       </div>
       
       <!-- Modal Footer -->
       <div style="padding:15px 20px; border-top:1px solid #30363d; text-align:right;">
-        <button id="cl-ok-btn" style="background:linear-gradient(135deg, #1f6feb, #3b82f6); color:#fff; border:none; padding:8px 24px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:0.9rem; box-shadow:0 4px 12px rgba(59,130,246,0.2);">확인</button>
+        <button id="cl-ok-btn" style="background:linear-gradient(135deg, #1f6feb, #3b82f6); color:#fff; border:none; padding:8px 24px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:1.03rem; box-shadow:0 4px 12px rgba(59,130,246,0.2);">확인</button>
       </div>
       
     </div>
@@ -688,9 +732,28 @@ const wrap = document.getElementById("map-wrap");
 const sidePanel = document.getElementById("side-panel");
 
 // Data validation
-const validDC = typeof DC_DATA !== 'undefined' ? DC_DATA.filter(d => !isNaN(d.lat) && !isNaN(d.lng)) : [];
+const baseDC = typeof DC_DATA !== 'undefined' ? DC_DATA.filter(d => !isNaN(d.lat) && !isNaN(d.lng)) : [];
+let validDC = [...baseDC];
 const basePP = typeof PP_DATA !== 'undefined' ? PP_DATA.filter(d => !isNaN(d.lat) && !isNaN(d.lng) && d.cap > 0) : [];
 let validPP = [...basePP];
+
+function applyDCFilter() {
+  let checkedStatus = Array.from(document.querySelectorAll('input[name="dc-status"]:checked')).map(cb => cb.value);
+  // 아무것도 체크 안 된 경우 전체 표시 (모든 체크박스 복원)
+  if (checkedStatus.length === 0) {
+    document.querySelectorAll('input[name="dc-status"]').forEach(cb => { cb.checked = true; });
+    checkedStatus = ["Operational", "Under Construction", "Planned"];
+  }
+  const aiOnly = document.querySelector('input[name="dc-ai"]:checked') !== null;
+  validDC = baseDC.filter(d => {
+    const st = d.status || "Operational";
+    if (!checkedStatus.includes(st)) return false;
+    if (aiOnly && !d.ai_focus) return false;
+    return true;
+  });
+  initGlobalStats();
+  if (curView === 'dc') updateBubbles();
+}
 
 function applyPPFilter() {
   const checked = Array.from(document.querySelectorAll('#pp-filter-slide input:checked')).map(cb => cb.value);
@@ -709,127 +772,218 @@ function applyPPFilter() {
 function initGlobalStats() {
   const dcCap = d3.sum(validDC, d=>d.cap);
   const ppCap = d3.sum(validPP, d=>d.cap);
-  
+  const aiCnt = baseDC.filter(d => d.ai_focus).length;
+
   document.getElementById("g-dc-cnt").innerText = validDC.length.toLocaleString();
   document.getElementById("g-dc-cap").innerHTML = dcCap.toLocaleString() + " <span>MW</span>";
-  
   document.getElementById("g-pp-cnt").innerText = validPP.length.toLocaleString();
   document.getElementById("g-pp-cap").innerHTML = (ppCap/1000).toLocaleString(undefined, {maximumFractionDigits:1}) + " <span>GW</span>";
+  const aiEl = document.getElementById("g-ai-cnt");
+  if (aiEl) aiEl.innerHTML = aiCnt + " <span>개소</span>";
 }
 
 // KPI Dropdown Logic
 const kpiDd = document.getElementById("kpi-dropdown");
 const kpiDdContent = document.getElementById("kpi-dd-content");
-document.getElementById("kpi-dd-close").addEventListener("click", () => {
+let currentKpiType = null;
+
+function closeKPIDropdown() {
   kpiDd.classList.remove("open");
   kpiDdContent.classList.remove("p-active");
-});
+  currentKpiType = null;
+}
+
+document.getElementById("kpi-dd-close").addEventListener("click", closeKPIDropdown);
 
 function openKPIDropdown(type) {
+  // 같은 카드 다시 누르면 닫기
+  if (kpiDd.classList.contains("open") && currentKpiType === type) {
+    closeKPIDropdown();
+    return;
+  }
+  currentKpiType = type;
   let html = "";
+  const _kpiHdr = (icon, title, tag, sub) =>
+    `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px">
+       <h3 style="font-size:1.26rem;margin:0">${icon} ${title}</h3>
+       <span style="font-size:0.8rem;color:#8b949e">${tag}</span>
+     </div>
+     <div style="font-size:0.86rem;color:#8b949e;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #21262d">${sub}</div>`;
+
   if (type === 'dc-cnt') {
     const grouped = d3.rollup(validDC, v => v.length, d => normalizeCountry(d.country));
     const arr = Array.from(grouped, ([region, count]) => ({ region, val: count })).sort((a,b) => b.val - a.val);
     const maxVal = arr[0]?.val || 1;
-    
-    html = `<h3 style="color:#58a6ff;margin-bottom:20px;font-size:1.2rem">총 데이터센터 수 (대륙별)</h3>`;
+    const total = d3.sum(arr, d => d.val);
+    const totalCap = d3.sum(validDC, d => d.cap);
+
+    html = _kpiHdr('🏢', '데이터센터 수', '대륙별 분포', `총 <strong style="color:#e6edf3">${total}개소</strong> · 누적 용량 <strong style="color:#3fb950">${totalCap.toLocaleString()} MW</strong>`);
     arr.forEach(d => {
       const w = (d.val / maxVal * 100).toFixed(1);
+      const pct = (d.val / total * 100).toFixed(0);
       const color = COLOR_THEMES[d.region]?.dc || '#58a6ff';
       const label = COLOR_THEMES[d.region]?.name || d.region;
-      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div><div class="b-val">${d.val.toLocaleString()} 개소</div></div>`;
+      html += `<div class="b-row">
+        <div class="b-lbl" style="color:#58a6ff">${label}</div>
+        <div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div>
+        <div class="b-val">${d.val} <span style="font-size:0.75rem;color:#8b949e">${pct}%</span></div>
+      </div>`;
     });
+    html += `<div class="b-ref">※ 현재 필터 적용 기준 · 운영중/건설중/계획 모두 포함</div>`;
+
   } else if (type === 'dc-cap') {
     const grouped = d3.rollup(validDC, v => d3.sum(v, d=>d.cap), d => normalizeCountry(d.country));
     const arr = Array.from(grouped, ([region, val]) => ({ region, val })).sort((a,b) => b.val - a.val);
     const maxVal = arr[0]?.val || 1;
-    
-    html = `<h3 style="color:#58a6ff;margin-bottom:20px;font-size:1.2rem">데이터센터 누적 용량 (대륙별)</h3>`;
+    const totalCap = d3.sum(arr, d => d.val);
+
+    html = _kpiHdr('🔋', '데이터센터 용량', '대륙별 분포', `총 <strong style="color:#3fb950">${totalCap.toLocaleString()} MW</strong> <span style="color:#6e7681">(${(totalCap/1000).toFixed(1)} GW)</span>`);
     arr.forEach(d => {
       const w = (d.val / maxVal * 100).toFixed(1);
+      const pct = (d.val / totalCap * 100).toFixed(0);
       const color = COLOR_THEMES[d.region]?.dc || '#58a6ff';
       const label = COLOR_THEMES[d.region]?.name || d.region;
-      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div><div class="b-val">${d.val.toLocaleString()} MW</div></div>`;
+      html += `<div class="b-row">
+        <div class="b-lbl" style="color:#58a6ff">${label}</div>
+        <div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div>
+        <div class="b-val">${(d.val/1000).toFixed(1)} GW <span style="font-size:0.75rem;color:#8b949e">${pct}%</span></div>
+      </div>`;
     });
+    html += `<div class="b-ref">※ IT Load(IT 부하) 기준 · 현재 필터 적용</div>`;
+
   } else if (type === 'pipeline') {
-    html = `<h3 style="color:#58a6ff;margin-bottom:20px;font-size:1.2rem">글로벌 파이프라인 (대륙별 점유율 추정)</h3>`;
     const plData = [
-      { region: "North America", val: 50, label: "북미" },
-      { region: "Asia Pacific", val: 25, label: "아태지역" },
-      { region: "Europe", val: 20, label: "유럽" },
-      { region: "Unknown", val: 5, label: "기타 (중동/남미 등)" }
+      { region: "North America", val: 50, label: "북미", detail: "미국 중심, Hyperscaler 대규모 캠퍼스" },
+      { region: "Asia Pacific", val: 25, label: "아-태", detail: "일본·싱가포르·인도 고성장" },
+      { region: "Europe", val: 20, label: "유럽", detail: "독일·영국·네덜란드 AI 허브 확장" },
+      { region: "Unknown", val: 5, label: "기타", detail: "중동·남미·아프리카 신흥 시장" }
     ];
+    html = _kpiHdr('📐', '글로벌 DC 파이프라인', '2024~2030 전망', `글로벌 추가 투자 예상 <strong style="color:#e6edf3">~$1조+</strong> · 신규 용량 <strong style="color:#3fb950">~1,200 GW</strong>`);
     plData.forEach(d => {
-      const w = d.val;
+      const estGW = Math.round(1200 * d.val / 100);
       const color = COLOR_THEMES[d.region]?.dc || '#58a6ff';
-      html += `<div class="b-row"><div class="b-lbl">${d.label}</div><div class="b-trk"><div class="b-fil" style="width:${w}%;background:${color}"></div></div><div class="b-val">약 ${d.val}%</div></div>`;
+      html += `<div class="b-row">
+        <div class="b-lbl" style="color:#58a6ff">${d.label}</div>
+        <div class="b-trk"><div class="b-fil" style="width:${d.val}%;background:${color}"></div></div>
+        <div class="b-val">~${d.val}% <span style="font-size:0.75rem;color:#8b949e">~${estGW} GW</span></div>
+      </div>
+      <div style="font-size:0.76rem;color:#6e7681;margin:-8px 0 12px 0;padding-left:2px">${d.detail}</div>`;
     });
-    html += `<div class="b-ref">※ Reference: Synergy Research Group, JLL 등 글로벌 시장 조사 기관의 2024~2026 파이프라인 지역별 투자 점유율 추정치 기반. (내부 DB에 파이프라인 국가별 세부 데이터는 포함되어 있지 않아 비율로 환산됨)</div>`;
+    html += `<div class="b-ref">※ Synergy Research Group, JLL, CBRE 2024~2026 리포트 기반 추정치. 내부 DB 미포함 파이프라인 포함.</div>`;
+
   } else if (type === 'pp-cnt') {
-    html = `<h3 style="color:#f97316;margin-bottom:20px;font-size:1.2rem">발전소 수 (대륙별/종류별)</h3>`;
-    
+    const fColors = { "Nuclear": "#a855f7", "Solar": "#eab308", "Wind": "#3b82f6", "Gas": "#ef4444", "Coal": "#57534e", "Hydro": "#06b6d4", "미상": "#8b949e" };
     const regionGroup = d3.group(validPP, d => normalizeCountry(d.country));
-    const regions = Array.from(regionGroup.keys());
-    regions.sort((a,b) => regionGroup.get(b).length - regionGroup.get(a).length);
+    const regions = Array.from(regionGroup.keys()).sort((a,b) => regionGroup.get(b).length - regionGroup.get(a).length);
     const maxTotal = regionGroup.get(regions[0])?.length || 1;
-    
+    const totalPP = validPP.length;
+    const fuelLegend = Object.entries(fColors).filter(([k]) => k !== '미상')
+      .map(([k,v]) => `<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:${v};display:inline-block"></span>${k}</span>`).join('');
+
+    html = _kpiHdr('⚡', '발전소 수', '대륙별 · 에너지원별', `총 <strong style="color:#e6edf3">${totalPP.toLocaleString()}개소</strong>`);
+    html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #21262d;font-size:0.78rem;color:#8b949e">${fuelLegend}</div>`;
     regions.forEach(region => {
       const items = regionGroup.get(region);
       const total = items.length;
+      const pct = (total / totalPP * 100).toFixed(0);
       const fuelRollup = d3.rollup(items, v => v.length, d => d.fuel || "미상");
       const fuels = Array.from(fuelRollup, ([f, val]) => ({f, val})).sort((a,b) => b.val - a.val);
-      
       let bars = "";
-      const fColors = { "Nuclear": "#a855f7", "Solar": "#eab308", "Wind": "#3b82f6", "Gas": "#ef4444", "Coal": "#57534e", "Hydro": "#06b6d4", "미상": "#8b949e" };
       fuels.forEach(fuel => {
-         const fw = (fuel.val / maxTotal * 100).toFixed(1);
-         const fCol = fColors[fuel.f] || fColors["미상"];
-         bars += `<div class="b-fil" style="width:${fw}%;background:${fCol};border-right:1px solid #161b22" title="${fuel.f}: ${fuel.val}개"></div>`;
+        const fw = (fuel.val / maxTotal * 100).toFixed(1);
+        const fCol = fColors[fuel.f] || fColors["미상"];
+        bars += `<div class="b-fil" style="width:${fw}%;background:${fCol};border-right:1px solid #0d1117" title="${fuel.f}: ${fuel.val}개"></div>`;
       });
-      
       const label = COLOR_THEMES[region]?.name || region;
-      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk">${bars}</div><div class="b-val">${total.toLocaleString()} 개소</div></div>`;
+      html += `<div class="b-row">
+        <div class="b-lbl" style="color:#f97316">${label}</div>
+        <div class="b-trk">${bars}</div>
+        <div class="b-val">${total.toLocaleString()} <span style="font-size:0.75rem;color:#8b949e">${pct}%</span></div>
+      </div>`;
     });
-    
+    html += `<div class="b-ref">※ 50 MW 이상 상업용 발전소 기준</div>`;
+
   } else if (type === 'pp-cap') {
-    html = `<h3 style="color:#f97316;margin-bottom:20px;font-size:1.2rem">발전소 용량 (대륙별/종류별)</h3>`;
-    
+    const fColors = { "Nuclear": "#a855f7", "Solar": "#eab308", "Wind": "#3b82f6", "Gas": "#ef4444", "Coal": "#57534e", "Hydro": "#06b6d4", "미상": "#8b949e" };
     const regionGroup = d3.group(validPP, d => normalizeCountry(d.country));
     const regionTotals = [];
-    regionGroup.forEach((items, region) => {
-      regionTotals.push({ region, total: d3.sum(items, d=>d.cap) });
-    });
+    regionGroup.forEach((items, region) => regionTotals.push({ region, total: d3.sum(items, d=>d.cap), items }));
     regionTotals.sort((a,b) => b.total - a.total);
     const maxTotal = regionTotals[0]?.total || 1;
-    
+    const totalPPCap = d3.sum(validPP, d => d.cap);
+    const fuelLegend = Object.entries(fColors).filter(([k]) => k !== '미상')
+      .map(([k,v]) => `<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:${v};display:inline-block"></span>${k}</span>`).join('');
+
+    html = _kpiHdr('🔋', '발전소 용량', '대륙별 · 에너지원별', `총 <strong style="color:#3fb950">${(totalPPCap/1000).toFixed(0).toLocaleString()} GW</strong>`);
+    html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #21262d;font-size:0.78rem;color:#8b949e">${fuelLegend}</div>`;
     regionTotals.forEach(rt => {
-      const items = regionGroup.get(rt.region);
-      const fuelRollup = d3.rollup(items, v => d3.sum(v, d=>d.cap), d => d.fuel || "미상");
+      const pct = (rt.total / totalPPCap * 100).toFixed(0);
+      const fuelRollup = d3.rollup(rt.items, v => d3.sum(v, d=>d.cap), d => d.fuel || "미상");
       const fuels = Array.from(fuelRollup, ([f, val]) => ({f, val})).sort((a,b) => b.val - a.val);
-      
       let bars = "";
-      const fColors = { "Nuclear": "#a855f7", "Solar": "#eab308", "Wind": "#3b82f6", "Gas": "#ef4444", "Coal": "#57534e", "Hydro": "#06b6d4", "미상": "#8b949e" };
       fuels.forEach(fuel => {
-         const fw = (fuel.val / maxTotal * 100).toFixed(1);
-         const fCol = fColors[fuel.f] || fColors["미상"];
-         bars += `<div class="b-fil" style="width:${fw}%;background:${fCol};border-right:1px solid #161b22" title="${fuel.f}: ${fuel.val}MW"></div>`;
+        const fw = (fuel.val / maxTotal * 100).toFixed(1);
+        const fCol = fColors[fuel.f] || fColors["미상"];
+        bars += `<div class="b-fil" style="width:${fw}%;background:${fCol};border-right:1px solid #0d1117" title="${fuel.f}: ${(fuel.val/1000).toFixed(1)} GW"></div>`;
       });
-      
       const label = COLOR_THEMES[rt.region]?.name || rt.region;
-      html += `<div class="b-row"><div class="b-lbl">${label}</div><div class="b-trk">${bars}</div><div class="b-val">${(rt.total/1000).toFixed(1)} GW</div></div>`;
+      html += `<div class="b-row">
+        <div class="b-lbl" style="color:#f97316">${label}</div>
+        <div class="b-trk">${bars}</div>
+        <div class="b-val">${(rt.total/1000).toFixed(1)} GW <span style="font-size:0.75rem;color:#8b949e">${pct}%</span></div>
+      </div>`;
     });
+    html += `<div class="b-ref">※ 50 MW 이상 상업용 발전소 기준</div>`;
+
+  } else if (type === 'ai-cnt') {
+    const aiDCs = baseDC.filter(d => d.ai_focus);
+    const totalCap = aiDCs.reduce((s, d) => s + (d.cap || 0), 0);
+    const byStatus = { Operational: [], 'Under Construction': [], Planned: [] };
+    aiDCs.forEach(d => { const st = d.status || 'Operational'; (byStatus[st] = byStatus[st] || []).push(d); });
+
+    html = `<h3 style="color:#a855f7;margin-bottom:6px;font-size:1.38rem">⚡ AI 특화 데이터센터 상세</h3>
+    <div style="color:#8b949e;font-size:0.92rem;margin-bottom:20px">총 ${aiDCs.length}개소 · 누적 용량 ${totalCap.toLocaleString()} MW</div>`;
+
+    ['Operational', 'Under Construction', 'Planned'].forEach(st => {
+      const items = byStatus[st] || [];
+      if (!items.length) return;
+      const badgeClass = st === 'Operational' ? 'badge-op' : st === 'Under Construction' ? 'badge-uc' : 'badge-pl';
+      const badgeLabel = st === 'Operational' ? '운영중' : st === 'Under Construction' ? '건설중' : '계획';
+      html += `<div style="margin-bottom:16px"><div style="margin-bottom:8px;font-size:0.92rem;font-weight:700;color:#c9d1d9"><span class="${badgeClass}">${badgeLabel}</span> ${items.length}개소</div>`;
+      items.sort((a, b) => b.cap - a.cap).forEach(d => {
+        const maxCap = aiDCs[0]?.cap || 1;
+        const w = ((d.cap / Math.max(...aiDCs.map(x => x.cap))) * 100).toFixed(1);
+        html += `<div class="b-row">
+          <div class="b-lbl" style="width:180px;font-size:0.9rem">${d.name}</div>
+          <div class="b-trk"><div class="b-fil" style="width:${w}%;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div></div>
+          <div class="b-val" style="font-size:0.9rem">${d.cap.toLocaleString()} MW</div>
+        </div>
+        <div style="font-size:0.78rem;color:#8b949e;margin-bottom:6px;padding-left:2px">${d.op} · ${d.city || d.country}</div>`;
+      });
+      html += `</div>`;
+    });
+
+    html += `<div class="b-ref">※ AI 특화 DC: xAI, OpenAI/Oracle Stargate, AWS Rainier, CoreWeave, Meta, SoftBank 등 AI 인프라 전용 또는 GPU 클러스터 중심 시설 포함</div>`;
+
+  kpiDdContent.innerHTML = html;
+  kpiDd.classList.add("open");
+  kpiDdContent.classList.add("p-active");
+  return;
   }
-  
+
   kpiDdContent.innerHTML = html;
   kpiDd.classList.add("open");
   kpiDdContent.classList.add("p-active");
 }
+
+document.getElementById('cdp-close').addEventListener('click', closeCountryDCPopup);
 
 document.getElementById('kpi-dc-cnt').addEventListener('click', () => openKPIDropdown('dc-cnt'));
 document.getElementById('kpi-dc-cap').addEventListener('click', () => openKPIDropdown('dc-cap'));
 document.getElementById('kpi-pl').addEventListener('click', () => openKPIDropdown('pipeline'));
 document.getElementById('kpi-pp-cnt').addEventListener('click', () => openKPIDropdown('pp-cnt'));
 document.getElementById('kpi-pp-cap').addEventListener('click', () => openKPIDropdown('pp-cap'));
+document.getElementById('kpi-ai-cnt').addEventListener('click', () => openKPIDropdown('ai-cnt'));
 
 const dcScale = d3.scaleSqrt().domain([0, d3.max(validDC, d=>d.cap)||1000]).range([1.5, 12]);
 const ppScale = d3.scaleSqrt().domain([0, d3.max(validPP, d=>d.cap)||5000]).range([1, 9]);
@@ -854,25 +1008,37 @@ const COLOR_THEMES = {
 function normalizeCountry(c) {
   if (!c) return "Unknown";
   const str = c.trim().toUpperCase();
-  
+
   if(str.includes("AMERICA") && str.includes("NORTH")) return "North America";
   if(str.includes("AMERICA") && (str.includes("SOUTH") || str.includes("LATIN"))) return "South America";
-  if(str.includes("ASIA") || str.includes("PACIFIC")) return "Asia";
+  if(str.includes("ASIA") || str.includes("PACIFIC")) return "Asia Pacific";
   if(str.includes("EUROPE")) return "Europe";
   if(str.includes("MIDDLE EAST")) return "Middle East";
   if(str.includes("AFRICA")) return "Africa";
-  
+
   const isoMap = {
-    "USA": "North America", "CHN": "Asia", "GBR": "Europe", "PRT": "Europe",
-    "DEU": "Europe", "FRA": "Europe", "IRL": "Europe", "MYS": "Asia",
+    "USA": "North America", "CHN": "Asia Pacific", "GBR": "Europe", "PRT": "Europe",
+    "DEU": "Europe", "FRA": "Europe", "IRL": "Europe", "MYS": "Asia Pacific",
     "AUS": "Oceania", "ARE": "Middle East", "SAU": "Middle East"
   };
-  if(isoMap[str]) return isoMap[str];
-  
-  if(str === "UNITED STATES") return "United States of America";
-  const nameMap = {"SOUTH KOREA":"South Korea", "CHINA":"China", "AUSTRALIA":"Australia", "MALAYSIA":"Malaysia", "BELGIUM":"Belgium", "GERMANY":"Germany", "SINGAPORE":"Singapore", "FINLAND":"Finland", "TAIWAN":"Taiwan", "NETHERLANDS":"Netherlands", "JAPAN":"Japan", "IRELAND":"Ireland", "SWEDEN":"Sweden"};
-  if(nameMap[str]) return nameMap[str];
-  
+  if (isoMap[str]) return isoMap[str];
+
+  const nameMap = {
+    "UNITED STATES": "North America", "UNITED STATES OF AMERICA": "North America",
+    "CHINA": "Asia Pacific", "JAPAN": "Asia Pacific", "SOUTH KOREA": "Asia Pacific",
+    "TAIWAN": "Asia Pacific", "SINGAPORE": "Asia Pacific", "MALAYSIA": "Asia Pacific",
+    "INDIA": "Asia Pacific", "AUSTRALIA": "Oceania", "NEW ZEALAND": "Oceania",
+    "GERMANY": "Europe", "FRANCE": "Europe", "NETHERLANDS": "Europe",
+    "UNITED KINGDOM": "Europe", "UK": "Europe", "IRELAND": "Europe",
+    "SWEDEN": "Europe", "NORWAY": "Europe", "FINLAND": "Europe",
+    "BELGIUM": "Europe", "PORTUGAL": "Europe", "SPAIN": "Europe",
+    "UAE": "Middle East", "SAUDI ARABIA": "Middle East",
+    "BRAZIL": "South America", "COLOMBIA": "South America", "CHILE": "South America",
+    "CANADA": "North America", "MEXICO": "North America",
+    "SOUTH AFRICA": "Africa", "KENYA": "Africa", "NIGERIA": "Africa", "EGYPT": "Africa"
+  };
+  if (nameMap[str]) return nameMap[str];
+
   return c;
 }
 
@@ -939,6 +1105,12 @@ function drawLegend() {
         <div class="leg-item"><div class="leg-dot" style="background:#a855f7;opacity:0.6;border:0.5px solid #a855f7"></div> 중남미</div>
         <div class="leg-item"><div class="leg-dot" style="background:#06b6d4;opacity:0.6;border:0.5px solid #06b6d4"></div> 아프리카</div>
       </div>
+      <div style="margin-top:8px;padding-top:7px;border-top:1px dashed rgba(48,54,61,0.6);font-size:0.75rem;color:#8b949e">
+        <div class="leg-item" style="margin-bottom:3px"><div class="leg-dot" style="background:#3b82f6;opacity:0.5"></div> 운영중 (채움)</div>
+        <div class="leg-item" style="margin-bottom:3px"><svg width="10" height="10" style="margin-right:6px;flex-shrink:0"><circle cx="5" cy="5" r="4" fill="rgba(59,130,246,0.2)" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,1.5"/></svg> 건설중 (점선)</div>
+        <div class="leg-item" style="margin-bottom:3px"><svg width="10" height="10" style="margin-right:6px;flex-shrink:0"><circle cx="5" cy="5" r="4" fill="none" stroke="#3b82f6" stroke-width="1" stroke-dasharray="1.5,2"/></svg> 계획 (빈원)</div>
+        <div class="leg-item"><svg width="10" height="10" style="margin-right:6px;flex-shrink:0;filter:drop-shadow(0 0 3px rgba(168,85,247,0.7))"><circle cx="5" cy="5" r="4" fill="rgba(168,85,247,0.2)" stroke="#a855f7" stroke-width="1.5"/></svg> AI 특화</div>
+      </div>
     `;
   } else {
     mleg.innerHTML = `
@@ -964,29 +1136,64 @@ function updateBubbles() {
 
   bubbles.enter()
     .append("circle")
-    .attr("class", "bubble")
+    .attr("class", d => {
+      if (curView !== "dc") return "bubble";
+      const st = d.status || "Operational";
+      let cls = "bubble";
+      if (st === "Under Construction") cls += " bubble-uc";
+      return cls;
+    })
     .merge(bubbles)
     .attr("cx", d => proj([d.lng, d.lat])[0])
     .attr("cy", d => proj([d.lng, d.lat])[1])
     .attr("r", d => {
         const base = sizeScale(d.cap);
-        // 데이터센터는 50% 더 작게, 발전소는 기존 0.7 유지
         if (curView === 'dc') {
             return base / Math.pow(currentZoomK, 0.85);
         } else {
-            return base / Math.pow(currentZoomK, 0.7); 
+            return base / Math.pow(currentZoomK, 0.7);
         }
     })
     .attr("fill", d => {
-        if (curView === "dc") return getDCBubbleColor(d.country);
+        if (curView === "dc") {
+          const st = d.status || "Operational";
+          if (st === "Planned") return "none";
+          return getDCBubbleColor(d.country);
+        }
         return getPPBubbleColor(d.fuel);
     })
-    .attr("fill-opacity", 0.5)
+    .attr("fill-opacity", d => {
+        if (curView !== "dc") return 0.5;
+        const st = d.status || "Operational";
+        if (st === "Under Construction") return 0.35;
+        if (st === "Planned") return 0;
+        return 0.5;
+    })
     .attr("stroke", d => {
-        if (curView === "dc") return getDCBubbleColor(d.country);
+        if (curView === "dc") {
+          if (d.ai_focus) return "#a855f7";
+          return getDCBubbleColor(d.country);
+        }
         return getPPBubbleColor(d.fuel);
     })
-    .attr("stroke-width", 0.5)
+    .attr("stroke-width", d => {
+        if (curView !== "dc") return 0.5;
+        if (d.ai_focus) return 1.5;
+        const st = d.status || "Operational";
+        if (st === "Planned") return 1.2;
+        return 0.6;
+    })
+    .attr("stroke-dasharray", d => {
+        if (curView !== "dc") return null;
+        const st = d.status || "Operational";
+        if (st === "Under Construction") return "4,2";
+        if (st === "Planned") return "2,3";
+        return null;
+    })
+    .style("filter", d => {
+        if (curView === "dc" && d.ai_focus) return "drop-shadow(0 0 4px rgba(168,85,247,0.7))";
+        return null;
+    })
     .on("mouseover", (e, d) => {
         showTip(e, d);
         showDashboard(d, curView);
@@ -995,19 +1202,31 @@ function updateBubbles() {
     .on("mouseout", () => tip.classList.remove("vis"))
     .on("click", (e, d) => {
       e.stopPropagation();
+      closeCountryDCPopup();
       showDashboard(d, curView);
     });
-  
+
   drawLegend();
+}
+
+function getStatusBadge(status) {
+  const s = status || "Operational";
+  if (s === "Operational") return `<span class="badge-op">운영중</span>`;
+  if (s === "Under Construction") return `<span class="badge-uc">건설중</span>`;
+  if (s === "Planned") return `<span class="badge-pl">계획</span>`;
+  return `<span class="badge-pl">${s}</span>`;
 }
 
 function showTip(e, d) {
   if(curView === 'dc') {
+    const aiBadge = d.ai_focus ? ` <span class="badge-ai">⚡ AI</span>` : "";
     tip.innerHTML = `
       <div class="tip-t" style="color:#60a5fa">${d.name}</div>
+      <div class="tip-r"><span class="tip-l">상태</span><span class="tip-v">${getStatusBadge(d.status)}${aiBadge}</span></div>
       <div class="tip-r"><span class="tip-l">운영사</span><span class="tip-v">${d.op}</span></div>
-      <div class="tip-r"><span class="tip-l">용량 (MW)</span><span class="tip-v" style="color:#3fb950">${d.cap.toLocaleString()} MW</span></div>
-      <div class="tip-r"><span class="tip-l">클릭하여 상세 보기</span></div>
+      <div class="tip-r"><span class="tip-l">용량</span><span class="tip-v" style="color:#3fb950">${d.cap.toLocaleString()} MW</span></div>
+      ${d.city ? `<div class="tip-r"><span class="tip-l">위치</span><span class="tip-v" style="font-size:0.8rem">${d.city}</span></div>` : ""}
+      <div class="tip-r" style="margin-top:4px"><span class="tip-l" style="font-size:0.78rem;color:#58a6ff">클릭 → 상세 정보</span></div>
     `;
   } else {
     tip.innerHTML = `
@@ -1037,34 +1256,55 @@ function showClusterDashboard(d) {
   sidePanel.innerHTML = `
     <div class="d-card">
       <div class="d-title" style="color:#a855f7">${d.name} 현황</div>
-      <div style="font-size:0.7rem;color:#8b949e;margin-bottom:12px;line-height:1.4">※ 지도를 축소하여 대륙 단위로 병합된 데이터입니다.</div>
+      <div style="font-size:0.8rem;color:#8b949e;margin-bottom:12px;line-height:1.4">※ 지도를 축소하여 대륙 단위로 병합된 데이터입니다.</div>
       <div class="d-row"><span class="d-l">총 시설 수</span><span class="d-v">${d.count.toLocaleString()} 개소</span></div>
       <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${d.cap.toLocaleString()} MW</span></div>
-      <div style="margin-top:16px;font-size:0.8rem;color:#58a6ff;text-align:center;background:rgba(88,166,255,0.1);padding:8px;border-radius:6px">지도에서 버블을 클릭하면 해당 대륙의 모든 시설이 자세히 표시되도록 확대됩니다.</div>
+      <div style="margin-top:16px;font-size:0.92rem;color:#58a6ff;text-align:center;background:rgba(88,166,255,0.1);padding:8px;border-radius:6px">지도에서 버블을 클릭하면 해당 대륙의 모든 시설이 자세히 표시되도록 확대됩니다.</div>
     </div>
   `;
+}
+
+function getPUEBar(pue) {
+  const v = parseFloat(pue);
+  if (isNaN(v)) return "";
+  const pct = Math.min(100, Math.max(0, ((v - 1.0) / 0.8) * 100));
+  const col = v <= 1.15 ? "#3fb950" : v <= 1.3 ? "#eab308" : "#ef4444";
+  return `<div style="margin-top:3px;height:5px;background:rgba(255,255,255,0.08);border-radius:3px"><div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div></div>`;
 }
 
 // Show specific facility in Dashboard
 function showDashboard(d, type) {
   if(type === 'dc') {
+    const aiBadge = d.ai_focus ? ` <span class="badge-ai">⚡ AI 특화</span>` : "";
     let extraHTML = "";
-    if (d.city) extraHTML += `<div class="d-row"><span class="d-l">도시/위치</span><span class="d-v">${d.city}</span></div>`;
+    if (d.city) extraHTML += `<div class="d-row"><span class="d-l">📍 위치</span><span class="d-v" style="font-size:0.86rem">${d.city}</span></div>`;
     if (d.type) extraHTML += `<div class="d-row"><span class="d-l">유형</span><span class="d-v">${d.type}</span></div>`;
-    if (d.pue && d.pue !== 'nan') extraHTML += `<div class="d-row"><span class="d-l">PUE</span><span class="d-v" style="color:#a78bfa;font-weight:700">${d.pue}</span></div>`;
+    if (d.pue && d.pue !== 'nan') extraHTML += `
+      <div class="d-row" style="flex-direction:column;gap:2px">
+        <div style="display:flex;justify-content:space-between"><span class="d-l">PUE</span><span class="d-v" style="color:#a78bfa;font-weight:700">${d.pue} <span style="font-size:0.75rem;color:#8b949e">(1.0=완벽)</span></span></div>
+        ${getPUEBar(d.pue)}
+      </div>`;
     if (d.wue && d.wue !== 'nan') extraHTML += `<div class="d-row"><span class="d-l">WUE (L/kWh)</span><span class="d-v" style="color:#38bdf8">${d.wue}</span></div>`;
-    if (d.notes && d.notes !== 'nan') extraHTML += `<div class="d-row"><span class="d-l" style="flex-shrink:0">비고</span><span class="d-v" style="font-size:0.7rem;max-width:75%;text-align:right">${d.notes}</span></div>`;
+    if (d.cooling) extraHTML += `<div class="d-row"><span class="d-l">냉각 방식</span><span class="d-v" style="font-size:0.86rem">${d.cooling}</span></div>`;
+    if (d.notes && d.notes !== 'nan' && d.notes !== '') extraHTML += `
+      <div style="margin-top:8px;background:rgba(88,166,255,0.06);border-left:2px solid #30363d;padding:8px 10px;border-radius:0 6px 6px 0;font-size:0.83rem;color:#8b949e;line-height:1.5">${d.notes}</div>`;
 
     sidePanel.innerHTML = `
       <div class="d-card">
-        <div class="d-title" style="color:#58a6ff">${d.name}</div>
-        <div class="d-row"><span class="d-l">구분</span><span class="d-v"><span class="badge-blue">데이터센터</span></span></div>
+        <div class="d-title" style="color:#58a6ff;font-size:1.09rem;line-height:1.3">${d.name}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge-blue">데이터센터</span>
+          ${getStatusBadge(d.status)}
+          ${aiBadge}
+        </div>
         <div class="d-row"><span class="d-l">운영사</span><span class="d-v">${d.op}</span></div>
-        <div class="d-row"><span class="d-l">국가 (코드)</span><span class="d-v">${d.country||'Unknown'}</span></div>
+        <div class="d-row"><span class="d-l">국가</span><span class="d-v">${d.country||'Unknown'}</span></div>
         ${extraHTML}
-        <div class="d-row"><span class="d-l">IT 용량</span><span class="d-v" style="color:#3fb950;font-size:1rem;font-weight:800">${d.cap.toLocaleString()} MW</span></div>
-        <div class="d-row"><span class="d-l">냉각 기술</span><span class="d-v">${d.cooling||'정보 없음'}</span></div>
-        <div class="d-row"><span class="d-l">좌표</span><span class="d-v">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
+        <div class="d-row" style="margin-top:8px;padding-top:8px;border-top:1px solid #30363d">
+          <span class="d-l">IT 용량</span>
+          <span class="d-v" style="color:#3fb950;font-size:1.26rem;font-weight:800">${d.cap.toLocaleString()} MW</span>
+        </div>
+        <div style="margin-top:8px;text-align:right;font-size:0.75rem;color:#8b949e">📌 ${d.lat.toFixed(3)}°, ${d.lng.toFixed(3)}°</div>
       </div>
     `;
   } else {
@@ -1074,13 +1314,69 @@ function showDashboard(d, type) {
         <div class="d-row"><span class="d-l">구분</span><span class="d-v"><span class="badge-orange">발전소</span></span></div>
         <div class="d-row"><span class="d-l">소유/운영</span><span class="d-v">${d.owner||'Unknown'}</span></div>
         <div class="d-row"><span class="d-l">국가 (코드)</span><span class="d-v">${d.country||'Unknown'}</span></div>
-        <div class="d-row"><span class="d-l">발전 용량</span><span class="d-v" style="color:#3fb950;font-size:1rem;font-weight:800">${d.cap.toLocaleString()} MW</span></div>
+        <div class="d-row"><span class="d-l">발전 용량</span><span class="d-v" style="color:#3fb950;font-size:1.15rem;font-weight:800">${d.cap.toLocaleString()} MW</span></div>
         <div class="d-row"><span class="d-l">주요 연료/방식</span><span class="d-v">${d.fuel||'미상'}</span></div>
         <div class="d-row"><span class="d-l">준공 연도</span><span class="d-v">${d.year ? d.year + '년' : '정보 없음'}</span></div>
         <div class="d-row"><span class="d-l">좌표</span><span class="d-v">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</span></div>
       </div>
     `;
   }
+}
+
+function closeCountryDCPopup() {
+  document.getElementById('country-dc-popup').classList.remove('cdp-show');
+}
+
+function showCountryDCPopup(e, feature) {
+  // Analysis Lab이 열린 상태면 팝업 대신 기존 국가 집계 표시
+  const drawer = document.getElementById('analysis-drawer');
+  if (drawer && drawer.classList.contains('open')) {
+    showCountryDashboard(feature);
+    return;
+  }
+
+  const cName = feature.properties.name || '';
+  const b = d3.geoBounds(feature);
+  const wraps = b[0][0] > b[1][0];
+  function inBounds(lng, lat) {
+    if (lat < b[0][1] || lat > b[1][1]) return false;
+    if (wraps) return lng >= b[0][0] || lng <= b[1][0];
+    return lng >= b[0][0] && lng <= b[1][0];
+  }
+  const dcs = validDC.filter(d => inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat]));
+  if (!dcs.length) { closeCountryDCPopup(); showCountryDashboard(feature); return; }
+  dcs.sort((a, b) => b.cap - a.cap);
+
+  document.getElementById('cdp-title').textContent = `${cName} · ${dcs.length}개소`;
+  const listEl = document.getElementById('cdp-list');
+  listEl.innerHTML = '';
+  dcs.forEach(dc => {
+    const item = document.createElement('div');
+    item.className = 'cdp-item';
+    const aiBadge = dc.ai_focus ? `<span class="badge-ai" style="font-size:0.7rem;padding:1px 5px">⚡AI</span>` : '';
+    item.innerHTML = `
+      <div class="cdp-item-name">${dc.name}</div>
+      <div class="cdp-item-meta">${getStatusBadge(dc.status)}${aiBadge}<span class="cdp-cap">${dc.cap.toLocaleString()} MW</span></div>
+      <div class="cdp-item-meta" style="margin-top:2px"><span style="color:#6e7681">${dc.op}${dc.city ? ' · ' + dc.city : ''}</span></div>
+    `;
+    item.addEventListener('click', () => { showDashboard(dc, 'dc'); closeCountryDCPopup(); });
+    listEl.appendChild(item);
+  });
+
+  const popup = document.getElementById('country-dc-popup');
+  const mapRect = wrap.getBoundingClientRect();
+  const pw = 280, ph = Math.min(380, 50 + dcs.length * 68);
+  let x = e.clientX - mapRect.left + 14;
+  let y = e.clientY - mapRect.top + 14;
+  if (x + pw > mapRect.width - 8) x = (e.clientX - mapRect.left) - pw - 14;
+  if (y + ph > mapRect.height - 8) y = mapRect.height - ph - 8;
+  if (x < 8) x = 8;
+  if (y < 8) y = 8;
+  popup.style.left = x + 'px';
+  popup.style.top = y + 'px';
+  popup.classList.add('cdp-show');
+
+  showCountryDashboard(feature);
 }
 
 // Show Country summary in Dashboard
@@ -1092,46 +1388,68 @@ function showCountryDashboard(feature) {
   // We'll do a simple match if possible or just display a placeholder indicating region analysis.
   // D3 TopoJSON features usually have 'id' as ISO numeric or alpha-3. We'll just show the clicked region name for now and aggregate if matched.
   
-  let dcCount = 0, dcCap = 0;
-  let ppCount = 0, ppCap = 0;
-  
+  let dcCount = 0, dcCap = 0, dcOp = 0, dcUC = 0, dcPl = 0, dcAI = 0;
+  let ppCount = 0, ppCap = 0, greenCap = 0;
+  const dcItems = [];
+
   const b = d3.geoBounds(feature);
   const wraps = b[0][0] > b[1][0];
-  
+
   function inBounds(lng, lat) {
     if (lat < b[0][1] || lat > b[1][1]) return false;
     if (wraps) return lng >= b[0][0] || lng <= b[1][0];
     return lng >= b[0][0] && lng <= b[1][0];
   }
-  
+
   validDC.forEach(d => {
     if(inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat])) {
-      dcCount++; dcCap += d.cap;
-    }
-  });
-  
-  let greenCap = 0;
-  validPP.forEach(d => {
-    if(inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat])) {
-      ppCount++; ppCap += d.cap;
-      if(["Solar", "Wind", "Hydro", "Nuclear"].includes(d.fuel)) {
-        greenCap += d.cap;
-      }
+      dcCount++; dcCap += d.cap; dcItems.push(d);
+      const st = d.status || 'Operational';
+      if (st === 'Operational') dcOp++;
+      else if (st === 'Under Construction') dcUC++;
+      else dcPl++;
+      if (d.ai_focus) dcAI++;
     }
   });
 
+  validPP.forEach(d => {
+    if(inBounds(d.lng, d.lat) && d3.geoContains(feature, [d.lng, d.lat])) {
+      ppCount++; ppCap += d.cap;
+      if(["Solar", "Wind", "Hydro", "Nuclear"].includes(d.fuel)) greenCap += d.cap;
+    }
+  });
+
+  const greenPct = ppCap > 0 ? ((greenCap / ppCap) * 100).toFixed(0) : 0;
+  const topDC = dcItems.sort((a,b) => b.cap - a.cap).slice(0, 3);
+  const topDCHtml = topDC.length ? topDC.map(d =>
+    `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #21262d;font-size:0.8rem">
+      <span style="color:#c9d1d9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${d.name}</span>
+      <span style="color:#3fb950;flex-shrink:0;margin-left:6px">${d.cap.toLocaleString()} MW</span>
+    </div>`).join('') : '';
+
   sidePanel.innerHTML = `
     <div class="d-card">
-      <div class="d-title" style="color:#a78bfa">${cName} 지역 집계</div>
-      <div style="font-size:0.7rem;color:#8b949e;margin-bottom:12px;line-height:1.4">※ 선택한 지역의 지리적 경계 내에 위치한 인프라 추산치입니다.</div>
-      
-      <div style="margin-top:10px;margin-bottom:4px;font-weight:700;color:#58a6ff;font-size:0.8rem">데이터센터 현황</div>
-      <div class="d-row"><span class="d-l">시설 수</span><span class="d-v">${dcCount} 개소</span></div>
+      <div class="d-title" style="color:#a78bfa">${cName}</div>
+      <div style="font-size:0.75rem;color:#8b949e;margin-bottom:14px">지리적 경계 기준 인프라 현황</div>
+
+      <div style="margin-bottom:4px;font-weight:700;color:#58a6ff;font-size:0.88rem">🏢 데이터센터</div>
+      <div class="d-row"><span class="d-l">총 시설</span><span class="d-v" style="color:#58a6ff;font-weight:700">${dcCount} 개소</span></div>
       <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${dcCap.toLocaleString()} MW</span></div>
-      
-      <div style="margin-top:16px;margin-bottom:4px;font-weight:700;color:#f97316;font-size:0.8rem">발전소 현황 (50MW 이상)</div>
-      <div class="d-row"><span class="d-l">시설 수</span><span class="d-v">${ppCount} 개소</span></div>
-      <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${ppCap.toLocaleString()} MW</span></div>
+      <div class="d-row" style="font-size:0.8rem">
+        <span class="d-l">상태별</span>
+        <span class="d-v" style="display:flex;gap:5px;flex-wrap:wrap">
+          ${dcOp ? `<span class="badge-op">${dcOp} 운영</span>` : ''}
+          ${dcUC ? `<span class="badge-uc">${dcUC} 건설중</span>` : ''}
+          ${dcPl ? `<span class="badge-pl">${dcPl} 계획</span>` : ''}
+        </span>
+      </div>
+      ${dcAI ? `<div class="d-row"><span class="d-l">AI 특화</span><span class="d-v"><span class="badge-ai">⚡ ${dcAI} 개소</span></span></div>` : ''}
+      ${topDCHtml ? `<div style="margin-top:10px;margin-bottom:4px;font-size:0.78rem;color:#8b949e;font-weight:600">상위 시설 (용량순)</div>${topDCHtml}` : ''}
+
+      <div style="margin-top:16px;margin-bottom:4px;font-weight:700;color:#f97316;font-size:0.88rem">⚡ 발전소</div>
+      <div class="d-row"><span class="d-l">총 시설</span><span class="d-v">${ppCount} 개소</span></div>
+      <div class="d-row"><span class="d-l">누적 용량</span><span class="d-v">${(ppCap/1000).toFixed(1)} GW</span></div>
+      <div class="d-row"><span class="d-l">청정에너지 비율</span><span class="d-v" style="color:${greenPct>=50?'#3fb950':greenPct>=30?'#eab308':'#ef4444'}">${greenPct}%</span></div>
     </div>
   `;
   
@@ -1179,11 +1497,16 @@ async function initMap() {
     .attr("fill", d => getTheme(d.properties.name).map)
     .on("click", (e, d) => {
       e.stopPropagation();
-      showCountryDashboard(d);
+      if (curView === 'dc') {
+        showCountryDCPopup(e, d);
+      } else {
+        showCountryDashboard(d);
+      }
     });
 
   // Clicking on empty map area resets dashboard
   svg.on("click", () => {
+    closeCountryDCPopup();
     sidePanel.innerHTML = `
       <div class="dash-empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1225,23 +1548,37 @@ document.querySelectorAll(".vbtn").forEach(btn => {
     else if (view === 'pp') target.classList.add("active-pp");
     else target.classList.add("active-info");
     
+    const dashContent = document.querySelector('.dashboard-content');
+    const chatbotContainer = document.querySelector('.chatbot-container');
+
     if (view === 'info') {
       document.getElementById("wmap").style.display = "none";
       if(document.getElementById("tip")) document.getElementById("tip").classList.remove("vis");
       if(document.getElementById("mleg")) document.getElementById("mleg").style.display = "none";
       if(document.getElementById("zctr")) document.getElementById("zctr").style.display = "none";
       if(document.getElementById("info-pane")) document.getElementById("info-pane").style.display = "block";
+      // 우측: 대시보드 패널 숨기고 챗봇만 전체 높이로
+      if(dashContent) dashContent.style.display = "none";
+      if(chatbotContainer) { chatbotContainer.style.flex = "1"; chatbotContainer.style.height = "auto"; chatbotContainer.style.minHeight = "0"; }
     } else {
       document.getElementById("wmap").style.display = "block";
       if(document.getElementById("mleg")) document.getElementById("mleg").style.display = "block";
       if(document.getElementById("zctr")) document.getElementById("zctr").style.display = "flex";
       if(document.getElementById("info-pane")) document.getElementById("info-pane").style.display = "none";
+      // 우측: 대시보드 패널 복원
+      if(dashContent) dashContent.style.display = "";
+      if(chatbotContainer) { chatbotContainer.style.flex = ""; chatbotContainer.style.height = ""; chatbotContainer.style.minHeight = ""; }
       curView = view;
-      
+
       if(view === 'pp') {
         document.getElementById('pp-filter-slide').classList.add('open');
+        document.getElementById('dc-filter-slide').classList.remove('open');
+      } else if(view === 'dc') {
+        document.getElementById('pp-filter-slide').classList.remove('open');
+        document.getElementById('dc-filter-slide').classList.add('open');
       } else {
         document.getElementById('pp-filter-slide').classList.remove('open');
+        document.getElementById('dc-filter-slide').classList.remove('open');
       }
       
       updateBubbles();
@@ -1252,6 +1589,9 @@ document.querySelectorAll(".vbtn").forEach(btn => {
 
 document.querySelectorAll('#pp-filter-slide input[type="checkbox"]').forEach(cb => {
   cb.addEventListener('change', applyPPFilter);
+});
+document.querySelectorAll('#dc-filter-slide input[type="checkbox"]').forEach(cb => {
+  cb.addEventListener('change', applyDCFilter);
 });
 
 // Chatbot Logic
@@ -1312,7 +1652,12 @@ async function callGeminiAPI(query) {
 
 async function processChatQuery(query) {
   const q = query.toLowerCase();
-  
+
+  // 요약/논문/기사 요청은 무조건 Gemini로
+  if (q.includes("요약") || q.includes("논문") || q.includes("리포트") || q.includes("기사")) {
+    return await callGeminiAPI(query);
+  }
+
   if (q.includes("가장 큰") || q.includes("제일 큰") || q.includes("최대")) {
     if (q.includes("발전소")) {
       const largest = [...validPP].sort((a,b)=>b.cap-a.cap)[0];
@@ -1323,25 +1668,52 @@ async function processChatQuery(query) {
     }
   }
   
-  if (q.includes("미국") || q.includes("한국") || q.includes("중국") || q.includes("일본") || q.includes("유럽")) {
-    let target = "";
-    if (q.includes("미국")) target = "USA";
-    if (q.includes("한국")) target = "South Korea";
-    if (q.includes("중국")) target = "CHN";
-    if (q.includes("일본")) target = "Japan";
-    if (q.includes("유럽")) target = "Europe";
-    
-    if (q.includes("발전소")) {
-      const count = validPP.filter(d => normalizeCountry(d.country) === normalizeCountry(target)).length;
-      return `${target === 'USA' ? '미국' : target} 지역의 주요 발전소는 총 <b>${count}개</b>가 검색되었습니다.`;
-    } else {
-      const count = validDC.filter(d => normalizeCountry(d.country) === normalizeCountry(target) || d.country === target).length;
-      return `${target === 'USA' ? '미국' : target} 지역의 데이터센터는 총 <b>${count}개</b>가 검색되었습니다.`;
+  const countryKw = [
+    { kw: "미국", names: ["United States", "USA", "North America"] },
+    { kw: "한국", names: ["South Korea"], exclude: "한국어" },
+    { kw: "중국", names: ["China", "CHN", "Asia Pacific"] },
+    { kw: "일본", names: ["Japan"] },
+    { kw: "인도", names: ["India"] },
+    { kw: "싱가포르", names: ["Singapore"] },
+    { kw: "말레이시아", names: ["Malaysia"] },
+    { kw: "유럽", names: ["Europe", "Germany", "France", "United Kingdom", "Netherlands", "Sweden", "Ireland", "Norway"] },
+    { kw: "중동", names: ["Middle East", "UAE", "Saudi Arabia"] },
+    { kw: "호주", names: ["Australia", "Oceania"] },
+  ];
+
+  for (const ck of countryKw) {
+    if (q.includes(ck.kw) && !(ck.exclude && q.includes(ck.exclude))) {
+      if (q.includes("발전소")) {
+        const count = validPP.filter(d => ck.names.some(n => d.country === n || normalizeCountry(d.country) === normalizeCountry(n))).length;
+        return `${ck.kw} 지역의 주요 발전소(50MW+)는 총 <b>${count}개</b>가 등록되어 있습니다.`;
+      } else {
+        const dcs = baseDC.filter(d => ck.names.some(n => d.country === n || normalizeCountry(d.country) === normalizeCountry(n)));
+        const opCnt = dcs.filter(d => (d.status || "Operational") === "Operational").length;
+        const ucCnt = dcs.filter(d => d.status === "Under Construction").length;
+        const plCnt = dcs.filter(d => d.status === "Planned").length;
+        const aiCnt = dcs.filter(d => d.ai_focus).length;
+        const totalCap = dcs.reduce((s, d) => s + (d.cap || 0), 0);
+        return `${ck.kw}의 데이터센터는 총 <b>${dcs.length}개</b> (운영중 ${opCnt} / 건설중 ${ucCnt} / 계획 ${plCnt})이며,<br>누적 용량은 <b>${totalCap.toLocaleString()} MW</b>입니다. AI 특화 시설: <b>${aiCnt}개</b>.`;
+      }
     }
   }
-  
+
+  if (q.includes("건설") || q.includes("건설중") || q.includes("공사")) {
+    const ucs = baseDC.filter(d => d.status === "Under Construction");
+    const names = ucs.slice(0, 5).map(d => `${d.name} (${d.cap}MW)`).join(", ");
+    return `현재 건설 중인 데이터센터는 <b>${ucs.length}개</b>입니다.<br>주요 시설: ${names}${ucs.length > 5 ? " 외 " + (ucs.length - 5) + "개" : ""}`;
+  }
+
+  if (q.includes("ai") || q.includes("에이아이") || q.includes("인공지능")) {
+    const ais = baseDC.filter(d => d.ai_focus);
+    const names = ais.map(d => `${d.name} (${d.cap}MW)`).join("<br>• ");
+    return `AI 특화 데이터센터는 총 <b>${ais.length}개</b>입니다:<br>• ${names}`;
+  }
+
   if (q.includes("몇 개") || q.includes("몇개") || q.includes("총 몇")) {
-      return `현재 지도에는 데이터센터 <b>${validDC.length}개</b>, 주요 발전소 <b>${validPP.length}개</b>가 등록되어 있습니다.`;
+    const opCnt = baseDC.filter(d => (d.status||"Operational") === "Operational").length;
+    const ucCnt = baseDC.filter(d => d.status === "Under Construction").length;
+    return `데이터센터 <b>${baseDC.length}개</b> (운영중 ${opCnt} / 건설중 ${ucCnt}), 주요 발전소 <b>${validPP.length.toLocaleString()}개</b>가 등록되어 있습니다.`;
   }
   
   return await callGeminiAPI(query);
@@ -1507,7 +1879,14 @@ async function fetchNews() {
 }
 
 window.onload = () => {
+  // 필터 체크박스를 기본값으로 강제 초기화 (브라우저 폼 상태 복원 방지)
+  document.querySelectorAll('input[name="dc-status"]').forEach(cb => { cb.checked = true; });
+  const aiCb = document.querySelector('input[name="dc-ai"]');
+  if (aiCb) aiCb.checked = false;
+
+  document.getElementById('dc-filter-slide').classList.add('open');
   initMap();
+  applyDCFilter(); // validDC를 체크박스 상태와 동기화
   fetchNews();
   initAnalysisLab();
   renderIntelData();
@@ -1562,30 +1941,57 @@ function initChangelogModal() {
 function renderIntelData() {
   const intelSection = document.getElementById("intel-list-section");
   const intelList = document.getElementById("info-intel-list");
-  
-  if (typeof INTEL_DATA !== 'undefined' && INTEL_DATA.length > 0) {
-    let html = '';
-    INTEL_DATA.forEach(item => {
-      html += `
-        <div class="news-list-item" style="border-left: 3px solid #a855f7;">
-          <div class="news-list-text">
-            <a href="${item.link}" target="_blank" style="color:#e6edf3;font-weight:600">${item.title}</a>
-            <div class="news-list-orig" style="margin-top:4px;color:#8b949e;line-height:1.4">${item.summary}</div>
-            <div style="margin-top:6px;font-size:0.7rem;color:#a855f7">발행일: ${item.date} | 출처: arXiv API 자동 수집</div>
+
+  const extractKeywords = (str) => {
+    const words = str.replace(/[^\w\s]/g, '').split(/\s+/);
+    return words.filter(w => w.length > 3 && !['data','center','with','from','that','this','will','have','been','their','using'].includes(w.toLowerCase())).slice(0, 3);
+  };
+
+  const renderList = (items) => {
+    intelList.innerHTML = '';
+    items.forEach(item => {
+      const kws = extractKeywords(item.title);
+      const kwHtml = kws.map(k => `<span class="kw-badge">#${k}</span>`).join('');
+
+      const card = document.createElement('div');
+      card.className = 'news-list-item';
+      card.style.borderLeft = '3px solid #a855f7';
+      card.innerHTML = `
+        <div class="news-list-text">
+          <a href="${item.link}" target="_blank">${item.title}</a>
+          <div class="news-list-orig">${item.summary}</div>
+          <div style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            ${kwHtml}
+            <span style="font-size:0.78rem;color:#a855f7;margin-left:auto">📅 ${item.date} · arXiv</span>
           </div>
         </div>
+        <button class="chat-sum-btn">챗봇 요약</button>
       `;
+
+      card.querySelector('.chat-sum-btn').addEventListener('click', () => {
+        const chatInputEl = document.getElementById('chat-input');
+        const chatSendEl = document.getElementById('chat-send');
+        if (chatInputEl && chatSendEl) {
+          chatInputEl.value = `다음 논문을 한국어로 전문적으로 요약해줘.\n\n제목: ${item.title}\n\n초록(영문): ${item.summary}\n\n출처: ${item.link}`;
+          chatSendEl.click();
+        }
+      });
+
+      intelList.appendChild(card);
     });
-    intelList.innerHTML = html;
+  };
+
+  if (typeof INTEL_DATA !== 'undefined' && INTEL_DATA.length > 0) {
+    renderList(INTEL_DATA);
     intelSection.style.display = "block";
   } else {
-    // Fallback UI to force user to refresh cache
     intelList.innerHTML = `
-      <div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; padding:20px; border-radius:8px; text-align:center;">
-        <div style="color:#ef4444; font-weight:bold; font-size:1.1rem; margin-bottom:10px;">⚠️ 데이터 업데이트가 반영되지 않았습니다!</div>
-        <div style="color:#e6edf3; font-size:0.9rem;">
-          브라우저가 과거 데이터를 기억하고 있습니다.<br>
-          키보드에서 <b>Ctrl + Shift + R</b> 을 누르시거나 브라우저를 완전히 껐다가 다시 켜주세요.
+      <div style="background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.3);padding:20px;border-radius:8px;text-align:center;">
+        <div style="color:#a855f7;font-weight:bold;font-size:1.15rem;margin-bottom:8px;">📡 학술 데이터 파이프라인 대기 중</div>
+        <div style="color:#8b949e;font-size:0.98rem;line-height:1.6">
+          GitHub Actions 파이프라인이 다음 실행 시 arXiv에서<br>
+          최신 데이터센터·냉각 관련 논문을 자동 수집합니다.<br>
+          <b style="color:#c9d1d9">Ctrl + Shift + R</b> 로 캐시를 지우고 새로고침해 보세요.
         </div>
       </div>
     `;
@@ -1652,9 +2058,9 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
   if (ratioVal > 30 || ratioStr.includes("초과")) { color = "#ef4444"; statusText = "위험 (전력망 병목 경보)"; }
   
   document.getElementById("al-body-1").innerHTML = `
-    <div class="al-value" style="color:${color}; font-size:1.4rem">${ratioStr}${ratioStr.includes('초과') ? '' : '%'}</div>
+    <div class="al-value" style="color:${color}; font-size:1.61rem">${ratioStr}${ratioStr.includes('초과') ? '' : '%'}</div>
     <div class="al-sub" style="color:${color}; font-weight:600">${statusText}</div>
-    <div style="font-size:0.8rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+    <div style="font-size:0.92rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
       <div style="display:flex; justify-content:space-between"><span>총 DC 수요:</span> <strong>${dcCap.toLocaleString()} MW</strong></div>
       <div style="display:flex; justify-content:space-between; margin-top:4px"><span>총 발전 공급:</span> <strong>${ppCap.toLocaleString()} MW</strong></div>
     </div>
@@ -1669,7 +2075,7 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
   document.getElementById("al-body-2").innerHTML = `
     <div class="al-value" style="color:${gColor}">${greenRatio}%</div>
     <div class="al-sub">지역 내 친환경 에너지 비율 (발전소)</div>
-    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+    <div style="font-size:0.92rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
       <div style="display:flex; justify-content:space-between"><span>무탄소 에너지:</span> <strong style="color:#3fb950">${greenCap.toLocaleString()} MW</strong></div>
       <div style="display:flex; justify-content:space-between; margin-top:4px"><span>화석/기타:</span> <strong>${(ppCap - greenCap).toLocaleString()} MW</strong></div>
     </div>
@@ -1698,11 +2104,11 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
   }
   
   document.getElementById("al-body-3").innerHTML = `
-    <div class="al-value" style="color:${pColor}; font-size:1.3rem">${pipeVal}</div>
+    <div class="al-value" style="color:${pColor}; font-size:1.49rem">${pipeVal}</div>
     <div class="al-sub" style="font-weight:600">${pipeDesc}</div>
-    <div style="font-size:0.8rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+    <div style="font-size:0.92rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
       <div style="display:flex; justify-content:space-between"><span>운영/예정 DC 수:</span> <strong>${dcCount} 개소</strong></div>
-      <div style="margin-top:6px; color:#8b949e; font-size:0.7rem; text-align:center">※ DC 수요 밀집도 및 병목 지수 연동</div>
+      <div style="margin-top:6px; color:#8b949e; font-size:0.8rem; text-align:center">※ DC 수요 밀집도 및 병목 지수 연동</div>
     </div>
   `;
 
@@ -1740,7 +2146,7 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
   document.getElementById("al-body-4").innerHTML = `
     <div class="al-value" style="color:${wColor}">${waterStress}</div>
     <div class="al-sub">WRI Aqueduct 기준 수자원 스트레스</div>
-    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+    <div style="font-size:0.92rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
       <div style="line-height:1.4">${wMsg}</div>
     </div>
   `;
