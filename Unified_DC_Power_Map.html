@@ -176,6 +176,45 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   .dashboard-container{width:100%;height:auto;min-height:40vh}
 }
 
+
+.al-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 10px;
+  overflow-x: auto;
+}
+.al-tab-btn {
+  background: #21262d;
+  color: #8b949e;
+  border: 1px solid #30363d;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.al-tab-btn:hover {
+  background: #30363d;
+  color: #c9d1d9;
+}
+.al-tab-btn.active {
+  background: #1f6feb;
+  color: #ffffff;
+  border-color: #1f6feb;
+}
+.al-tab-content {
+  display: none;
+  gap: 20px;
+  flex: 1;
+  overflow-x: auto;
+}
+.al-tab-content.active {
+  display: flex;
+}
+
 /* Analysis Lab Drawer */
 .analysis-drawer {
   position: absolute;
@@ -228,7 +267,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   padding: 20px;
   flex: 1;
   display: flex;
-  gap: 20px;
+  flex-direction: column;
   overflow-x: auto;
 }
 .al-card {
@@ -376,51 +415,58 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
         Analysis Lab (데이터 융합 분석 - 준비중)
       </button>
-      <div class="drawer-content">
-        <!-- Card 1: Power Independence (DC vs PP) -->
-        <div class="al-card">
-          <div class="al-title">
-            <span>⚡ 전력 수급 안정성 (DC vs Power)</span>
-            <span class="al-title-r" id="al-region-name">Global</span>
+            <div class="drawer-content">
+        <div class="al-tabs">
+          <button class="al-tab-btn active" data-tab="tab-infra">⚡ 인프라 & 전력망</button>
+          <button class="al-tab-btn" data-tab="tab-climate">🌍 기후 & 지속가능성</button>
+          <button class="al-tab-btn" data-tab="tab-tech">🧠 AI & 딥테크</button>
+          <button class="al-tab-btn" data-tab="tab-market">📊 시장 & 규제</button>
+        </div>
+        
+        <div class="al-tab-content active" id="tab-infra">
+          <div class="al-card">
+            <div class="al-title"><span>⚡ 전력 공급 안정성 (DC vs Power)</span><span class="al-title-r" id="al-region-name">Global</span></div>
+            <div class="al-body" id="al-body-1"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
-          <div class="al-body" id="al-body-1">
-            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          <div class="al-card">
+            <div class="al-title"><span>💡 데이터센터 성장 & 밀도</span><span class="al-title-r" id="al-region-name-3">Global</span></div>
+            <div class="al-body" id="al-body-3"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
         </div>
         
-        <!-- Card 2: Green Energy Mix -->
-        <div class="al-card">
-          <div class="al-title">
-            <span>🌱 친환경 에너지 믹스</span>
-            <span class="al-title-r" id="al-region-name-2">Global</span>
+        <div class="al-tab-content" id="tab-climate">
+          <div class="al-card">
+            <div class="al-title"><span>🌿 친환경 에너지 믹스</span><span class="al-title-r" id="al-region-name-2">Global</span></div>
+            <div class="al-body" id="al-body-2"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
-          <div class="al-body" id="al-body-2">
-            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
-          </div>
-        </div>
-
-        <!-- Card 3: Investment Pipeline Density -->
-        <div class="al-card">
-          <div class="al-title">
-            <span>🚀 데이터센터 성장 & 밀도</span>
-            <span class="al-title-r" id="al-region-name-3">Global</span>
-          </div>
-          <div class="al-body" id="al-body-3">
-            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          <div class="al-card">
+            <div class="al-title"><span>💧 수자원 리스크 (Water Stress)</span><span class="al-title-r" id="al-region-name-4">Global</span></div>
+            <div class="al-body" id="al-body-4"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
         </div>
 
-        <!-- Card 4: Water Risk (WRI Aqueduct) -->
-        <div class="al-card">
-          <div class="al-title">
-            <span>💧 수자원 리스크 (Water Stress)</span>
-            <span class="al-title-r" id="al-region-name-4">Global</span>
+        <div class="al-tab-content" id="tab-tech">
+          <div class="al-card">
+            <div class="al-title"><span>🧠 초고밀도(Hyper-Density) AI 클러스터</span><span class="al-title-r">Global</span></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
           </div>
-          <div class="al-body" id="al-body-4">
-            <div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>
+          <div class="al-card">
+            <div class="al-title"><span>❄️ 차세대 냉각 (Liquid Cooling) 핫스팟</span><span class="al-title-r">Global</span></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
           </div>
         </div>
-      </div>
+
+        <div class="al-tab-content" id="tab-market">
+          <div class="al-card">
+            <div class="al-title"><span>💰 지역별 예상 OPEX (전력 단가 기반)</span><span class="al-title-r">Global</span></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+          </div>
+          <div class="al-card">
+            <div class="al-title"><span>📜 환경 규제 및 건설 모라토리엄 동향</span><span class="al-title-r">Global</span></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+          </div>
+        </div>
+      </div></div>
     </div>
 
     <div id="info-pane">
@@ -1555,6 +1601,22 @@ function initAnalysisLab() {
     drawerToggle.addEventListener("click", () => {
       analysisDrawer.classList.toggle("open");
     });
+  }
+
+  const tabBtns = document.querySelectorAll(".al-tab-btn");
+  const tabContents = document.querySelectorAll(".al-tab-content");
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach(b => b.classList.remove("active"));
+      tabContents.forEach(c => c.classList.remove("active"));
+      
+      btn.classList.add("active");
+      const targetId = btn.getAttribute("data-tab");
+      document.getElementById(targetId).classList.add("active");
+    });
+  });
+});
   }
 }
 
