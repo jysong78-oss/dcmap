@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>GridX: Watt & Byte (2026)</title>
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://unpkg.com/topojson-client@3"></script>
-<script src="changelog.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
@@ -383,9 +380,23 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   color: #8b949e;
   margin-top: 5px;
 }
+#app-loading{position:fixed;inset:0;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity .45s ease}
+#app-loading.al-fade{opacity:0;pointer-events:none}
+.al-logo{font-size:1.7rem;font-weight:700;color:#58a6ff;letter-spacing:.05em}
+.al-logo span{color:#f97316}
+.al-bar-wrap{width:300px;height:6px;background:#21262d;border-radius:3px;overflow:hidden}
+.al-bar{height:100%;background:linear-gradient(90deg,#1d4ed8,#f97316);border-radius:3px;width:0%;transition:width .25s ease}
+.al-pct{font-size:0.78rem;color:#58a6ff;font-weight:600}
+.al-status{font-size:0.8rem;color:#8b949e;min-height:1.2em;text-align:center}
 </style>
 </head>
 <body>
+<div id="app-loading">
+  <div class="al-logo">GridX: Watt <span>&amp;</span> Byte</div>
+  <div class="al-bar-wrap"><div class="al-bar" id="al-bar"></div></div>
+  <div class="al-pct" id="al-pct">0%</div>
+  <div class="al-status" id="al-status">초기화 중...</div>
+</div>
 
 <div class="top-panel">
   <header class="hdr">
@@ -772,11 +783,30 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   </div>
 </div>
 
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
 <script src="world_topo.js?v=20260612_1"></script>
 <script src="continent_map.js?v=20260612_1"></script>
 <script src="dc_data.js?t=20260614_1"></script>
 <script src="changelog.js?t=20260612_1"></script>
 <script>
+// 로딩 진행률
+function setProgress(pct, msg) {
+  const bar = document.getElementById('al-bar');
+  const pt = document.getElementById('al-pct');
+  const st = document.getElementById('al-status');
+  if (bar) bar.style.width = pct + '%';
+  if (pt) pt.textContent = Math.round(pct) + '%';
+  if (st && msg) st.textContent = msg;
+}
+function hideLoading() {
+  const el = document.getElementById('app-loading');
+  if (!el) return;
+  el.classList.add('al-fade');
+  setTimeout(() => el.remove(), 480);
+}
+const tick = () => new Promise(r => setTimeout(r, 0));
+
 let curView = "dc"; // "dc" or "pp"
 let currentZoomK = 1;
 let svg, g, proj, pathFn, zm;
@@ -1513,6 +1543,9 @@ function showCountryDashboard(feature) {
 }
 
 async function initMap() {
+  setProgress(10, 'D3 초기화...');
+  await tick();
+
   initGlobalStats();
 
   const W = wrap.clientWidth, H = wrap.clientHeight;
@@ -1525,8 +1558,6 @@ async function initMap() {
     g.attr("transform", e.transform);
     tip.classList.remove("vis");
     currentZoomK = e.transform.k;
-    
-    // 확대할수록 버블이 상대적으로 작아져서(비례 지수 0.4) 겹침을 방지
     g.selectAll(".bubble").attr("r", d => {
       const base = curView === 'dc' ? dcScale(d.cap) : ppScale(d.cap);
       return base / Math.pow(currentZoomK, 0.4);
@@ -1539,26 +1570,31 @@ async function initMap() {
   d3.select("#zo").on("click", () => svg.transition().duration(300).call(zm.scaleBy, 0.5));
   d3.select("#zr").on("click", () => svg.transition().duration(300).call(zm.transform, d3.zoomIdentity));
 
+  setProgress(25, '세계 지도 데이터 처리...');
+  await tick();
+
   const countries = topojson.feature(WORLD_TOPO, WORLD_TOPO.objects.countries);
-  
-  // COLOR_THEMES and getTheme moved to global scope
+  const features = countries.features;
 
-  g.selectAll(".country")
-    .data(countries.features)
-    .join("path")
-    .attr("class", "country")
-    .attr("d", pathFn)
-    .attr("fill", d => getTheme(d.properties.name).map)
-    .on("click", (e, d) => {
-      e.stopPropagation();
-      if (curView === 'dc') {
-        showCountryDCPopup(e, d);
-      } else {
-        showCountryDashboard(d);
-      }
-    });
+  // 국가 경계 청크 렌더링 — 50개씩 나눠서 메인 스레드 양보
+  const CHUNK = 50;
+  const clickHandler = (e, d) => {
+    e.stopPropagation();
+    if (curView === 'dc') showCountryDCPopup(e, d);
+    else showCountryDashboard(d);
+  };
+  for (let i = 0; i < features.length; i += CHUNK) {
+    const batch = features.slice(i, Math.min(i + CHUNK, features.length));
+    g.selectAll(null).data(batch).join('path')
+      .attr('class', 'country')
+      .attr('d', pathFn)
+      .attr('fill', d => getTheme(d.properties.name).map)
+      .on('click', clickHandler);
+    const pct = 25 + Math.round((Math.min(i + CHUNK, features.length) / features.length) * 50);
+    setProgress(pct, `국가 경계 렌더링... ${Math.round(Math.min(i+CHUNK,features.length)/features.length*100)}%`);
+    await tick();
+  }
 
-  // Clicking on empty map area resets dashboard
   svg.on("click", () => {
     closeCountryDCPopup();
     sidePanel.innerHTML = `
@@ -1573,6 +1609,9 @@ async function initMap() {
     `;
     if (typeof resetAnalysisLab === 'function') resetAnalysisLab();
   });
+
+  setProgress(80, '데이터센터 표시...');
+  await tick();
 
   updateBubbles();
 }
@@ -1606,7 +1645,7 @@ function loadPPData(callback) {
     basePP = rawArray.filter(d => d && !isNaN(d.lat) && !isNaN(d.lng) && d.cap > 0);
     validPP = [...basePP];
     if (validPP.length > 0) {
-      applyJitter(validPP, 0.02);
+      // applyJitter 생략: 10,741개 N² 연산으로 수십 초 블로킹 발생
       ppScale = d3.scaleSqrt().domain([0, d3.max(validPP, d => d.cap) || 5000]).range([1, 9]);
     }
     ppDataLoaded = true;
@@ -2076,21 +2115,33 @@ async function fetchNews() {
   }
 }
 
-window.onload = () => {
-  // 필터 체크박스를 기본값으로 강제 초기화 (브라우저 폼 상태 복원 방지)
+window.onload = async () => {
+  setProgress(5, '필터 초기화...');
   document.querySelectorAll('input[name="dc-status"]').forEach(cb => { cb.checked = true; });
   const aiCb = document.querySelector('input[name="dc-ai"]');
   if (aiCb) aiCb.checked = false;
-
   document.getElementById('dc-filter-slide').classList.add('open');
-  initMap();
-  applyDCFilter(); // validDC를 체크박스 상태와 동기화
-  loadPPData(() => {}); // 백그라운드 선로딩
+
+  await initMap(); // 10% → 80%, 청크 렌더링
+
+  setProgress(85, '필터 적용...');
+  await tick();
+  applyDCFilter();
+
+  setProgress(90, '뉴스·분석 초기화...');
+  await tick();
   fetchNews();
   initAnalysisLab();
   renderIntelData();
   initChangelogModal();
   initAISelector();
+
+  setProgress(97, '발전소 데이터 선로딩...');
+  loadPPData(() => {}); // 백그라운드, 완료 기다리지 않음
+
+  setProgress(100, '준비 완료!');
+  await new Promise(r => setTimeout(r, 500));
+  hideLoading();
 };
 
 function initChangelogModal() {
