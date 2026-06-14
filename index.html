@@ -220,6 +220,11 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   .gcard{min-width:100%;flex:1 1 100%}
   .hdr{gap:6px}
 }
+/* 웰컴 모달 — 좁은 화면에서 세로 스택 */
+@media(max-width:700px){
+  #changelog-modal > div > div:last-child{flex-direction:column}
+  #changelog-modal > div > div:last-child > div:first-child{flex:0 0 auto;max-height:220px;border-right:none;border-bottom:1px solid #30363d}
+}
 
 
 .al-tabs {
@@ -685,34 +690,44 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
     </div>
   </div>
 
-  <!-- Release Notes Modal -->
-  <div id="changelog-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(13,17,23,0.8); backdrop-filter:blur(8px); z-index:9999; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s;">
-    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; width:90%; max-width:600px; max-height:80vh; overflow-y:auto; box-shadow:0 15px 35px rgba(0,0,0,0.5); display:flex; flex-direction:column; transform:translateY(20px); transition:transform 0.3s;">
-      
-      <!-- Modal Header -->
-      <div style="padding:20px; border-bottom:1px solid #30363d; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:rgba(22,27,34,0.95); backdrop-filter:blur(5px); z-index:10;">
-        <h2 style="font-size:1.49rem; color:#e6edf3; margin:0;">GridX: Watt & Byte <span id="cl-version" style="font-size:1.03rem; color:#a855f7; background:rgba(168,85,247,0.1); padding:2px 8px; border-radius:12px; margin-left:8px;"></span></h2>
-        <button id="cl-close-btn" style="color:#8b949e; font-size:1.72rem; background:none; border:none; cursor:pointer;">&times;</button>
-      </div>
-      
-      <!-- Modal Body -->
-      <div style="padding:20px; color:#c9d1d9;">
-        <div style="margin-bottom:25px;">
-          <h3 style="color:#58a6ff; font-size:1.15rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">💡 앱 주요 기능</h3>
-          <ul id="cl-features" style="padding-left:20px; line-height:1.7; font-size:1.03rem;"></ul>
+  <!-- Welcome Modal -->
+  <div id="changelog-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(5,8,14,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:9999;justify-content:center;align-items:center;opacity:0;transition:opacity 0.35s;padding:16px;">
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:14px;width:100%;max-width:960px;max-height:90vh;box-shadow:0 24px 60px rgba(0,0,0,0.7);display:flex;flex-direction:column;transform:translateY(24px);transition:transform 0.35s;overflow:hidden;">
+
+      <!-- Header -->
+      <div style="padding:16px 20px;border-bottom:1px solid #30363d;display:flex;justify-content:space-between;align-items:center;background:rgba(22,27,34,0.95);backdrop-filter:blur(6px);flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.2rem;font-weight:800;color:#e6edf3;">GridX: Watt &amp; Byte</span>
+          <span id="cl-version" style="font-size:0.8rem;color:#a855f7;background:rgba(168,85,247,0.12);padding:2px 9px;border-radius:20px;border:1px solid rgba(168,85,247,0.3);"></span>
+          <span id="cl-date" style="font-size:0.75rem;color:#8b949e;"></span>
         </div>
-        
-        <div>
-          <h3 style="color:#3fb950; font-size:1.15rem; margin-bottom:12px; display:flex; align-items:center; gap:8px;">🚀 최신 업데이트 내역 <span id="cl-date" style="font-size:0.86rem; color:#8b949e; font-weight:normal;"></span></h3>
-          <ul id="cl-updates" style="padding-left:20px; line-height:1.7; font-size:1.03rem;"></ul>
+        <button id="cl-close-btn" style="width:30px;height:30px;border-radius:50%;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;" onmouseover="this.style.background='#30363d';this.style.color='#e6edf3'" onmouseout="this.style.background='#21262d';this.style.color='#8b949e'">&times;</button>
+      </div>
+
+      <!-- Body: 2-column -->
+      <div style="display:flex;flex:1;min-height:0;overflow:hidden;">
+
+        <!-- LEFT: Poster Image -->
+        <div style="flex:0 0 42%;background:#0d1117;border-right:1px solid #30363d;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;">
+          <img src="GridX_Poster.png" alt="GridX Poster" style="width:100%;height:100%;max-height:calc(90vh - 140px);object-fit:contain;border-radius:8px;display:block;">
         </div>
+
+        <!-- RIGHT: Changelog -->
+        <div style="flex:1;overflow-y:auto;padding:20px 24px;color:#c9d1d9;scrollbar-width:thin;scrollbar-color:#30363d transparent;">
+          <div style="margin-bottom:22px;">
+            <h3 style="color:#58a6ff;font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px;">💡 앱 주요 기능</h3>
+            <ul id="cl-features" style="padding-left:18px;line-height:1.75;font-size:0.88rem;color:#c9d1d9;"></ul>
+          </div>
+          <div>
+            <h3 style="color:#3fb950;font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px;">🚀 최신 업데이트 내역</h3>
+            <ul id="cl-updates" style="padding-left:18px;line-height:1.75;font-size:0.88rem;color:#c9d1d9;"></ul>
+          </div>
+          <div style="margin-top:24px;padding-top:16px;border-top:1px solid #21262d;">
+            <button id="cl-ok-btn" style="width:100%;background:linear-gradient(135deg,#1f6feb,#3b82f6);color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.92rem;box-shadow:0 4px 14px rgba(59,130,246,0.25);transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">확인하고 시작하기 →</button>
+          </div>
+        </div>
+
       </div>
-      
-      <!-- Modal Footer -->
-      <div style="padding:15px 20px; border-top:1px solid #30363d; text-align:right;">
-        <button id="cl-ok-btn" style="background:linear-gradient(135deg, #1f6feb, #3b82f6); color:#fff; border:none; padding:8px 24px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:1.03rem; box-shadow:0 4px 12px rgba(59,130,246,0.2);">확인</button>
-      </div>
-      
     </div>
   </div>
 
