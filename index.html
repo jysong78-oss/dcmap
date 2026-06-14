@@ -53,6 +53,11 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 .zctr{position:absolute;top:20px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:40}
 .zctr button{width:32px;height:32px;background:rgba(22,27,34,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid #30363d;border-radius:6px;font-size:18px;font-weight:700;color:#e6edf3;display:flex;align-items:center;justify-content:center;transition:background .2s;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
 .zctr button:active{background:#30363d}
+.zctr .wr-sep{height:1px;background:#30363d;margin:2px 0}
+.zctr #wr-btn{font-size:14px;transition:background .2s,border-color .2s,box-shadow .2s}
+.zctr #wr-btn.active{background:rgba(30,58,138,.65);border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.35),0 4px 12px rgba(0,0,0,0.3)}
+.wr-leg-item{display:flex;align-items:center;gap:7px;padding:2px 0}
+.wr-leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
 
 .country{stroke:#2d333b;stroke-width:0.5px;transition:all 0.2s;cursor:pointer}
 .country:hover{filter:brightness(1.5)}
@@ -511,6 +516,8 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <button id="zi" aria-label="확대">+</button>
       <button id="zr" aria-label="초기화">⟲</button>
       <button id="zo" aria-label="축소">−</button>
+      <div class="wr-sep"></div>
+      <button id="wr-btn" title="💧 Water Risk 지도 오버레이 ON/OFF">💧</button>
     </div>
     
     <div class="analysis-drawer" id="analysis-drawer">
@@ -847,6 +854,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 <script src="world_topo.js?v=20260612_1"></script>
 <script src="continent_map.js?v=20260612_1"></script>
 <script src="dc_data.js?t=20260614_1"></script>
+<script src="water_risk_data.js?v=20260614"></script>
 <script src="changelog.js?t=20260612_1"></script>
 <script>
 // 로딩 진행률
@@ -867,6 +875,7 @@ function hideLoading() {
 const tick = () => new Promise(r => setTimeout(r, 0));
 
 let curView = "dc"; // "dc" or "pp"
+let waterRiskActive = false;
 let currentZoomK = 1;
 let svg, g, proj, pathFn, zm;
 const tip = document.getElementById("tip");
@@ -1237,6 +1246,21 @@ function getPPBubbleColor(fuel) {
 }
 
 function drawLegend() {
+  if (waterRiskActive) {
+    mleg.innerHTML = `
+      <div class="leg-t">💧 Water Stress (WRI Aqueduct)</div>
+      <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:6px">
+        <div class="wr-leg-item"><div class="wr-leg-dot" style="background:#991b1b"></div><span>극심 (&gt;80%)</span></div>
+        <div class="wr-leg-item"><div class="wr-leg-dot" style="background:#c2410c"></div><span>높음 (40-80%)</span></div>
+        <div class="wr-leg-item"><div class="wr-leg-dot" style="background:#a16207"></div><span>중간 (20-40%)</span></div>
+        <div class="wr-leg-item"><div class="wr-leg-dot" style="background:#1d4ed8"></div><span>낮음 (10-20%)</span></div>
+        <div class="wr-leg-item"><div class="wr-leg-dot" style="background:#1e3a8a"></div><span>양호 (&lt;10%)</span></div>
+        <div class="wr-leg-item"><div class="wr-leg-dot" style="background:#21262d;border:1px solid #30363d"></div><span>데이터 없음</span></div>
+      </div>
+      <div style="font-size:0.72rem;color:#8b949e;border-top:1px dashed #30363d;padding-top:5px">출처: WRI Aqueduct 3.0</div>
+    `;
+    return;
+  }
   if(curView === 'dc') {
     mleg.innerHTML = `
       <div class="leg-t">대륙별 데이터센터</div>
@@ -1268,6 +1292,33 @@ function drawLegend() {
     `;
   }
 }
+
+function toggleWaterRisk() {
+  waterRiskActive = !waterRiskActive;
+  const btn = document.getElementById('wr-btn');
+  if (btn) btn.classList.toggle('active', waterRiskActive);
+
+  if (waterRiskActive) {
+    g.selectAll('.country').attr('fill', d => {
+      const risk = (typeof lookupWaterRisk === 'function') ? lookupWaterRisk(d.properties.name) : null;
+      return risk ? WATER_RISK_COLORS[risk.level] : '#21262d';
+    }).style('opacity', '0.88');
+  } else {
+    g.selectAll('.country')
+      .attr('fill', d => getTheme(d.properties.name).map)
+      .style('opacity', null);
+  }
+  drawLegend();
+}
+
+function updateWaterRiskOverlay() {
+  if (!waterRiskActive) return;
+  g.selectAll('.country').attr('fill', d => {
+    const risk = (typeof lookupWaterRisk === 'function') ? lookupWaterRisk(d.properties.name) : null;
+    return risk ? WATER_RISK_COLORS[risk.level] : '#21262d';
+  }).style('opacity', '0.88');
+}
+
 function updateBubbles() {
   const displayData = curView === 'dc' ? validDC : validPP;
   const sizeScale = curView === 'dc' ? dcScale : ppScale;
@@ -1628,6 +1679,7 @@ async function initMap() {
   d3.select("#zi").on("click", () => svg.transition().duration(300).call(zm.scaleBy, 2));
   d3.select("#zo").on("click", () => svg.transition().duration(300).call(zm.scaleBy, 0.5));
   d3.select("#zr").on("click", () => svg.transition().duration(300).call(zm.transform, d3.zoomIdentity));
+  document.getElementById("wr-btn").addEventListener("click", toggleWaterRisk);
 
   setProgress(25, '세계 지도 데이터 처리...');
   await tick();
@@ -2489,42 +2541,32 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
     </div>
   `;
 
-  // Card 4: Water Stress (Mocked Data based on WRI Aqueduct)
-  let waterStress = "Medium";
-  let wColor = "#eab308";
-  let wMsg = "일반적인 수준의 수자원 관리가 필요합니다.";
-  
-  const highStressRegions = ["Middle East", "North Africa", "Saudi Arabia", "United Arab Emirates", "India", "Chile", "Spain", "Mexico", "South Africa", "Morocco", "Egypt", "Iran", "Iraq", "Pakistan", "Afghanistan", "Australia"];
-  const extremeStressRegions = ["Saudi Arabia", "United Arab Emirates", "Qatar", "Kuwait", "Oman", "Bahrain", "Israel", "Jordan", "Lebanon", "Libya", "Yemen"];
-  const lowStressRegions = ["Canada", "Russia", "Norway", "Sweden", "Finland", "Iceland", "New Zealand", "Brazil", "Colombia", "Peru", "Ireland", "Scotland"];
-  
-  let isHigh = highStressRegions.some(r => cName.includes(r) || normalizeCountry(cName) === "Middle East");
-  let isExtreme = extremeStressRegions.some(r => cName.includes(r));
-  let isLow = lowStressRegions.some(r => cName.includes(r));
-  
-  if (isExtreme) {
-    waterStress = "Extremely High";
-    wColor = "#ef4444";
-    wMsg = "물 부족이 극심합니다. 폐쇄형 수랭식(Closed-loop)이나 액침 냉각 도입이 필수적인 지역입니다.";
-  } else if (isHigh) {
-    waterStress = "High";
-    wColor = "#f97316";
-    wMsg = "수자원 리스크가 큽니다. 데이터센터 증설 시 물 사용 효율(WUE) 최적화가 강력히 요구됩니다.";
-  } else if (isLow) {
-    waterStress = "Low";
-    wColor = "#3fb950";
-    wMsg = "수자원이 풍부하고 안정적입니다. 자연 냉각(Free Cooling)을 활용하기 이상적인 환경입니다.";
-  } else if (cName === "United States of America" || cName === "China") {
-    waterStress = "Med-High";
-    wColor = "#f97316";
-    wMsg = "국가 내 지역 편차가 큽니다. 사막/내륙 지역의 데이터센터는 심각한 물 부족을 겪을 수 있습니다.";
+  // Card 4: Water Stress — WRI Aqueduct 3.0 실데이터 조회
+  const wrRisk = (typeof lookupWaterRisk === 'function') ? lookupWaterRisk(cName) : null;
+  let waterStress, wColor, wMsg, wLevelBadge = '';
+
+  if (wrRisk) {
+    waterStress = WATER_RISK_LABELS[wrRisk.level] || wrRisk.label;
+    wColor = WATER_RISK_COLORS[wrRisk.level];
+    wMsg = wrRisk.note || 'WRI Aqueduct 3.0 국가 평균 기준';
+    const levelColors = {5:'#991b1b',4:'#c2410c',3:'#a16207',2:'#1d4ed8',1:'#1e3a8a'};
+    wLevelBadge = `<span style="display:inline-block;padding:1px 7px;border-radius:4px;background:${levelColors[wrRisk.level]||'#30363d'};color:#fff;font-size:0.78rem;font-weight:600;margin-left:6px">Lv.${wrRisk.level}/5</span>`;
+  } else {
+    waterStress = "데이터 없음";
+    wColor = "#8b949e";
+    wMsg = "해당 국가의 WRI Aqueduct 데이터가 없습니다.";
   }
-  
+
   document.getElementById("al-body-4").innerHTML = `
-    <div class="al-value" style="color:${wColor}">${waterStress}</div>
-    <div class="al-sub">WRI Aqueduct 기준 수자원 스트레스</div>
-    <div style="font-size:0.92rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-      <div style="line-height:1.4">${wMsg}</div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+      <div class="al-value" style="color:${wColor}">${waterStress}</div>${wLevelBadge}
+    </div>
+    <div class="al-sub">WRI Aqueduct 3.0 수자원 스트레스 (국가 평균)</div>
+    <div style="font-size:0.88rem; margin-top:12px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:9px 12px; border-radius:6px; width:100%; line-height:1.5">
+      ${wMsg}
+    </div>
+    <div style="margin-top:10px;font-size:0.75rem;color:#8b949e;text-align:right">
+      💧 지도 우측 상단 버튼으로 전국 오버레이 확인 가능
     </div>
   `;
 }
