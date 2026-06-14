@@ -448,22 +448,22 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
         <div class="al-tab-content" id="tab-tech">
           <div class="al-card">
             <div class="al-title"><span>🧠 초고밀도(Hyper-Density) AI 클러스터</span><span class="al-title-r">Global</span></div>
-            <div class="al-body" id="al-body-5"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
           </div>
           <div class="al-card">
             <div class="al-title"><span>❄️ 차세대 냉각 (Liquid Cooling) 핫스팟</span><span class="al-title-r">Global</span></div>
-            <div class="al-body" id="al-body-6"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
           </div>
         </div>
 
         <div class="al-tab-content" id="tab-market">
           <div class="al-card">
             <div class="al-title"><span>💰 지역별 예상 OPEX (전력 단가 기반)</span><span class="al-title-r">Global</span></div>
-            <div class="al-body" id="al-body-7"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
           </div>
           <div class="al-card">
             <div class="al-title"><span>📜 환경 규제 및 건설 모라토리엄 동향</span><span class="al-title-r">Global</span></div>
-            <div class="al-body" id="al-body-8"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
           </div>
         </div>
       </div>
@@ -1619,16 +1619,14 @@ function initAnalysisLab() {
 }
 
 function resetAnalysisLab() {
-  const ids = ["", "-2", "-3", "-4", "-5", "-6", "-7", "-8"];
-  ids.forEach(ext => {
-      const el = document.getElementById(`al-region-name${ext}`);
-      if(el) el.innerText = "Global";
-  });
-  
-  for(let i=1; i<=8; i++) {
-      const b = document.getElementById(`al-body-${i}`);
-      if(b) b.innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
-  }
+  document.getElementById("al-region-name").innerText = "Global";
+  document.getElementById("al-region-name-2").innerText = "Global";
+  document.getElementById("al-region-name-3").innerText = "Global";
+  document.getElementById("al-region-name-4").innerText = "Global";
+  document.getElementById("al-body-1").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  document.getElementById("al-body-2").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  document.getElementById("al-body-3").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  document.getElementById("al-body-4").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
 }
 
 function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
@@ -1636,220 +1634,14 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
   document.getElementById("al-region-name-2").innerText = cName;
   document.getElementById("al-region-name-3").innerText = cName;
   document.getElementById("al-region-name-4").innerText = cName;
-  
-  const el5 = document.getElementById("al-region-name-5"); if(el5) el5.innerText = cName;
-  const el6 = document.getElementById("al-region-name-6"); if(el6) el6.innerText = cName;
-  const el7 = document.getElementById("al-region-name-7"); if(el7) el7.innerText = cName;
-  const el8 = document.getElementById("al-region-name-8"); if(el8) el8.innerText = cName;
 
-  // Constants from GLOBAL_BENCHMARKS
-  const B = typeof GLOBAL_BENCHMARKS !== 'undefined' ? GLOBAL_BENCHMARKS : {
-      pue_avg_2026: 1.55, pue_best_in_class: 1.12, ai_rack_density_kw_2026: 132, 
-      market_cagr_2024_2030: 21.1, global_power_demand_twh_2026: 545
-  };
-
-  // Card 1: Power Independence
+    // Card 1: Power Independence
   let ratioStr = "0.0";
   let ratioVal = 0;
   if (ppCap > 0) {
       ratioVal = (dcCap / ppCap) * 100;
       ratioStr = ratioVal.toFixed(1);
   } else if (dcCap > 0) {
-      ratioStr = "초과 (공급 부족)";
-      ratioVal = 100;
-  }
-  
-  let color = "#3fb950";
-  let statusText = "안정적 (여유)";
-  if (ratioVal > 10) { color = "#eab308"; statusText = "주의 (망 부하 증가)"; }
-  if (ratioVal > 30 || ratioStr.includes("초과")) { color = "#ef4444"; statusText = "위험 (전력망 병목 경보)"; }
-  
-  document.getElementById("al-body-1").innerHTML = `
-    <div class="al-value" style="color:${color}; font-size:1.4rem">${ratioStr}${ratioStr.includes('초과') ? '' : '%'}</div>
-    <div class="al-sub" style="color:${color}; font-weight:600">${statusText}</div>
-    <div style="font-size:0.8rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-      <div style="display:flex; justify-content:space-between"><span>총 DC 수요:</span> <strong>${dcCap.toLocaleString()} MW</strong></div>
-      <div style="display:flex; justify-content:space-between; margin-top:4px"><span>총 발전 공급:</span> <strong>${ppCap.toLocaleString()} MW</strong></div>
-    </div>
-    <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-      *Ref: IEA Electricity 2026 Report (Global Demand: ${B.global_power_demand_twh_2026} TWh)
-    </div>
-  `;
-
-  // Card 2: Green Energy Mix
-  const greenRatio = ppCap > 0 ? ((greenCap / ppCap) * 100).toFixed(1) : "0.0";
-  let gColor = "#ef4444";
-  if (greenRatio > 30) gColor = "#eab308";
-  if (greenRatio > 60) gColor = "#3fb950";
-  
-  document.getElementById("al-body-2").innerHTML = `
-    <div class="al-value" style="color:${gColor}">${greenRatio}%</div>
-    <div class="al-sub">지역 내 친환경 에너지 비율 (발전)</div>
-    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-      <div style="display:flex; justify-content:space-between"><span>무탄소 에너지:</span> <strong style="color:#3fb950">${greenCap.toLocaleString()} MW</strong></div>
-      <div style="display:flex; justify-content:space-between; margin-top:4px"><span>화석/기타:</span> <strong>${(ppCap - greenCap).toLocaleString()} MW</strong></div>
-    </div>
-    <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-      *Ref: Uptime Institute 2026 (Avg PUE: ${B.pue_avg_2026}, Best: ${B.pue_best_in_class})
-    </div>
-  `;
-
-  // Card 3: Investment Pipeline Density
-  let pipeVal = "Low Demand";
-  let pColor = "#8b949e";
-  let pipeDesc = "신규 발전소 건설 수요 낮음";
-  
-  if (dcCount >= 50 && ratioVal > 15) { 
-      pipeVal = "SMR 최우선 타겟"; 
-      pColor = "#a855f7"; 
-      pipeDesc = "망 포화 극심, 독립 전력망 시급";
-  } else if (dcCount >= 20 && ratioVal > 5) { 
-      pipeVal = "건설 매력도 높음"; 
-      pColor = "#ef4444"; 
-      pipeDesc = "대규모 신규 발전소 수요 집중";
-  } else if (dcCount > 0) { 
-      pipeVal = "완만한 수요"; 
-      pColor = "#eab308"; 
-      pipeDesc = "기존 전력망 내 수용 가능";
-  } else {
-      pipeVal = "-";
-      pipeDesc = "데이터센터 데이터 없음";
-  }
-  
-  document.getElementById("al-body-3").innerHTML = `
-    <div class="al-value" style="color:${pColor}; font-size:1.3rem">${pipeVal}</div>
-    <div class="al-sub" style="font-weight:600">${pipeDesc}</div>
-    <div style="font-size:0.8rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-      <div style="display:flex; justify-content:space-between"><span>운영/예정 DC 수:</span> <strong>${dcCount} 개소</strong></div>
-      <div style="margin-top:6px; color:#8b949e; font-size:0.7rem; text-align:center">※ DC 수요 밀집도 및 병목 지수 연동</div>
-    </div>
-    <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-      *Ref: SMR Investment Insights 2026
-    </div>
-  `;
-
-  // Card 4: Water Stress
-  let waterStress = "Medium";
-  let wColor = "#eab308";
-  let wMsg = "일반적인 수준의 수자원 관리가 필요합니다.";
-  
-  const highStressRegions = ["Middle East", "North Africa", "Saudi Arabia", "United Arab Emirates", "India", "Chile", "Spain", "Mexico", "South Africa", "Morocco", "Egypt", "Iran", "Iraq", "Pakistan", "Afghanistan", "Australia"];
-  const extremeStressRegions = ["Saudi Arabia", "United Arab Emirates", "Qatar", "Kuwait", "Oman", "Bahrain", "Israel", "Jordan", "Lebanon", "Libya", "Yemen"];
-  const lowStressRegions = ["Canada", "Russia", "Norway", "Sweden", "Finland", "Iceland", "New Zealand", "Brazil", "Colombia", "Peru", "Ireland", "Scotland"];
-  
-  let isHigh = highStressRegions.some(r => cName.includes(r) || normalizeCountry(cName) === "Middle East");
-  let isExtreme = extremeStressRegions.some(r => cName.includes(r));
-  let isLow = lowStressRegions.some(r => cName.includes(r));
-  
-  if (isExtreme) {
-    waterStress = "Extremely High";
-    wColor = "#ef4444";
-    wMsg = "물 부족이 극심합니다. 폐쇄형 수랭식(Closed-loop)이나 액침 냉각 도입이 필수적인 지역입니다.";
-  } else if (isHigh) {
-    waterStress = "High";
-    wColor = "#f97316";
-    wMsg = "수자원 확보 경쟁이 심화되고 있습니다. 대체 냉각 방식 검토가 필요합니다.";
-  } else if (isLow) {
-    waterStress = "Low";
-    wColor = "#3fb950";
-    wMsg = "수자원이 풍부하여 수랭식 냉각소재 운영에 유리합니다.";
-  }
-  
-  document.getElementById("al-body-4").innerHTML = `
-    <div class="al-value" style="color:${wColor}">${waterStress}</div>
-    <div class="al-sub">WRI Aqueduct 기준 수자원 스트레스</div>
-    <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-      <div style="line-height:1.4">${wMsg}</div>
-    </div>
-    <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-      *Ref: World Resources Institute (WRI) Aqueduct 2026
-    </div>
-  `;
-
-  // Card 5: AI Rack Power Density
-  const isAIReady = dcCap > 500 && greenRatio > 20; // Example mock metric
-  let aiReadiness = isAIReady ? "High (AI Core Tier)" : (dcCap > 100 ? "Medium (Edge Tier)" : "Low");
-  let aiColor = isAIReady ? "#a855f7" : (dcCap > 100 ? "#eab308" : "#8b949e");
-
-  const b5 = document.getElementById("al-body-5");
-  if(b5) {
-      b5.innerHTML = `
-        <div class="al-value" style="color:${aiColor}; font-size:1.3rem">${aiReadiness}</div>
-        <div class="al-sub" style="font-weight:600">지역 전력망 기반 AI 인프라 수용성</div>
-        <div style="font-size:0.8rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-          <div style="display:flex; justify-content:space-between"><span>Target Density:</span> <strong>${B.ai_rack_density_kw_2026} kW/Rack</strong></div>
-          <div style="margin-top:6px; color:#8b949e; font-size:0.7rem; text-align:center">NVIDIA GB200 NVL72 급 초고밀도 지원 평가</div>
-        </div>
-        <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-          *Ref: NVIDIA GB200 Spec & Industry Projections 2026
-        </div>
-      `;
-  }
-
-  // Card 6: Liquid Cooling
-  let coolingRec = "Air Cooling Sufficient";
-  let cColor = "#3fb950";
-  if (isAIReady || isHigh || isExtreme) {
-      coolingRec = "Direct-to-Chip Liquid Cooling";
-      cColor = "#58a6ff";
-  }
-
-  const b6 = document.getElementById("al-body-6");
-  if(b6) {
-      b6.innerHTML = `
-        <div class="al-value" style="color:${cColor}; font-size:1.1rem">${coolingRec}</div>
-        <div class="al-sub">수자원 및 전력 밀도 기반 추천 냉각 방식</div>
-        <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-          <div style="line-height:1.4">전력 밀도 및 물 부족도(Water Stress)를 반영하여 차세대 냉각 방식(D2C/Immersion) 도입 필요성 평가.</div>
-        </div>
-        <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-          *Ref: Data Center Cooling Standards 2026
-        </div>
-      `;
-  }
-
-  // Card 7: Market Growth Forecast (CAPEX/OPEX)
-  const projCap = Math.round(dcCap * Math.pow(1 + (B.market_cagr_2024_2030 / 100), 4)); // Projecting to 2030 (4 years from 2026)
-  const b7 = document.getElementById("al-body-7");
-  if(b7) {
-      b7.innerHTML = `
-        <div class="al-value" style="color:#58a6ff; font-size:1.4rem">+${B.market_cagr_2024_2030}% CAGR</div>
-        <div class="al-sub">2026-2030 데이터센터 전력 소비 성장률 전망</div>
-        <div style="font-size:0.8rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-          <div style="display:flex; justify-content:space-between"><span>2030 예상 전력수요:</span> <strong>${projCap.toLocaleString()} MW</strong></div>
-        </div>
-        <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-          *Ref: MarketsandMarkets / IEA 2026
-        </div>
-      `;
-  }
-
-  // Card 8: Regulatory Risk
-  let regRisk = "Low Risk";
-  let rColor = "#3fb950";
-  let regMsg = "현재 강한 건설 규제나 모라토리엄이 관찰되지 않습니다.";
-
-  const highRiskRegions = ["Ireland", "Singapore", "Netherlands", "Germany", "China", "United Kingdom"];
-  if (highRiskRegions.some(r => cName.includes(r))) {
-      regRisk = "High Risk (Moratorium / EED)";
-      rColor = "#ef4444";
-      regMsg = "전력망 포화로 인한 신규 허가 제한(Moratorium) 또는 EU EED 수준의 강력한 환경 규제가 적용되는 지역입니다.";
-  }
-
-  const b8 = document.getElementById("al-body-8");
-  if(b8) {
-      b8.innerHTML = `
-        <div class="al-value" style="color:${rColor}; font-size:1.1rem">${regRisk}</div>
-        <div class="al-sub">건설 제한 및 ESG 의무 규제</div>
-        <div style="font-size:0.8rem; margin-top:15px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
-          <div style="line-height:1.4">${regMsg}</div>
-        </div>
-        <div style="font-size:0.65rem; color:#8b949e; margin-top:10px; text-align:right">
-          *Ref: Global Regulatory & ESG Trackers 2026
-        </div>
-      `;
-  }
-} else if (dcCap > 0) {
       ratioStr = "초과 (공급 부족)";
       ratioVal = 100;
   }
