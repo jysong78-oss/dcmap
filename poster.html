@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GridX: Watt & Byte — Poster</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #060a10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ── 고정 캔버스 800×1130 — JS가 scale() 적용 ── */
+  .poster {
+    width: 800px;
+    height: 1130px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    transform-origin: center center;
+  }
+
+  /* grid bg */
+  .poster::before {
+    content:'';
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(88,166,255,.03) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(88,166,255,.03) 1px,transparent 1px);
+    background-size:36px 36px;
+    pointer-events:none;
+  }
+
+  /* glow orbs */
+  .orb { position:absolute; border-radius:50%; filter:blur(70px); pointer-events:none; }
+  .orb-b { width:360px;height:360px;background:rgba(88,166,255,.07);  top:-80px;right:-80px; }
+  .orb-g { width:260px;height:260px;background:rgba(63,185,80,.05);   bottom:80px;left:-60px; }
+  .orb-p { width:220px;height:220px;background:rgba(163,113,247,.06); top:360px;right:40px; }
+
+  /* ── HEADER ── */
+  .hdr { padding:36px 48px 24px; position:relative; }
+
+  .tag-row { display:flex; gap:7px; margin-bottom:16px; }
+  .tag {
+    font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    padding:3px 9px; border-radius:20px; border:1px solid;
+  }
+  .t-bl { color:#58a6ff; border-color:rgba(88,166,255,.3); background:rgba(88,166,255,.08); }
+  .t-gn { color:#3fb950; border-color:rgba(63,185,80,.3);  background:rgba(63,185,80,.08); }
+  .t-pu { color:#a371f7; border-color:rgba(163,113,247,.3);background:rgba(163,113,247,.08); }
+
+  .title {
+    font-size:2.8rem; font-weight:900; letter-spacing:-.02em; line-height:1;
+    background:linear-gradient(135deg,#e6edf3 0%,#58a6ff 50%,#3fb950 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    margin-bottom:5px;
+  }
+  .mono-sub {
+    font-family:'JetBrains Mono',monospace;
+    font-size:.76rem; color:#8b949e; letter-spacing:.05em; margin-bottom:14px;
+  }
+  .headline {
+    font-size:.88rem; color:#c9d1d9; line-height:1.6;
+    border-left:3px solid #58a6ff; padding-left:14px;
+  }
+
+  /* ── STATS ── */
+  .stats {
+    margin:0 48px 22px;
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:1px; background:#21262d;
+    border:1px solid #21262d; border-radius:10px; overflow:hidden;
+  }
+  .s-item { background:#161b22; padding:14px 10px; text-align:center; }
+  .s-num  {
+    font-family:'JetBrains Mono',monospace;
+    font-size:1.5rem; font-weight:700; line-height:1; margin-bottom:4px;
+  }
+  .s-lbl  { font-size:.65rem; color:#8b949e; line-height:1.4; }
+  .c-bl{color:#58a6ff;} .c-gn{color:#3fb950;} .c-yl{color:#d29922;} .c-pu{color:#a371f7;}
+
+  /* ── SECTION TITLE ── */
+  .sec-hdr {
+    font-size:.64rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+    color:#8b949e; margin-bottom:12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .sec-hdr::after { content:''; flex:1; height:1px; background:#21262d; }
+
+  /* ── FEATURES ── */
+  .feats { padding:0 48px; margin-bottom:18px; }
+  .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .fc {
+    background:#161b22; border:1px solid #21262d;
+    border-radius:8px; padding:13px 13px;
+  }
+  .fc.dim { opacity:.55; }
+  .fc-ico  { font-size:1.1rem; margin-bottom:7px; display:block; }
+  .fc-ttl  { font-size:.76rem; font-weight:700; color:#e6edf3; margin-bottom:4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .fc-dsc  { font-size:.67rem; color:#8b949e; line-height:1.5; }
+  .badge-wip {
+    font-size:.6rem; font-weight:700; padding:1px 6px; border-radius:4px;
+    background:rgba(210,153,34,.12); color:#d29922; border:1px solid rgba(210,153,34,.3);
+  }
+
+  /* ── DATA ── */
+  .data-sec { padding:0 48px; margin-bottom:18px; }
+  .data-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .dc {
+    background:#161b22; border:1px solid #21262d;
+    border-radius:8px; padding:14px 16px;
+  }
+  .dc-ttl {
+    font-size:.72rem; font-weight:700; color:#58a6ff;
+    margin-bottom:10px; display:flex; align-items:center; gap:6px;
+  }
+  .dc-list { list-style:none; }
+  .dc-list li {
+    font-size:.67rem; color:#c9d1d9; padding:3px 0;
+    border-bottom:1px solid #21262d;
+    display:flex; align-items:center; gap:6px; line-height:1.4;
+  }
+  .dc-list li:last-child { border-bottom:none; }
+  .dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+  .d-bl{background:#58a6ff;} .d-gn{background:#3fb950;}
+  .d-yl{background:#d29922;} .d-pu{background:#a371f7;} .d-rd{background:#f85149;}
+
+  /* ── UPDATE ── */
+  .upd {
+    margin:0 48px 20px;
+    background:linear-gradient(135deg,rgba(63,185,80,.07),rgba(88,166,255,.07));
+    border:1px solid rgba(63,185,80,.22); border-radius:8px;
+    padding:13px 18px; display:flex; align-items:center; gap:16px;
+  }
+  .upd-ico { font-size:1.3rem; flex-shrink:0; }
+  .upd-body { flex:1; }
+  .upd-ttl { font-size:.76rem; font-weight:700; color:#3fb950; margin-bottom:3px; }
+  .upd-dsc { font-size:.67rem; color:#8b949e; line-height:1.45; }
+  .upd-tags { display:flex; gap:5px; flex-wrap:wrap; justify-content:flex-end; flex-shrink:0; }
+  .utag {
+    font-size:.6rem; font-weight:700; padding:2px 8px; border-radius:20px; white-space:nowrap;
+  }
+  .ut-gn{background:rgba(63,185,80,.13); color:#3fb950; border:1px solid rgba(63,185,80,.3);}
+  .ut-bl{background:rgba(88,166,255,.1);  color:#58a6ff; border:1px solid rgba(88,166,255,.3);}
+  .ut-pu{background:rgba(163,113,247,.1); color:#a371f7; border:1px solid rgba(163,113,247,.3);}
+
+  /* ── FOOTER ── */
+  .ftr {
+    margin:0 48px;
+    padding:16px 0;
+    border-top:1px solid #21262d;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .ftr-l .app-name { font-family:'JetBrains Mono',monospace; font-size:.82rem; font-weight:700; color:#58a6ff; }
+  .ftr-l .app-url  { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:#8b949e; margin-top:2px; }
+  .ftr-r { text-align:right; }
+  .powered { font-size:.62rem; color:#484f58; margin-bottom:4px; }
+  .techs { display:flex; gap:5px; justify-content:flex-end; }
+  .tech {
+    font-size:.6rem; font-weight:600; padding:2px 7px; border-radius:4px;
+    background:#161b22; border:1px solid #30363d; color:#8b949e;
+    font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="poster" id="poster">
+  <div class="orb orb-b"></div>
+  <div class="orb orb-g"></div>
+  <div class="orb orb-p"></div>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="tag-row">
+      <span class="tag t-bl">Global Intelligence</span>
+      <span class="tag t-gn">Live Data</span>
+      <span class="tag t-pu">AI-Powered</span>
+    </div>
+    <div class="title">GridX: Watt &amp; Byte</div>
+    <div class="mono-sub">// Global Data Center &amp; Power Infrastructure Dashboard</div>
+    <div class="headline">
+      전 세계 데이터센터·발전소 인프라를 한 화면에서.<br>
+      실시간 업데이트, AI 분석, 인터랙티브 지도로 에너지와 디지털 인프라의 연결고리를 탐색하세요.
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="s-item">
+      <div class="s-num c-bl">111</div>
+      <div class="s-lbl">글로벌 데이터센터<br>DB 수록</div>
+    </div>
+    <div class="s-item">
+      <div class="s-num c-gn">10,741</div>
+      <div class="s-lbl">전 세계 발전소<br>(50MW 이상)</div>
+    </div>
+    <div class="s-item">
+      <div class="s-num c-pu">16</div>
+      <div class="s-lbl">AI 특화 DC<br>(xAI·Stargate 등)</div>
+    </div>
+    <div class="s-item">
+      <div class="s-num c-yl">7</div>
+      <div class="s-lbl">글로벌 권역<br>분류 분석</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="feats">
+    <div class="sec-hdr">주요 기능</div>
+    <div class="feat-grid">
+      <div class="fc">
+        <span class="fc-ico">🗺️</span>
+        <div class="fc-ttl">인터랙티브 세계 지도</div>
+        <div class="fc-dsc">D3.js 기반 SVG 지도. 버블 클릭으로 DC·발전소 상세 정보 즉시 확인. 국가 클릭 시 해당국 DC 목록 팝업 표시.</div>
+      </div>
+      <div class="fc">
+        <span class="fc-ico">⚡</span>
+        <div class="fc-ttl">DC 상태 필터링</div>
+        <div class="fc-dsc">운영중·건설중·계획 단계별 필터. AI 특화 DC만 별도 하이라이트. 버블 시각 인코딩으로 상태 즉시 구분.</div>
+      </div>
+      <div class="fc">
+        <span class="fc-ico">📊</span>
+        <div class="fc-ttl">KPI 대시보드</div>
+        <div class="fc-dsc">권역별 DC 수·용량, 에너지 믹스, 파이프라인 현황을 인터랙티브 바 차트로 시각화. 글로벌 비중(%) 동시 표시.</div>
+      </div>
+      <div class="fc dim">
+        <span class="fc-ico">🔬</span>
+        <div class="fc-ttl">Analysis Lab <span class="badge-wip">추후 개선</span></div>
+        <div class="fc-dsc">전력 자립도·친환경 혼합률·파이프라인 밀도·수자원 리스크 심층 분석 기능. 현재 개선 작업 중.</div>
+      </div>
+      <div class="fc">
+        <span class="fc-ico">📰</span>
+        <div class="fc-ttl">실시간 뉴스 피드</div>
+        <div class="fc-dsc">Google News 기반 글로벌 AI·에너지 뉴스 자동 수집·한국어 번역. AI 챗봇 기사 요약 기능 탑재.</div>
+      </div>
+      <div class="fc">
+        <span class="fc-ico">🤖</span>
+        <div class="fc-ttl">AI 챗봇 Q&amp;A</div>
+        <div class="fc-dsc">Gemini 2.5 Flash 기반 인프라 전문 어시스턴트. 국가별 DC·발전소 통계, 기술 동향을 자연어로 질의응답.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA -->
+  <div class="data-sec">
+    <div class="sec-hdr">제공 데이터</div>
+    <div class="data-row">
+      <div class="dc">
+        <div class="dc-ttl">🏢 데이터센터 DB</div>
+        <ul class="dc-list">
+          <li><span class="dot d-bl"></span>하이퍼스케일러: AWS·Azure·Google·Meta·Apple</li>
+          <li><span class="dot d-pu"></span>AI 특화: xAI·Stargate·CoreWeave·AWS Rainier</li>
+          <li><span class="dot d-bl"></span>아시아: Kakao·Alibaba·Tencent·Baidu·NTT</li>
+          <li><span class="dot d-bl"></span>운영 현황: PUE·WUE·냉각방식·용량(MW)</li>
+          <li><span class="dot d-pu"></span>건설중 14개소 / 계획 4개소 파이프라인 포함</li>
+        </ul>
+      </div>
+      <div class="dc">
+        <div class="dc-ttl">⚡ 전력 인프라 DB</div>
+        <ul class="dc-list">
+          <li><span class="dot d-gn"></span>태양광·풍력·수력·원자력 재생에너지 현황</li>
+          <li><span class="dot d-yl"></span>석탄·가스·석유 화석연료 발전소</li>
+          <li><span class="dot d-gn"></span>국가별 친환경 에너지 비중(%) 산출</li>
+          <li><span class="dot d-rd"></span>전력 자립도 vs DC 수요 갭 분석</li>
+          <li><span class="dot d-bl"></span>소유자·가동연도·설비용량 데이터 포함</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPDATE -->
+  <div class="upd">
+    <div class="upd-ico">🔄</div>
+    <div class="upd-body">
+      <div class="upd-ttl">자동 데이터 업데이트 시스템</div>
+      <div class="upd-dsc">GitHub Actions 파이프라인이 매주 자동으로 최신 데이터를 수집·반영. arXiv 학술 논문, 글로벌 뉴스, 인프라 인텔리전스를 지속 업데이트.</div>
+    </div>
+    <div class="upd-tags">
+      <span class="utag ut-gn">매주 자동 수집</span>
+      <span class="utag ut-bl">arXiv 연동</span>
+      <span class="utag ut-pu">CI/CD 자동 배포</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ftr">
+    <div class="ftr-l">
+      <div class="app-name">GridX: Watt &amp; Byte</div>
+      <div class="app-url">dcmap.jysong78.workers.dev</div>
+    </div>
+    <div class="ftr-r">
+      <div class="powered">Powered by</div>
+      <div class="techs">
+        <span class="tech">D3.js v7</span>
+        <span class="tech">TopoJSON</span>
+        <span class="tech">Gemini 2.5</span>
+        <span class="tech">Cloudflare</span>
+        <span class="tech">GitHub Actions</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function scalePoster() {
+    const poster = document.getElementById('poster');
+    const pw = 800, ph = 1130;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const scale = Math.min((vw * 0.96) / pw, (vh * 0.96) / ph);
+    poster.style.transform = `scale(${scale})`;
+  }
+  scalePoster();
+  window.addEventListener('resize', scalePoster);
+</script>
+</body>
+</html>
