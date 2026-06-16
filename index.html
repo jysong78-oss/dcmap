@@ -214,6 +214,22 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 .info-text{font-size:1.09rem;line-height:1.6;color:#c9d1d9;margin-bottom:15px}
 .info-text strong{color:#e6edf3}
 .info-code{background:rgba(255,255,255,0.05);padding:10px 15px;border-radius:6px;font-family:monospace;font-size:1.03rem;color:#f97316;margin-bottom:15px;display:inline-block;border:1px solid #30363d}
+.kb-ref{font-size:0.75rem;color:#484f58;margin-top:12px;padding-top:8px;border-top:1px dashed rgba(48,54,61,0.45);line-height:1.5}
+.kb-metric-card{background:rgba(13,17,23,0.6);border:1px solid #30363d;border-radius:10px;padding:16px 20px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.kb-cmp-wrap{overflow-x:auto;margin-top:4px}
+.kb-cmp-table{width:100%;border-collapse:collapse;font-size:0.83rem;min-width:420px}
+.kb-cmp-table th{padding:9px 12px;border-bottom:2px solid #30363d;font-weight:700;text-align:left;background:rgba(22,27,34,0.6)}
+.kb-cmp-table th:first-child{color:#8b949e;width:140px}
+.kb-cmp-table td{padding:8px 12px;border-bottom:1px solid #21262d;color:#c9d1d9;vertical-align:top}
+.kb-cmp-table td:first-child{color:#8b949e;font-weight:600;background:rgba(22,27,34,0.4);white-space:nowrap}
+.kb-cmp-table tr:hover td{background:rgba(255,255,255,0.02)}
+.kb-cmp-table tr:hover td:first-child{background:rgba(22,27,34,0.55)}
+.kb-cmp-table tr:last-child td{border-bottom:none}
+.kb-link-item{display:block;background:rgba(22,27,34,0.6);border:1px solid #30363d;border-radius:8px;padding:12px 14px;text-decoration:none;transition:border-color .2s,background .2s}
+.kb-link-item:hover{background:rgba(88,166,255,0.06)}
+.kb-link-name{font-weight:700;color:#58a6ff;margin-bottom:4px;font-size:0.9rem}
+.kb-link-desc{font-size:0.8rem;color:#8b949e;line-height:1.4}
+.kb-extra{font-size:0.8rem;color:#484f58;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(48,54,61,0.4)}
 
 /* 중간 해상도 (1280px 이하) */
 @media(max-width:1280px){
@@ -640,134 +656,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
         <div id="info-intel-list" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
       
-      <div class="info-section">
-        <div class="info-sec-title">1. 글로벌 빅테크 데이터센터 주요 지표 (2026년 기준)</div>
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="ic-title" style="color:#58a6ff"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z"/></svg> Microsoft</div>
-            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">15 개소</span></div>
-            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">3,433 MW</span></div>
-            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.12 - 1.16</span></div>
-            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.40 - 0.55</span></div>
-            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 6.4M ㎥</span></div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title" style="color:#f97316"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 21.6c-5.302 0-9.6-4.298-9.6-9.6S6.698 2.4 12 2.4s9.6 4.298 9.6 9.6-4.298 9.6-9.6 9.6zm-1.8-14.4l7.2 4.8-7.2 4.8V7.2z"/></svg> Amazon (AWS)</div>
-            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">15 개소</span></div>
-            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">2,285 MW</span></div>
-            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.11 - 1.15</span></div>
-            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.13 - 0.89</span></div>
-            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 5.0M ㎥</span></div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title" style="color:#22c55e"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.02 10.18v3.72h7.06c-.28 1.58-1.07 2.72-1.92 3.58-.98.98-2.58 2.06-5.14 2.06-4.12 0-7.38-3.38-7.38-7.54s3.26-7.54 7.38-7.54c2.22 0 3.84.88 4.96 1.94l2.64-2.64C17.64 1.84 15.16 0 12.02 0 5.4 0 0 5.38 0 12s5.4 12 12.02 12c3.52 0 6.64-1.16 8.94-3.56 2.38-2.4 3.04-5.74 3.04-8.26 0-.66-.06-1.32-.16-2H12.02z"/></svg> Google</div>
-            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">12 개소</span></div>
-            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">2,195 MW</span></div>
-            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.08 - 1.10</span></div>
-            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.05 - 1.80</span></div>
-            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 5.7M ㎥</span></div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title" style="color:#3b82f6"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Meta</div>
-            <div class="ic-row"><span class="ic-label">운영 시설 수</span><span class="ic-val">6 개소</span></div>
-            <div class="ic-row"><span class="ic-label">누적 용량</span><span class="ic-val">1,635 MW</span></div>
-            <div class="ic-row"><span class="ic-label">대표 PUE 범위</span><span class="ic-val">1.07 - 1.11</span></div>
-            <div class="ic-row"><span class="ic-label">대표 WUE (L/kWh)</span><span class="ic-val">0.03 - 1.40</span></div>
-            <div class="ic-row"><span class="ic-label">연간 물사용량</span><span class="ic-val">약 2.6M ㎥</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="info-section">
-        <div class="info-sec-title">2. 핵심 용어 정리</div>
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="ic-title">Hyperscale vs Colocation</div>
-            <div class="info-text">
-              <strong>하이퍼스케일(Hyperscale):</strong> 클라우드 서비스 제공자(AWS, Google 등)가 수만 대 이상의 서버를 운영하기 위해 자체적으로 구축한 초대형 데이터센터입니다. IT 인프라를 유연하게 확장(Scale-out)할 수 있는 아키텍처가 특징입니다.
-            </div>
-            <div class="info-text">
-              <strong>코로케이션(Colocation):</strong> 기업 고객들에게 서버를 설치할 수 있는 공간, 전력, 네트워크, 쿨링 등의 물리적 인프라를 임대해주는 상업용 데이터센터입니다. (예: Equinix, Digital Realty)
-            </div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title">냉각 방식 (Cooling Technologies)</div>
-            <div class="info-text">
-              <strong>공랭식 (Air Cooling):</strong> 차가운 공기를 불어넣어 서버의 열을 식히는 전통적인 방식입니다. 외기를 직접 끌어오는 Free Cooling과 결합하여 효율을 높이기도 합니다.
-            </div>
-            <div class="info-text">
-              <strong>수랭식/액침 (Liquid/Immersion):</strong> 물이나 특수 냉각액(Dielectric fluid)을 활용하여 직접 서버의 열을 식힙니다. 고발열 AI 서버(GPU)의 등장으로 액침 냉각 등 차세대 수랭식 기술이 필수로 자리 잡고 있습니다.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="info-section">
-        <div class="info-sec-title">3. 효율성 지표 (Efficiency Metrics)</div>
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="ic-title">PUE (전력 사용 효율)</div>
-            <div class="info-text">데이터센터가 에너지를 얼마나 효율적으로 사용하는지 나타내는 가장 대표적인 지표입니다. 1에 가까울수록 전력 낭비가 없음을 의미합니다.</div>
-            <div class="info-code">PUE = 데이터센터 전체 사용 전력 / IT 장비 사용 전력</div>
-            <div class="info-text">
-              예를 들어 PUE가 1.5라면, 서버가 100W를 쓸 때 냉각 및 조명 등에 추가로 50W가 낭비되고 있다는 뜻입니다. (글로벌 평균 약 1.5, 하이퍼스케일 평균 1.1~1.2)
-            </div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title">WUE (물 사용 효율)</div>
-            <div class="info-text">데이터센터의 냉각 과정에서 소비되는 수자원의 효율성을 나타내는 지표입니다. 숫자가 낮을수록 물을 적게 소모하는 친환경 센터입니다.</div>
-            <div class="info-code">WUE = 냉각 과정 연간 총 물 사용량(L) / IT 장비 연간 사용 전력(kWh)</div>
-            <div class="info-text">
-              수자원 고갈이 심각한 사막 지역 등에서는 물 대신 공기를 사용하는 증발식/건식 냉각(Air/Dry Cooling)을 채택하여 WUE를 0에 가깝게 유지하려고 노력합니다.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="info-section">
-        <div class="info-sec-title">4. 데이터센터 냉각 기술 동향 (2024~2025)</div>
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="ic-title" style="color:#38bdf8">공랭식 (Air Cooling)</div>
-            <div class="info-text">
-              <strong>특징:</strong> 차가운 공기를 서버 랙(Rack)에 불어넣어 열을 식히는 전통적인 방식. 구축 비용이 저렴하고 관리가 익숙하지만, 랙당 20kW 이상의 고밀도 발열을 감당하기 어렵습니다.
-            </div>
-            <div class="info-text">
-              <strong>최근 적용 현황:</strong> 여전히 전 세계 데이터센터의 다수를 차지하지만(약 70% 이상), 생성형 AI용 고사양 GPU 랙에는 한계가 있어 수랭식과 혼용(하이브리드)되는 추세입니다.
-            </div>
-            <div class="info-ref" style="font-size:0.86rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
-              * Ref: Uptime Institute 2024 Data Center Cooling Survey
-            </div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title" style="color:#3b82f6">D2C 수랭식 (Direct-to-Chip Liquid Cooling)</div>
-            <div class="info-text">
-              <strong>특징:</strong> 발열이 심한 CPU/GPU 표면에 직접 냉각판(Cold Plate)을 부착해 냉각수가 열을 흡수하는 방식. 공랭식 대비 냉각 효율이 매우 높고 PUE 절감 효과가 큽니다.
-            </div>
-            <div class="info-text">
-              <strong>최근 적용 현황:</strong> NVIDIA H100/B200 등 고성능 AI 서버 도입으로 인해 '선택'이 아닌 '필수'로 자리매김 중입니다. 기존 인프라 개조가 용이해 가장 빠르게 성장 중입니다.
-            </div>
-            <div class="info-ref" style="font-size:0.86rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
-              * Ref: Gartner & Vertiv AI Infrastructure Report 2024
-            </div>
-          </div>
-          <div class="info-card">
-            <div class="ic-title" style="color:#a855f7">액침 냉각 (Immersion Cooling)</div>
-            <div class="info-text">
-              <strong>특징:</strong> 전기가 통하지 않는 특수 용액(유전체 액체)에 서버를 통째로 담가 열을 식히는 혁신적 방식. 공기가 전혀 필요 없어 쿨링팬이 제거되며, 밀도를 극한(랙당 100kW 이상)으로 높일 수 있습니다.
-            </div>
-            <div class="info-text">
-              <strong>최근 적용 현황:</strong> 마이크로소프트, 메타 등 빅테크가 주도하여 모듈형 AI 데이터센터에 적극 테스트 및 적용 중입니다. 최고의 에너지 효율(PUE 1.0x 대)을 자랑합니다.
-            </div>
-            <div class="info-ref" style="font-size:0.86rem;color:#8b949e;margin-top:10px;border-top:1px dashed rgba(48,54,61,0.5);padding-top:10px;">
-              * Ref: Global Market Insights, Immersion Cooling Market 2025
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="padding:15px; text-align:center; color:#8b949e; font-size:0.86rem; border-top:1px solid #30363d">
-        데이터 출처: WRI Aqueduct, 자체 수집, Google News RSS, arXiv API 등
-      </div>
+            <div id="kb-sections"></div>
     </div>
   </div>
 
@@ -837,6 +726,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
         <div class="chat-msg msg-bot" style="background:rgba(234,179,8,0.08);border-color:rgba(234,179,8,0.3);color:#c9d1d9;font-size:0.82rem;line-height:1.5;">
           ⚠️ <strong style="color:#eab308;">안내</strong><br>
           현재 챗봇은 <strong>개인 무료 Google API</strong>를 사용 중으로, 응답 횟수 및 속도에 제한이 있을 수 있습니다.<br>
+          현재는 <strong style="color:#eab308;">브라우저에 개인 API 키를 직접 입력</strong>해야 이용 가능합니다. (첫 메시지 전송 시 입력창이 나타납니다)<br>
           추후 유료 플랜 전환 또는 API 업그레이드를 통해 개선될 예정입니다. 🙏
         </div>
       </div>
@@ -852,6 +742,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 <script src="https://unpkg.com/topojson-client@3"></script>
 <script src="world_topo.js?v=20260612_1"></script>
 <script src="continent_map.js?v=20260612_1"></script>
+<script src="knowledge_base.js?v=20260616_1"></script>
 <script src="dc_data.js?t=20260614_1"></script>
 <script src="water_risk_data.js?v=20260614"></script>
 <script src="changelog.js?t=20260612_1"></script>
@@ -2180,6 +2071,108 @@ async function fetchNews() {
   }
 }
 
+/* ─────────────────────────────────────────
+   Knowledge Base 렌더링 함수
+   데이터: knowledge_base.js (KB_SECTIONS)
+───────────────────────────────────────── */
+function renderKnowledgeBase() {
+  const el = document.getElementById('kb-sections');
+  if (!el || typeof KB_SECTIONS === 'undefined') return;
+  el.innerHTML = KB_SECTIONS.map(kbSection).join('');
+}
+
+function kbSection(s) {
+  const renderers = {
+    'company-cards':    kbCompanyCards,
+    'info-cards':       kbInfoCards,
+    'metric-cards':     kbMetricCards,
+    'comparison-table': kbComparisonTable,
+    'link-cards':       kbLinkCards,
+  };
+  const fn = renderers[s.type];
+  const body = fn ? fn(s) : '';
+  const refLine = s.ref ? `<div class="kb-ref">📎 출처: ${s.ref}${s.updated ? ` &nbsp;·&nbsp; 갱신: ${s.updated}` : ''}</div>` : '';
+  return `<div class="info-section" id="kb-${s.id}">\n<div class="info-sec-title">${s.title}</div>\n${body}\n${refLine}\n</div>`;
+}
+
+function kbCompanyCards(s) {
+  return `<div class="info-grid">${s.items.map(item => {
+    const stats = item.stats.map(([l,v]) =>
+      `<div class="ic-row"><span class="ic-label">${l}</span><span class="ic-val">${v}</span></div>`
+    ).join('');
+    return `<div class="info-card">
+      <div class="ic-title" style="color:${item.color}">
+        <span style="width:30px;height:30px;background:${item.color}22;border:1px solid ${item.color}55;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;color:${item.color};flex-shrink:0;margin-right:6px">${item.abbr}</span>
+        ${item.name}
+      </div>${stats}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function kbInfoCards(s) {
+  return `<div class="info-grid">${s.items.map(item => {
+    const extra = item.extra ? `<div class="kb-extra">ℹ️ ${item.extra}</div>` : '';
+    const ref   = item.ref   ? `<div class="kb-ref">📎 ${item.ref}</div>` : '';
+    return `<div class="info-card">
+      <div class="ic-title">${item.emoji || ''} <span style="color:${item.color || '#e6edf3'}">${item.title}</span></div>
+      ${item.tableHtml || ''}
+      ${item.body ? `<div class="info-text">${item.body}</div>` : ''}
+      ${extra}${ref}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function kbMetricCards(s) {
+  return s.items.map(item => {
+    const rows = item.benchmarks.map(([label, val, color]) =>
+      `<tr><td style="padding:5px 8px;border-bottom:1px solid #21262d;color:#8b949e">${label}</td>
+           <td style="padding:5px 8px;border-bottom:1px solid #21262d;color:${color};font-weight:600">${val}</td></tr>`
+    ).join('');
+    const ref = item.ref ? `<div class="kb-ref">📎 ${item.ref}</div>` : '';
+    return `<div class="kb-metric-card">
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+        <span style="font-size:1.3rem;font-weight:800;color:#58a6ff">${item.name}</span>
+        <span style="font-size:0.82rem;color:#8b949e">${item.fullName}</span>
+      </div>
+      <div class="info-code" style="display:block;margin-bottom:12px">${item.formula}</div>
+      <div class="info-text" style="font-size:0.92rem;margin-bottom:10px">${item.description}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:0.82rem">
+        <thead><tr>
+          <th style="text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600">구분</th>
+          <th style="text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600">수치</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>${ref}
+    </div>`;
+  }).join('');
+}
+
+function kbComparisonTable(s) {
+  const headers = s.columns.map(c => `<th style="color:${c.color}">${c.label}</th>`).join('');
+  const rows = s.rows.map(row =>
+    `<tr><td class="kb-cmp-label">${row.label}</td>${row.values.map(v => `<td>${v}</td>`).join('')}</tr>`
+  ).join('');
+  return `<div class="kb-cmp-wrap"><table class="kb-cmp-table">
+    <thead><tr><th></th>${headers}</tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+function kbLinkCards(s) {
+  return s.categories.map(cat => {
+    const links = cat.links.map(link =>
+      `<a href="${link.url}" target="_blank" rel="noopener" class="kb-link-item" style="--hover-color:${cat.color}">
+        <div class="kb-link-name">${link.name} ↗</div>
+        <div class="kb-link-desc">${link.desc}</div>
+      </a>`
+    ).join('');
+    return `<div style="margin-bottom:22px">
+      <div class="kb-link-cat-label" style="color:${cat.color};background:${cat.color}18;border-left:3px solid ${cat.color}">${cat.label}</div>
+      <div class="info-grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr))">${links}</div>
+    </div>`;
+  }).join('');
+}
+
 window.onload = async () => {
   const _loadStart = Date.now();
   setProgress(5, '필터 초기화...');
@@ -2201,6 +2194,7 @@ window.onload = async () => {
   initChangelogModal();
   initAISelector();
   initDataSourcePanel();
+  renderKnowledgeBase();
 
   setProgress(97, '발전소 데이터 선로딩...');
   loadPPData(() => {}); // 백그라운드, 완료 기다리지 않음
