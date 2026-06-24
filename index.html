@@ -1657,7 +1657,7 @@ function loadPPData(callback) {
 
   function fallbackScript() {
     const s = document.createElement('script');
-    s.src = 'pp_data.js?t=20260614_1';
+    s.src = 'pp_data.js?t=20260624_1';
     const timeout = setTimeout(() => { ppDataLoading = false; callback(); }, 60000);
     s.onload = () => {
       clearTimeout(timeout);
@@ -1668,7 +1668,7 @@ function loadPPData(callback) {
     document.head.appendChild(s);
   }
 
-  fetch('pp_data.json?t=20260614_2')
+  fetch('pp_data.json?t=20260624_2')
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(({ cols, rows }) => {
       initPP(rows.map(r => { const o = {}; cols.forEach((c,i) => { o[c]=r[i]; }); return o; }));
