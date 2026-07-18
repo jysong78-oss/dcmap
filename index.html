@@ -1961,7 +1961,8 @@ async function fetchNews() {
            koTitle: koTitle,
            link: item.link,
            author: item.author || timeStr,
-           keywords: extractKeywords(item.title)
+           keywords: extractKeywords(item.title),
+           description: (item.description || item.content || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 1500)
         };
       });
 
@@ -2011,7 +2012,8 @@ async function fetchNews() {
 
             row.querySelector('.chat-sum-btn').addEventListener('click', () => {
               const kw = item.keywords ? item.keywords.join(', ') : '';
-              chatInput.value = `다음 뉴스 기사를 한국어로 전문적으로 요약해줘.\n\n제목(영문): ${item.title}\n번역 제목: ${item.koTitle}\n출처/언론사: ${item.author}\n키워드: ${kw}\n링크: ${item.link}`;
+              const snippet = item.description || '(본문 스니펫이 제공되지 않음 - 제목/키워드 기반으로만 정리해줘)';
+              chatInput.value = `다음 뉴스 기사를 한국어로 상세히 요약해줘. 본문에 등장하는 수치(용량 MW, 투자금액, 면적, 일정 등)가 있으면 반드시 그대로 살려서 강조해줘.\n\n제목(영문): ${item.title}\n번역 제목: ${item.koTitle}\n출처/언론사: ${item.author}\n키워드: ${kw}\n본문 스니펫: ${snippet}\n링크: ${item.link}`;
               chatSend.click();
             });
 
@@ -2289,7 +2291,7 @@ function renderIntelData() {
         const chatInputEl = document.getElementById('chat-input');
         const chatSendEl = document.getElementById('chat-send');
         if (chatInputEl && chatSendEl) {
-          chatInputEl.value = `다음 논문을 한국어로 전문적으로 요약해줘.\n\n제목: ${item.title}\n\n초록(영문): ${item.summary}\n\n출처: ${item.link}`;
+          chatInputEl.value = `다음 논문을 한국어로 상세히 요약해줘. 초록에 등장하는 수치(성능 향상률, 데이터셋 크기, 파라미터 수 등)가 있으면 반드시 그대로 살려서 강조해줘.\n\n제목: ${item.title}\n\n초록(영문): ${item.summary}\n\n출처: ${item.link}`;
           chatSendEl.click();
         }
       });
