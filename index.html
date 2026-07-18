@@ -719,15 +719,14 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
       <div class="chat-resize-handle" id="chat-resize-handle"></div>
       <div class="ai-selector">
         <span class="ai-sel-lbl">AI:</span>
-        <span class="ai-sel-btn active-gemini">🔵 Gemini 2.5 Flash</span>
+        <span class="ai-sel-btn active-gemini">🦙 Llama 3.3 (Workers AI)</span>
       </div>
       <div class="chat-messages" id="chat-messages">
         <div class="chat-msg msg-bot">안녕하세요! 지도 데이터에 대해 무엇이든 물어보세요. (예: "미국 데이터센터 수 알려줘", "가장 큰 발전소는 어디야?")</div>
         <div class="chat-msg msg-bot" style="background:rgba(234,179,8,0.08);border-color:rgba(234,179,8,0.3);color:#c9d1d9;font-size:0.82rem;line-height:1.5;">
           ⚠️ <strong style="color:#eab308;">안내</strong><br>
-          현재 챗봇은 <strong>개인 무료 Google API</strong>를 사용 중으로, 응답 횟수 및 속도에 제한이 있을 수 있습니다.<br>
-          현재는 <strong style="color:#eab308;">브라우저에 개인 API 키를 직접 입력</strong>해야 이용 가능합니다. (첫 메시지 전송 시 입력창이 나타납니다)<br>
-          추후 유료 플랜 전환 또는 API 업그레이드를 통해 개선될 예정입니다. 🙏
+          챗봇은 별도 API 키 입력 없이 누구나 바로 이용할 수 있습니다.<br>
+          다만 모든 방문자가 함께 사용하는 무료 할당량이라 트래픽이 몰리면 응답이 느려지거나 일시적으로 제한될 수 있습니다. 🙏
         </div>
       </div>
       <div class="chat-input-area">
@@ -1768,45 +1767,30 @@ function appendMessage(text, isUser) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-async function callGeminiAPI(query) {
-  let apiKey = localStorage.getItem("gemini_api_key") || "";
-  if (!apiKey) {
-    apiKey = prompt("Gemini API 키를 입력하세요 (입력값은 브라우저에만 저장됩니다):");
-    if (!apiKey) return "API 키가 없어 응답할 수 없습니다.";
-    localStorage.setItem("gemini_api_key", apiKey.trim());
-  }
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  const systemPrompt = "당신은 데이터센터와 전력망(발전소) 전문가 AI입니다. 이 대시보드는 전 세계 데이터센터와 50MW 이상의 발전소 지도를 보여줍니다. 질문에 전문적이고 친절하게 답해주세요. 응답은 마크다운 대신 HTML 태그(<b>, <br> 등)를 사용하여 출력해주세요.";
-  
+async function callChatAPI(query) {
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: systemPrompt + "\n\n사용자 질문: " + query }] }]
-      })
+      body: JSON.stringify({ query })
     });
-    
-    if (!response.ok) {
-      const errData = await response.json().catch(()=>({}));
-      throw new Error(`API 오류: ${response.status}`);
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || data.error) {
+      throw new Error(data.error || `API 오류: ${response.status}`);
     }
-    
-    const data = await response.json();
-    if (data.candidates && data.candidates[0].content.parts[0].text) {
-      return data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-    } else {
-      return "AI가 응답을 생성하지 못했습니다.";
-    }
+
+    return (data.text || "AI가 응답을 생성하지 못했습니다.").replace(/\n/g, '<br>');
   } catch (err) {
     console.error(err);
-    return "API 호출 중 오류가 발생했습니다: " + err.message;
+    return "AI 호출 중 오류가 발생했습니다: " + err.message;
   }
 }
 
 async function processChatQuery(query) {
   const q = query.toLowerCase();
-  const callAI = callGeminiAPI;
+  const callAI = callChatAPI;
 
   if (q.includes("요약") || q.includes("논문") || q.includes("리포트") || q.includes("기사")) {
     return await callAI(query);
@@ -1880,7 +1864,7 @@ async function handleSend() {
   appendMessage(text, true);
   chatInput.value = "";
 
-  const provLabel = "🔵 Gemini 2.5 Flash";
+  const provLabel = "🦙 Llama 3.3";
   const loadingId = "load-" + Date.now();
   const div = document.createElement("div");
   div.className = "chat-msg msg-bot";
@@ -1938,16 +1922,6 @@ chatInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") handleSend();
 });
 
-function initAISelector() {
-  const resetBtn = document.querySelector('.ai-key-reset');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      localStorage.removeItem("gemini_api_key");
-      resetBtn.textContent = "키 초기화됨";
-      setTimeout(() => { resetBtn.textContent = "API 키 재설정"; }, 1500);
-    });
-  }
-}
 
 // News Ticker Logic
 async function fetchNews() {
@@ -2192,7 +2166,6 @@ window.onload = async () => {
   initAnalysisLab();
   renderIntelData();
   initChangelogModal();
-  initAISelector();
   initDataSourcePanel();
   renderKnowledgeBase();
 
