@@ -90,6 +90,15 @@ async function scrapeArticle(articleUrl) {
   }
 }
 
+function trimIncompleteEnding(text) {
+  const trimmed = text.trim();
+  if (/[.!?][)"'”]*$/.test(trimmed)) return trimmed;
+
+  const lastBreak = trimmed.lastIndexOf("<br>");
+  if (lastBreak === -1) return trimmed;
+  return trimmed.slice(0, lastBreak).trim();
+}
+
 function sanitizeHistory(rawHistory) {
   if (!Array.isArray(rawHistory)) return [];
   return rawHistory
@@ -154,6 +163,7 @@ async function handleChat(request, env) {
     }
     if (!text) return json({ error: "AI가 응답을 생성하지 못했습니다." }, 502);
     if (HANJA_RE.test(text)) text = text.replace(new RegExp(HANJA_RE, "g"), "");
+    if (summaryMode) text = trimIncompleteEnding(text);
 
     return json({ text });
   } catch (err) {
