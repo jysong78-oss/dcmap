@@ -1,0 +1,21 @@
+{
+  "name": "dcmap",
+  "main": "worker.js",
+  "compatibility_date": "2026-06-21",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "ai": {
+    "binding": "AI"
+  }
+}

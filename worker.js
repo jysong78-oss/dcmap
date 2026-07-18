@@ -8,9 +8,10 @@ function json(obj, status = 200) {
   });
 }
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
-
+async function handleChat(request, env) {
+  if (request.method !== "POST") {
+    return json({ error: "Method not allowed" }, 405);
+  }
   if (!env.AI) {
     return json({ error: "Workers AI binding이 설정되지 않았습니다." }, 500);
   }
@@ -44,6 +45,12 @@ export async function onRequestPost(context) {
   }
 }
 
-export function onRequestGet() {
-  return json({ error: "Method not allowed" }, 405);
-}
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === "/api/chat") {
+      return handleChat(request, env);
+    }
+    return env.ASSETS.fetch(request);
+  },
+};
