@@ -50,40 +50,44 @@ function isSafeUrl(u) {
   }
 }
 
-async function scrapeArticleDebug(articleUrl) {
-  if (!isSafeUrl(articleUrl)) return { text: null, reason: "unsafe_url" };
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 7000);
-  const res = await fetch(articleUrl, {
-    signal: controller.signal,
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; GridXBot/1.0)" },
-  });
-  clearTimeout(timer);
-  if (!res.ok) return { text: null, reason: "http_" + res.status };
-
-  const contentType = res.headers.get("content-type") || "";
-  if (!contentType.includes("html")) return { text: null, reason: "content_type_" + contentType };
-  const contentLength = Number(res.headers.get("content-length") || 0);
-  if (contentLength && contentLength > 5000000) return { text: null, reason: "too_large_" + contentLength };
-
-  const collected = [];
-  const rewriter = new HTMLRewriter()
-    .on("script, style, nav, header, footer, aside, form, iframe, noscript", {
-      element(el) {
-        el.remove();
-      },
-    })
-    .on("p, h1, h2, h3", {
-      text(chunk) {
-        if (chunk.text) collected.push(chunk.text);
-      },
+async function scrapeArticle(articleUrl) {
+  if (!isSafeUrl(articleUrl)) return null;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 7000);
+    const res = await fetch(articleUrl, {
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; GridXBot/1.0)" },
     });
+    clearTimeout(timer);
+    if (!res.ok) return null;
 
-  await rewriter.transform(res).text();
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("html")) return null;
+    const contentLength = Number(res.headers.get("content-length") || 0);
+    if (contentLength && contentLength > 5000000) return null;
 
-  const text = collected.join(" ").replace(/\s+/g, " ").trim();
-  if (text.length < 200) return { text: null, reason: "too_short_" + text.length };
-  return { text: text.slice(0, 4000), reason: "ok" };
+    const collected = [];
+    const rewriter = new HTMLRewriter()
+      .on("script, style, nav, header, footer, aside, form, iframe, noscript", {
+        element(el) {
+          el.remove();
+        },
+      })
+      .on("p, h1, h2, h3", {
+        text(chunk) {
+          if (chunk.text) collected.push(chunk.text);
+        },
+      });
+
+    await rewriter.transform(res).text();
+
+    const text = collected.join(" ").replace(/\s+/g, " ").trim();
+    if (text.length < 200) return null;
+    return text.slice(0, 4000);
+  } catch {
+    return null;
+  }
 }
 
 function sanitizeHistory(rawHistory) {
@@ -132,27 +136,12 @@ async function handleChat(request, env) {
   const maxTokens = summaryMode ? 700 : 350;
 
   let effectiveQuery = query;
-  const debug = {
-    urlMatch: null,
-    scrapedLen: 0,
-    scrapeError: null,
-    queryTail: query.slice(-120),
-    queryTailCodes: Array.from(query.slice(-30)).map((c) => c.charCodeAt(0)),
-    summaryMode,
-  };
   if (summaryMode) {
     const m = query.match(URL_LABEL_RE);
     if (m) {
-      debug.urlMatch = m[1];
-      try {
-        const result = await scrapeArticleDebug(m[1]);
-        debug.scrapeReason = result.reason;
-        if (result.text) {
-          debug.scrapedLen = result.text.length;
-          effectiveQuery = query + "\n\n스크래핑된 기사 본문 전체(참고용, 실제 기사에서 추출됨):\n" + result.text;
-        }
-      } catch (e) {
-        debug.scrapeError = String((e && e.message) || e);
+      const scraped = await scrapeArticle(m[1]);
+      if (scraped) {
+        effectiveQuery = query + "\n\n스크래핑된 기사 본문 전체(참고용, 실제 기사에서 추출됨):\n" + scraped;
       }
     }
   }
@@ -165,7 +154,7 @@ async function handleChat(request, env) {
     if (!text) return json({ error: "AI가 응답을 생성하지 못했습니다." }, 502);
     if (HANJA_RE.test(text)) text = text.replace(new RegExp(HANJA_RE, "g"), "");
 
-    return json({ text, _debug: debug });
+    return json({ text });
   } catch (err) {
     return json({ error: "AI 호출 중 오류가 발생했습니다." }, 502);
   }
