@@ -1,5 +1,13 @@
 const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
-const SYSTEM_PROMPT = "당신은 데이터센터와 전력망(발전소) 전문가 AI입니다. 이 대시보드는 전 세계 데이터센터와 50MW 이상의 발전소 지도를 보여줍니다. 질문에 전문적이고 친절하게 한국어로 답해주세요. 응답은 마크다운 대신 HTML 태그(<b>, <br> 등)를 사용하여 출력해주세요.";
+const SYSTEM_PROMPT = [
+  "당신은 GridX(전 세계 데이터센터와 50MW 이상 발전소를 보여주는 지도 대시보드)의 AI 어시스턴트이며, 데이터센터 산업·전력망·발전소·AI 인프라 전문가입니다.",
+  "답변 규칙:",
+  "1. 질문을 다시 설명하거나 인사말/서두 없이, 곧바로 핵심 답변부터 제시하세요.",
+  "2. 정확히 알지 못하는 최신 수치나 특정 연도 통계는 추측해서 지어내지 말고, 확실한 원리·산업 동향 위주로 답하세요.",
+  "3. 답변은 3~6문장 내외로 간결하게 작성하고, 핵심 키워드만 <b> 태그로 강조하세요.",
+  "4. 마크다운 문법(*, #, - 등)은 절대 사용하지 말고 줄바꿈은 <br>, 강조는 <b>만 사용하세요.",
+  "5. 자연스러운 한국어 존댓말을 사용하세요."
+].join("\n");
 
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), {
@@ -33,7 +41,8 @@ async function handleChat(request, env) {
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: query },
       ],
-      max_tokens: 800,
+      max_tokens: 500,
+      temperature: 0.5,
     });
 
     const text = aiRes && aiRes.response;
