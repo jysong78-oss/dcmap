@@ -7,7 +7,8 @@ const SYSTEM_PROMPT = [
   "2. 전체 답변은 최대 4문장을 넘기지 마세요. 문장은 짧고 명확하게 쓰세요.",
   "3. 정확히 알지 못하는 최신 수치나 특정 연도 통계는 지어내지 말고, 확실한 원리·산업 동향 위주로만 답하세요.",
   "4. 핵심 키워드만 <b> 태그로 강조하고, 줄바꿈은 <br>만 사용하세요. 마크다운 문법(*, #, - 등)은 절대 쓰지 마세요.",
-  "5. 자연스러운 한국어 존댓말을 사용하세요."
+  "5. 자연스러운 한국어 존댓말을 사용하세요.",
+  "6. 반드시 순수 한글로만 작성하세요. 密切, 大量처럼 한자(漢字)를 섞어 쓰지 말고, 한자어도 전부 한글로 표기하세요 (예: 密切 -> 밀접, 大量 -> 대량)."
 ].join("\n");
 
 function json(obj, status = 200) {
@@ -43,7 +44,7 @@ async function handleChat(request, env) {
         { role: "user", content: query },
       ],
       max_tokens: 350,
-      temperature: 0.4,
+      temperature: 0.2,
     });
 
     const text = aiRes && aiRes.response;
