@@ -17,9 +17,9 @@ const SUMMARY_SYSTEM_PROMPT = [
   "사용자가 뉴스 기사나 논문 초록의 제목/본문 스니펫(때로는 실제 기사에서 스크래핑된 본문 전체)을 제공하면, 그 내용을 바탕으로 상세한 요약을 작성하세요.",
   "요약 규칙:",
   "1. 제공된 제목/본문/초록에 실제로 등장하는 정보만 사용하세요. 주어지지 않은 사실이나 수치를 절대 지어내지 마세요.",
-  "2. 본문에 등장하는 구체적인 수치(용량 MW/GW, 투자금액, 면적, 일정, 성능 향상률, 파라미터 수, 데이터셋 크기 등)는 절대 생략하지 말고 모두 <b> 태그로 강조해서 포함하세요.",
+  "2. 본문에 등장하는 구체적인 수치(용량 MW/GW, 투자금액, 면적, 일정, 성능 향상률, 파라미터 수, 데이터셋 크기 등)를 <b> 태그로 강조해서 포함하세요. 수치가 매우 많다면 가장 중요한 것 위주로 선별하세요.",
   "3. 스크래핑된 본문 전체가 제공된 경우 그것을 가장 신뢰할 수 있는 정보로 우선 사용하세요.",
-  "4. 6~10문장 분량으로 핵심 내용, 배경, 의미를 구조적으로 정리하세요. 문장 사이는 <br>로 구분하세요.",
+  "4. 반드시 8문장을 넘지 않게 쓰세요. 절대 넘기지 말고, 8문장 안에서 핵심 내용과 가장 중요한 수치 위주로 압축해서 자연스럽게 마무리하세요. 문장 사이는 <br>로 구분하세요.",
   "5. 본문 정보가 부족하거나 제공되지 않았다면, 있는 정보(제목/키워드)만으로 요약하고 정보가 부족하다는 점을 마지막 문장에 짧게 밝히세요.",
   "6. 마크다운 문법(*, #, - 등)은 절대 쓰지 말고 HTML 태그(<b>, <br>)만 사용하세요.",
   "7. 반드시 순수 한글로만 작성하세요. 한자(漢字)를 섞어 쓰지 마세요."
@@ -54,7 +54,7 @@ async function scrapeArticle(articleUrl) {
   if (!isSafeUrl(articleUrl)) return null;
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 7000);
+    const timer = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(articleUrl, {
       signal: controller.signal,
       headers: { "User-Agent": "Mozilla/5.0 (compatible; GridXBot/1.0)" },
@@ -84,7 +84,7 @@ async function scrapeArticle(articleUrl) {
 
     const text = collected.join(" ").replace(/\s+/g, " ").trim();
     if (text.length < 200) return null;
-    return text.slice(0, 4000);
+    return text.slice(0, 2000);
   } catch {
     return null;
   }
@@ -133,7 +133,8 @@ async function handleChat(request, env) {
   const history = sanitizeHistory(body && body.history);
   const summaryMode = SUMMARY_REQUEST_RE.test(query);
   const systemPrompt = summaryMode ? SUMMARY_SYSTEM_PROMPT : CHAT_SYSTEM_PROMPT;
-  const maxTokens = summaryMode ? 700 : 350;
+  const maxTokens = summaryMode ? 500 : 350;
+  const maxRetries = summaryMode ? 1 : 2;
 
   let effectiveQuery = query;
   if (summaryMode) {
@@ -148,7 +149,7 @@ async function handleChat(request, env) {
 
   try {
     let text = await generate(env, systemPrompt, history, effectiveQuery, maxTokens);
-    for (let attempt = 0; attempt < 2 && text && HANJA_RE.test(text); attempt++) {
+    for (let attempt = 0; attempt < maxRetries && text && HANJA_RE.test(text); attempt++) {
       text = await generate(env, systemPrompt, history, effectiveQuery, maxTokens);
     }
     if (!text) return json({ error: "AI가 응답을 생성하지 못했습니다." }, 502);

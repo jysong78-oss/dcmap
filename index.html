@@ -1872,11 +1872,12 @@ async function handleSend() {
   chatInput.value = "";
 
   const provLabel = "🦙 Llama 3.3";
+  const isSummary = text.includes("요약해줘");
   const loadingId = "load-" + Date.now();
   const div = document.createElement("div");
   div.className = "chat-msg msg-bot";
   div.id = loadingId;
-  div.innerHTML = `<span style="opacity:0.6">${provLabel} 답변 생성 중...</span>`;
+  div.innerHTML = `<span style="opacity:0.6">${provLabel} 답변 생성 중...${isSummary ? ' (본문 확인 중, 최대 30초 소요될 수 있어요)' : ''}</span>`;
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
   
