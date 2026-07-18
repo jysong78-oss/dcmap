@@ -132,7 +132,14 @@ async function handleChat(request, env) {
   const maxTokens = summaryMode ? 700 : 350;
 
   let effectiveQuery = query;
-  const debug = { urlMatch: null, scrapedLen: 0, scrapeError: null };
+  const debug = {
+    urlMatch: null,
+    scrapedLen: 0,
+    scrapeError: null,
+    queryTail: query.slice(-120),
+    queryTailCodes: Array.from(query.slice(-30)).map((c) => c.charCodeAt(0)),
+    summaryMode,
+  };
   if (summaryMode) {
     const m = query.match(URL_LABEL_RE);
     if (m) {
