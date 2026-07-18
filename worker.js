@@ -18,6 +18,20 @@ function json(obj, status = 200) {
   });
 }
 
+const HANJA_RE = /[一-鿿]/;
+
+async function generate(env, query) {
+  const aiRes = await env.AI.run(MODEL, {
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: query },
+    ],
+    max_tokens: 350,
+    temperature: 0.2,
+  });
+  return aiRes && aiRes.response;
+}
+
 async function handleChat(request, env) {
   if (request.method !== "POST") {
     return json({ error: "Method not allowed" }, 405);
@@ -38,17 +52,12 @@ async function handleChat(request, env) {
   if (query.length > 2000) return json({ error: "query too long" }, 400);
 
   try {
-    const aiRes = await env.AI.run(MODEL, {
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: query },
-      ],
-      max_tokens: 350,
-      temperature: 0.2,
-    });
-
-    const text = aiRes && aiRes.response;
+    let text = await generate(env, query);
+    for (let attempt = 0; attempt < 2 && text && HANJA_RE.test(text); attempt++) {
+      text = await generate(env, query);
+    }
     if (!text) return json({ error: "AI가 응답을 생성하지 못했습니다." }, 502);
+    if (HANJA_RE.test(text)) text = text.replace(new RegExp(HANJA_RE, "g"), "");
 
     return json({ text });
   } catch (err) {
