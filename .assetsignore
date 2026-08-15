@@ -1,5 +1,9 @@
 node_modules
 .git
+.claude
 .wrangler
 *.xlsx
 *.csv
+*.py
+.dev.vars*
+.env*
