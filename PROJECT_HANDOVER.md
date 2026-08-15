@@ -1,6 +1,6 @@
 # GridX: Watt & Byte — 프로젝트 인수인계 문서
 
-> **버전:** v1.3.1 | **기준일:** 2026-06-24 | **작성:** Claude Sonnet 4.6 (Claude Code)
+> **버전:** v1.3.2 | **기준일:** 2026-08-15 | **작성:** Claude Sonnet 4.6 (Claude Code)
 
 ---
 
@@ -275,6 +275,12 @@ python auto_scraper.py
 
 ## 8. 전체 작업 이력 (Git 커밋 순서)
 
+### v1.3.2 (2026-08-15)
+- **데이터센터(DC) 신규 8곳 추가** — Microsoft Fairwater Wisconsin(가동중), Meta Sturgeon Data Centre(캐나다 첫 메타 DC), Matrix Data Center Campus(TX, 최종 3GW 목표), AirTrunk Raigad Campus(인도, LoI 단계), ByteDance Pecém Campus(브라질, 중국 밖 최대 규모), AWS Santiago Region(칠레, AWS 3번째 남미 리전), Firmus/DayOne Batam AI Factory(인도네시아), LG Uplus Paju AI DC(한국)
+- **발전소(PP) 신규 9건 추가** — Trumbull Energy Center(Gas, 미국), Changjiang-3 원전(중국, 기존 Changjiang 1·2호기와 별개 3호기), Goorambat East Solar Farm(호주), Khavda Solar Park 2건(인도, KPI Green Energy·NTPC REL 구역), Karnisar-Bhatiyan Solar(인도), Hydra Hybrid Solar(남아공), Ummbila Emoyeni Wind Farm(남아공), Gemini Battery Storage(미국, 기존 Gemini 태양광 항목과 별도 배터리 저장분)
+  - 조사 중 발견한 중복 방지: Gemini Solar Project(690MW)는 기존 "Gemini Solar + Battery Storage" 행과 동일 시설로 판단해 미추가
+  - 소스 검증 미흡으로 보류: OpenAI Project Camellia(조지아, 3.2GW) — 2차 취합 기사만 확인, 1차 소스 확보 후 재검토 필요
+
 ### v1.3.1 (2026-06-24)
 - **발전소(PP) 데이터 갱신** — WRI GPPD v1.3.0 원본 데이터(2021-06 cutoff) 이후 가동 시작한 전세계 주요 발전소 109건 추가/정리
   - 동아시아·남아시아/중동·미주·유럽-아프리카-오세아니아 4개 권역 웹 리서치로 신규 87건 발굴(원자력 17·가스 17·석탄 11·수력 6·태양광 30·풍력 22·기타 6)
@@ -324,11 +330,11 @@ python auto_scraper.py
 
 | 데이터 | 수량 | 최종 갱신 |
 |--------|------|-----------|
-| 데이터센터 | **118개소** | 2026-06-24 |
-| AI 특화 DC | **16개소** | 2026-06-14 |
+| 데이터센터 | **126개소** | 2026-08-15 |
+| AI 특화 DC | **27개소** | 2026-08-15 |
 | 물 리스크 (국가) | ~160개국 | 2026-06-14 (정적) |
 | 인텔/뉴스 | ~16건 | 자동 갱신 (매주 일요일) |
-| 발전소 | WRI GPPD v1.3.0 + 2021-2026 신규 109건 수동 보강 | 2026-06-24 |
+| 발전소 | WRI GPPD v1.3.0 + 2021-2026 신규 118건 수동 보강 | 2026-08-15 |
 
 ---
 
