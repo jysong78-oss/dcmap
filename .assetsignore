@@ -1,17 +1,14 @@
-node_modules
-.git
-.claude
-.wrangler
-*.xlsx
-*.csv
-*.py
-.dev.vars*
-.env*
-*.mjs
-pptx_shots/
-thumbnail_composite_800x500.png
-thumbnail_map_800x500_v2.png
-thumbnail_map_800x500.jpg
-attach_chatbot_closeup.jpg
-attach_fullscreen_chatbot_demo.png
-index.html.bak
+# 앱이 브라우저에서 실제로 요청하는 파일만 공개 배포되도록 허용목록(allowlist) 방식으로 전환.
+# 새 파일은 기본적으로 비공개이며, 프론트엔드에서 <script src>/fetch로 참조하는 파일만 아래에 명시적으로 허용한다.
+*
+!index.html
+!world_topo.js
+!continent_map.js
+!knowledge_base.js
+!dc_data.js
+!water_risk_data.js
+!changelog.js
+!pp_data.json
+!pp_data.js
+!GridX_Poster.png
+!GridX_Poster.webp
