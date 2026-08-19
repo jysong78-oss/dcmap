@@ -7,3 +7,11 @@ node_modules
 *.py
 .dev.vars*
 .env*
+*.mjs
+pptx_shots/
+thumbnail_composite_800x500.png
+thumbnail_map_800x500_v2.png
+thumbnail_map_800x500.jpg
+attach_chatbot_closeup.jpg
+attach_fullscreen_chatbot_demo.png
+index.html.bak
