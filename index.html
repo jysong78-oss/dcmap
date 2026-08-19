@@ -537,7 +537,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
     <div class="analysis-drawer" id="analysis-drawer">
       <button class="drawer-toggle" id="drawer-toggle">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-        Analysis Lab (데이터 융합 분석 - 준비중)
+        Analysis Lab (데이터 융합 분석)
       </button>
             <div class="drawer-content">
         <div class="al-tabs">
@@ -571,23 +571,23 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 
         <div class="al-tab-content" id="tab-tech">
           <div class="al-card">
-            <div class="al-title"><span>🧠 초고밀도(Hyper-Density) AI 클러스터</span><span class="al-title-r">Global</span></div>
-            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-title"><span>🧠 초고밀도(Hyper-Density) AI 클러스터</span><span class="al-title-r" id="al-region-name-5">Global</span></div>
+            <div class="al-body" id="al-body-5"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
           <div class="al-card">
-            <div class="al-title"><span>❄️ 차세대 냉각 (Liquid Cooling) 핫스팟</span><span class="al-title-r">Global</span></div>
-            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-title"><span>❄️ 차세대 냉각 (Liquid Cooling) 핫스팟</span><span class="al-title-r" id="al-region-name-6">Global</span></div>
+            <div class="al-body" id="al-body-6"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
         </div>
 
         <div class="al-tab-content" id="tab-market">
           <div class="al-card">
-            <div class="al-title"><span>💰 지역별 예상 OPEX (전력 단가 기반)</span><span class="al-title-r">Global</span></div>
-            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-title"><span>💰 지역별 예상 OPEX (전력 단가 기반)</span><span class="al-title-r" id="al-region-name-7">Global</span></div>
+            <div class="al-body" id="al-body-7"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
           <div class="al-card">
-            <div class="al-title"><span>📜 환경 규제 및 건설 모라토리엄 동향</span><span class="al-title-r">Global</span></div>
-            <div class="al-body"><div class="al-empty">데이터 수집 및 매핑 중입니다...</div></div>
+            <div class="al-title"><span>📜 환경 규제 및 건설 모라토리엄 동향</span><span class="al-title-r" id="al-region-name-8">Global</span></div>
+            <div class="al-body" id="al-body-8"><div class="al-empty">지도에서 국가를 클릭하면 분석합니다.</div></div>
           </div>
         </div>
       </div>
@@ -1537,7 +1537,7 @@ function showCountryDashboard(feature) {
   `;
   
   if (typeof updateAnalysisLab === 'function') {
-    updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap);
+    updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap, dcItems);
   }
 }
 
@@ -2355,21 +2355,67 @@ function initAnalysisLab() {
 }
 
 function resetAnalysisLab() {
-  document.getElementById("al-region-name").innerText = "Global";
-  document.getElementById("al-region-name-2").innerText = "Global";
-  document.getElementById("al-region-name-3").innerText = "Global";
-  document.getElementById("al-region-name-4").innerText = "Global";
-  document.getElementById("al-body-1").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
-  document.getElementById("al-body-2").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
-  document.getElementById("al-body-3").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
-  document.getElementById("al-body-4").innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  for (let i = 1; i <= 8; i++) {
+    const nameEl = document.getElementById(i === 1 ? "al-region-name" : `al-region-name-${i}`);
+    if (nameEl) nameEl.innerText = "Global";
+    const bodyEl = document.getElementById(`al-body-${i}`);
+    if (bodyEl) bodyEl.innerHTML = '<div class="al-empty">지도에서 국가를 클릭하면 분석됩니다.</div>';
+  }
 }
 
-function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
+// 국가별 산업용 평균 전력단가 참고치 (¢/kWh, USD 환산 추정) — 공개된 일반 시세 범위를 바탕으로 한 대략적 비교용 참고 데이터이며, 실시간 요금과는 차이가 있을 수 있음
+const ELECTRICITY_PRICE_DATA = {
+  "United States": 8, "Canada": 7, "Brazil": 9, "Chile": 11,
+  "United Kingdom": 22, "Ireland": 20, "Germany": 18, "France": 14,
+  "Netherlands": 17, "Belgium": 17, "Spain": 15, "Portugal": 15,
+  "Norway": 8, "Sweden": 9, "Finland": 9,
+  "China": 8, "Japan": 18, "South Korea": 11, "Taiwan": 9,
+  "India": 8, "Indonesia": 8, "Malaysia": 7, "Singapore": 20,
+  "Australia": 13, "Saudi Arabia": 5, "UAE": 6,
+  "Africa": 10, "Asia Pacific": 10, "North America": 8, "Europe": 16,
+  "Latin America": 9, "Middle East": 6
+};
+const ELECTRICITY_PRICE_GLOBAL_AVG = 11;
+
+// 국가별 데이터센터 관련 규제/모라토리엄 동향 — 공개적으로 알려진 일반적 정책 방향을 요약한 참고 정보 (세부 시행 여부·시기는 지역별 상이할 수 있음)
+const REGULATION_DATA = {
+  "Ireland": { status: "review", label: "그리드 연계 심사 강화", note: "더블린 등 그리드 포화 지역에서 신규 데이터센터 계통연계 심사가 강화되어 있는 것으로 알려져 있음(EirGrid 연계 정책)." },
+  "Singapore": { status: "incentive", label: "조건부 재개 + 그린 인증", note: "2019~2022년 신규 데이터센터 유예 이후, 에너지·수자원 효율 기준(그린 데이터센터 인증)을 충족하는 조건으로 승인이 재개된 것으로 알려짐." },
+  "Netherlands": { status: "review", label: "입지 가이드라인 강화", note: "2019~2020년 일부 지자체의 하이퍼스케일 유예 사례 이후, 국가 차원의 데이터센터 입지 가이드라인이 도입된 것으로 알려짐." },
+  "United States": { status: "review", label: "지역별 인허가 심사 강화", note: "버지니아·조지아 등 밀집 지역에서 전력망 부담과 주민 반대로 인허가 심사가 강화되는 사례가 늘고 있음(주·카운티별 상이)." },
+  "Germany": { status: "efficiency_mandate", label: "에너지효율법(EnEfG) 적용", note: "에너지효율법(EnEfG) 시행으로 신규 데이터센터에 에너지 효율·폐열 재활용 관련 의무가 부과되는 것으로 알려짐." },
+  "France": { status: "efficiency_mandate", label: "EU 에너지효율 지침 적용", note: "EU 에너지효율지침(EED)에 따라 일정 규모 이상 데이터센터의 에너지 성능 보고 의무가 적용됨." },
+  "Belgium": { status: "efficiency_mandate", label: "EU 에너지효율 지침 적용", note: "EU 에너지효율지침(EED)에 따라 일정 규모 이상 데이터센터의 에너지 성능 보고 의무가 적용됨." },
+  "Spain": { status: "efficiency_mandate", label: "EU 에너지효율 지침 적용", note: "EU 에너지효율지침(EED)에 따라 일정 규모 이상 데이터센터의 에너지 성능 보고 의무가 적용됨." },
+  "Portugal": { status: "efficiency_mandate", label: "EU 에너지효율 지침 적용", note: "EU 에너지효율지침(EED)에 따라 일정 규모 이상 데이터센터의 에너지 성능 보고 의무가 적용됨." },
+  "China": { status: "review", label: "에너지 이중통제 정책", note: "지역별 에너지 소비 총량·강도 이중 관리 정책 하에서 신규 데이터센터 승인이 지역 에너지 쿼터의 영향을 받는 것으로 알려짐." },
+  "South Korea": { status: "review", label: "입지 분산 유도", note: "수도권 데이터센터 집중에 따라 전력계통영향평가 등을 통한 입지 분산 유도 정책이 시행 중인 것으로 알려짐." },
+  "India": { status: "incentive", label: "주정부 투자 인센티브", note: "다수 주정부가 데이터센터 유치를 위한 세제 혜택·전력 인프라 지원 정책을 운영 중인 것으로 알려짐." },
+  "UAE": { status: "incentive", label: "국가 차원 유치 인센티브", note: "AI·데이터센터 유치를 위한 국가 차원의 전력·부지 지원 인센티브가 적극 추진되는 것으로 알려짐." },
+  "Saudi Arabia": { status: "incentive", label: "국가 차원 유치 인센티브", note: "AI·데이터센터 유치를 위한 국가 차원의 전력·부지 지원 인센티브가 적극 추진되는 것으로 알려짐." },
+  "Norway": { status: "incentive", label: "재생에너지 기반 유치책", note: "저가 재생에너지(수력)를 활용한 데이터센터 유치 인센티브가 운영되는 것으로 알려짐." },
+  "Sweden": { status: "incentive", label: "재생에너지 기반 유치책", note: "저가 재생에너지를 활용한 데이터센터 유치 인센티브가 운영되는 것으로 알려짐." },
+  "Finland": { status: "incentive", label: "재생에너지 기반 유치책", note: "저가 재생에너지 및 폐열 지역난방 활용을 유도하는 데이터센터 정책이 운영되는 것으로 알려짐." },
+  "Malaysia": { status: "incentive", label: "외국인 투자 유치책", note: "조호바루 등 지역에서 정부 차원의 외국인 데이터센터 투자 유치책이 시행 중인 것으로 알려짐." },
+  "Indonesia": { status: "incentive", label: "외국인 투자 유치책", note: "정부 차원의 외국인 데이터센터 투자 유치책이 운영되는 것으로 알려짐." },
+};
+const REGULATION_STATUS_META = {
+  moratorium: { color: "#ef4444", label: "건설 유예/제한" },
+  review: { color: "#eab308", label: "심사 강화" },
+  efficiency_mandate: { color: "#58a6ff", label: "효율 규제 적용" },
+  incentive: { color: "#3fb950", label: "유치 인센티브" },
+};
+
+function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap, dcItems) {
+  dcItems = dcItems || [];
   document.getElementById("al-region-name").innerText = cName;
   document.getElementById("al-region-name-2").innerText = cName;
   document.getElementById("al-region-name-3").innerText = cName;
   document.getElementById("al-region-name-4").innerText = cName;
+  document.getElementById("al-region-name-5").innerText = cName;
+  document.getElementById("al-region-name-6").innerText = cName;
+  document.getElementById("al-region-name-7").innerText = cName;
+  document.getElementById("al-region-name-8").innerText = cName;
 
     // Card 1: Power Independence
   let ratioStr = "0.0";
@@ -2468,6 +2514,78 @@ function updateAnalysisLab(cName, dcCount, dcCap, ppCount, ppCap, greenCap) {
     </div>
     <div style="margin-top:10px;font-size:0.75rem;color:#8b949e;text-align:right">
       💧 지도 우측 상단 버튼으로 전국 오버레이 확인 가능
+    </div>
+  `;
+
+  // Card 5: Hyper-Density AI Cluster
+  const aiItems = dcItems.filter(d => d.ai_focus);
+  const aiCap = aiItems.reduce((s, d) => s + d.cap, 0);
+  const aiRatio = dcCount > 0 ? ((aiItems.length / dcCount) * 100) : 0;
+  let aiTier = "범용 인프라 중심", aiColor = "#8b949e";
+  if (dcCount > 0) {
+    if (aiRatio >= 40) { aiTier = "초고밀도 AI 허브"; aiColor = "#a855f7"; }
+    else if (aiRatio >= 15) { aiTier = "AI 성장 거점"; aiColor = "#58a6ff"; }
+    else if (aiRatio > 0) { aiTier = "AI 특화 시설 소수 존재"; aiColor = "#eab308"; }
+  }
+  const topAI = aiItems.sort((a, b) => b.cap - a.cap)[0];
+  document.getElementById("al-body-5").innerHTML = dcCount > 0 ? `
+    <div class="al-value" style="color:${aiColor}; font-size:1.49rem">${aiTier}</div>
+    <div class="al-sub" style="font-weight:600">AI 특화 비율 ${aiRatio.toFixed(0)}% (${aiItems.length}/${dcCount} 개소)</div>
+    <div style="font-size:0.92rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+      <div style="display:flex; justify-content:space-between"><span>AI 특화 누적 용량:</span> <strong style="color:#a855f7">${aiCap.toLocaleString()} MW</strong></div>
+      ${topAI ? `<div style="display:flex; justify-content:space-between; margin-top:4px"><span>대표 시설:</span> <strong style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${topAI.name}</strong></div>` : ''}
+    </div>
+  ` : '<div class="al-empty">해당 지역 데이터센터 데이터가 없습니다.</div>';
+
+  // Card 6: Next-gen (Liquid) Cooling Hotspot
+  const liquidKeywords = ["Liquid", "Immersion", "Closed-loop", "Fjord", "Seawater"];
+  const liquidItems = dcItems.filter(d => d.cooling && liquidKeywords.some(k => d.cooling.includes(k)));
+  const liquidRatio = dcCount > 0 ? ((liquidItems.length / dcCount) * 100) : 0;
+  let coolTier = "공랭/증발냉각 중심", coolColor = "#8b949e";
+  if (dcCount > 0) {
+    if (liquidRatio >= 50) { coolTier = "액체냉각 선도 지역"; coolColor = "#22d3ee"; }
+    else if (liquidRatio >= 20) { coolTier = "액체냉각 전환 진행중"; coolColor = "#58a6ff"; }
+    else if (liquidRatio > 0) { coolTier = "액체냉각 초기 도입"; coolColor = "#eab308"; }
+  }
+  const coolCounts = {};
+  dcItems.forEach(d => { if (d.cooling) coolCounts[d.cooling] = (coolCounts[d.cooling] || 0) + 1; });
+  const topCooling = Object.entries(coolCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  document.getElementById("al-body-6").innerHTML = dcCount > 0 ? `
+    <div class="al-value" style="color:${coolColor}; font-size:1.49rem">${coolTier}</div>
+    <div class="al-sub" style="font-weight:600">액체냉각 적용 비율 ${liquidRatio.toFixed(0)}% (${liquidItems.length}/${dcCount} 개소)</div>
+    <div style="font-size:0.85rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%">
+      ${topCooling.length ? topCooling.map(([k, v]) => `<div style="display:flex; justify-content:space-between; margin-top:2px"><span>${k}</span><strong>${v}개소</strong></div>`).join('') : '<span style="color:#8b949e">냉각 방식 데이터 없음</span>'}
+    </div>
+  ` : '<div class="al-empty">해당 지역 데이터센터 데이터가 없습니다.</div>';
+
+  // Card 7: Estimated OPEX by region (electricity price based — rough reference estimate)
+  const priceCents = ELECTRICITY_PRICE_DATA[cName] ?? ELECTRICITY_PRICE_GLOBAL_AVG;
+  const isEstimated = ELECTRICITY_PRICE_DATA[cName] === undefined;
+  const annualCostUSD = dcCap * 1000 * 8760 * (priceCents / 100); // dcCap(MW) -> kW, 8760h/yr
+  const costDisplay = annualCostUSD >= 1e9 ? `$${(annualCostUSD / 1e9).toFixed(2)}B` : `$${(annualCostUSD / 1e6).toFixed(1)}M`;
+  document.getElementById("al-body-7").innerHTML = dcCap > 0 ? `
+    <div class="al-value" style="color:#f0b429; font-size:1.49rem">${costDisplay}<span style="font-size:0.85rem;color:#8b949e;font-weight:500"> / 년(추정)</span></div>
+    <div class="al-sub" style="font-weight:600">적용 전력단가 ${priceCents}¢/kWh${isEstimated ? ' (글로벌 평균 적용)' : ''}</div>
+    <div style="font-size:0.85rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:6px; width:100%; line-height:1.5">
+      DC IT 부하(${dcCap.toLocaleString()} MW) × 8,760시간 기준 단순 추정치이며, PUE·전력계약 조건에 따라 실제 비용과 차이가 있을 수 있습니다.
+    </div>
+  ` : '<div class="al-empty">해당 지역 데이터센터 데이터가 없습니다.</div>';
+
+  // Card 8: Environmental Regulation / Moratorium trend
+  const reg = REGULATION_DATA[cName];
+  document.getElementById("al-body-8").innerHTML = reg ? `
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+      <div class="al-value" style="color:${REGULATION_STATUS_META[reg.status].color}; font-size:1.3rem">${reg.label}</div>
+      <span style="display:inline-block;padding:1px 7px;border-radius:4px;background:${REGULATION_STATUS_META[reg.status].color};color:#0d1117;font-size:0.75rem;font-weight:700">${REGULATION_STATUS_META[reg.status].label}</span>
+    </div>
+    <div style="font-size:0.88rem; margin-top:12px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:9px 12px; border-radius:6px; width:100%; line-height:1.5">
+      ${reg.note}
+    </div>
+    <div style="margin-top:10px;font-size:0.72rem;color:#8b949e">※ 공개된 일반 정책 동향 요약(참고용) — 세부 시행 여부·시기는 지역별 확인 필요</div>
+  ` : `
+    <div class="al-value" style="color:#8b949e; font-size:1.15rem">특이 동향 없음</div>
+    <div style="font-size:0.88rem; margin-top:10px; color:#c9d1d9; background:rgba(255,255,255,0.05); padding:9px 12px; border-radius:6px; width:100%">
+      해당 국가에 대해 확인된 데이터센터 관련 규제/모라토리엄 동향 정보가 없습니다. 일반 전력·환경 인허가 절차가 적용되는 것으로 추정됩니다.
     </div>
   `;
 }
