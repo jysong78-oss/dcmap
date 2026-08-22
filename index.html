@@ -510,7 +510,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
   </div>
   <div class="news-tooltip">
     <strong style="color:#58a6ff;font-size:0.98rem">뉴스 수집 방식:</strong><br>
-    구글 뉴스(Google News)에서 <code>"Data Center" OR "AI Infrastructure"</code> 키워드로 최신 영문 기사를 실시간 검색한 뒤, <b>Google Translate API</b>를 통해 한국어로 자동 번역하여 제공합니다.
+    Bing 뉴스(Bing News)에서 <code>data center AI infrastructure</code> 키워드로 최신 영문 기사를 실시간 검색한 뒤, <b>Google Translate API</b>를 통해 한국어로 자동 번역하여 제공합니다. 챗봇 요약 시 원문 기사 링크를 직접 스크래핑해 근거로 사용합니다.
   </div>
 </div>
 
@@ -632,7 +632,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
             </tr>
             <tr>
               <td>📰 글로벌 뉴스 피드</td>
-              <td style="color:#8b949e">Google News RSS (영문 → 한국어 번역)</td>
+              <td style="color:#8b949e">Bing News RSS (영문 → 한국어 번역)</td>
               <td style="color:#8b949e">최신 10건</td>
               <td><span class="ds-badge-live">● LIVE</span> 실시간</td>
               <td style="color:#8b949e">페이지 로드 시</td>
@@ -1935,10 +1935,23 @@ chatInput.addEventListener("keypress", (e) => {
 
 
 // News Ticker Logic
+// Bing 뉴스 링크는 https://www.bing.com/news/apiclick.aspx?...&url=실제기사주소 형태의 리다이렉트 래퍼이며,
+// url= 파라미터를 그대로 디코드하면 실제 언론사 원문 주소를 얻을 수 있다(구글 뉴스와 달리 난독화 없음).
+// 원문 주소를 써야 챗봇 "요약해줘" 기능이 실제 기사 본문을 스크래핑할 수 있다.
+function unwrapBingNewsLink(rawUrl) {
+  try {
+    const u = new URL(rawUrl);
+    const real = u.searchParams.get('url');
+    return real || rawUrl;
+  } catch {
+    return rawUrl;
+  }
+}
+
 async function fetchNews() {
   const ticker = document.getElementById("news-ticker");
   try {
-    const rssUrl = encodeURIComponent('https://news.google.com/rss/search?q="Data+Center"+OR+"AI+Infrastructure"&hl=en-US&gl=US&ceid=US:en');
+    const rssUrl = encodeURIComponent('https://www.bing.com/news/search?q=data+center+AI+infrastructure&format=RSS&mkt=en-US&setlang=en-US');
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
     
     const response = await fetch(apiUrl);
@@ -1970,7 +1983,7 @@ async function fetchNews() {
         return {
            title: item.title,
            koTitle: koTitle,
-           link: item.link,
+           link: unwrapBingNewsLink(item.link),
            author: item.author || timeStr,
            keywords: extractKeywords(item.title),
            description: (item.description || item.content || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 1500)
