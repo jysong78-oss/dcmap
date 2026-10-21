@@ -1,4 +1,8 @@
-const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+// 2026-10-21 Llama 3.3 70B -> Gemma 4 26B 교체: 한국어 응답에 외국 문자가 섞이거나 직접 인용 규칙을
+// 어기는 문제가 비교 테스트에서 사라졌고, 호출당 neuron 비용도 약 1/5 (무료 플랜 일 10,000 neuron 한도).
+// Gemma 4가 실패하면 기존 Llama로 한 번 더 시도한다.
+const MODEL = "@cf/google/gemma-4-26b-a4b-it";
+const FALLBACK_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const CHAT_SYSTEM_PROMPT = [
   "당신은 GridX(전 세계 데이터센터와 50MW 이상 발전소를 보여주는 지도 대시보드)의 AI 어시스턴트이며, 데이터센터 산업·전력망·발전소·AI 인프라 전문가입니다.",
   "이 답변은 작은 채팅창에 표시되므로 반드시 짧고 핵심만 전달해야 합니다.",
@@ -114,17 +118,32 @@ function sanitizeHistory(rawHistory) {
     .map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
 }
 
-async function generate(env, systemPrompt, history, query, maxTokens) {
-  const aiRes = await env.AI.run(MODEL, {
-    messages: [
-      { role: "system", content: systemPrompt },
-      ...history,
-      { role: "user", content: query },
-    ],
+async function runModel(env, model, messages, maxTokens) {
+  const aiRes = await env.AI.run(model, {
+    messages,
     max_tokens: maxTokens,
     temperature: 0.2,
+    // Gemma 4는 기본으로 답변 전 사고(thinking) 토큰을 써서 max_tokens를 다 소진하므로 끈다.
+    ...(model === MODEL ? { chat_template_kwargs: { enable_thinking: false } } : {}),
   });
-  return aiRes && aiRes.response;
+  // Gemma 4는 OpenAI 형식(choices[0].message.content), Llama는 response 필드로 응답한다.
+  return aiRes && (aiRes.choices?.[0]?.message?.content ?? aiRes.response);
+}
+
+async function generate(env, systemPrompt, history, query, maxTokens) {
+  const messages = [
+    { role: "system", content: systemPrompt },
+    ...history,
+    { role: "user", content: query },
+  ];
+  try {
+    const text = await runModel(env, MODEL, messages, maxTokens);
+    if (text && text.trim()) return text;
+    console.warn(`${MODEL} returned empty text, falling back to ${FALLBACK_MODEL}`);
+  } catch (err) {
+    console.warn(`${MODEL} failed, falling back to ${FALLBACK_MODEL}:`, err && err.message);
+  }
+  return runModel(env, FALLBACK_MODEL, messages, maxTokens);
 }
 
 async function handleChat(request, env) {
