@@ -662,7 +662,7 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
 
   <!-- Welcome Modal -->
   <div id="changelog-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(5,8,14,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:9999;justify-content:center;align-items:center;opacity:0;transition:opacity 0.35s;padding:16px;">
-    <div style="background:#161b22;border:1px solid #30363d;border-radius:14px;width:100%;max-width:960px;max-height:90vh;box-shadow:0 24px 60px rgba(0,0,0,0.7);display:flex;flex-direction:column;transform:translateY(24px);transition:transform 0.35s;overflow:hidden;">
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:14px;width:100%;max-width:640px;max-height:90vh;box-shadow:0 24px 60px rgba(0,0,0,0.7);display:flex;flex-direction:column;transform:translateY(24px);transition:transform 0.35s;overflow:hidden;">
 
       <!-- Header -->
       <div style="padding:16px 20px;border-bottom:1px solid #30363d;display:flex;justify-content:space-between;align-items:center;background:rgba(22,27,34,0.95);backdrop-filter:blur(6px);flex-shrink:0;">
@@ -674,18 +674,10 @@ button{cursor:pointer;border:none;background:none;font:inherit;color:inherit;-we
         <button id="cl-close-btn" style="width:30px;height:30px;border-radius:50%;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;" onmouseover="this.style.background='#30363d';this.style.color='#e6edf3'" onmouseout="this.style.background='#21262d';this.style.color='#8b949e'">&times;</button>
       </div>
 
-      <!-- Body: 2-column -->
+      <!-- Body -->
       <div style="display:flex;flex:1;min-height:0;overflow:hidden;">
 
-        <!-- LEFT: Poster Image -->
-        <div style="flex:0 0 42%;background:#0d1117;border-right:1px solid #30363d;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;">
-          <picture>
-            <source srcset="GridX_Poster.webp" type="image/webp">
-            <img src="GridX_Poster.png" alt="GridX Poster" style="width:100%;height:100%;max-height:calc(90vh - 140px);object-fit:contain;border-radius:8px;display:block;">
-          </picture>
-        </div>
-
-        <!-- RIGHT: Changelog -->
+        <!-- Changelog -->
         <div style="flex:1;overflow-y:auto;padding:20px 24px;color:#c9d1d9;scrollbar-width:thin;scrollbar-color:#30363d transparent;">
           <div style="margin-bottom:22px;">
             <h3 style="color:#58a6ff;font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px;">💡 앱 주요 기능</h3>
