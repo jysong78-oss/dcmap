@@ -182,11 +182,66 @@ async function handleChat(request, env) {
   }
 }
 
+// 뉴스 피드: 예전엔 브라우저가 rss2json.com을 거쳐 Bing RSS를 받았지만, 2026-10 기준 rss2json이
+// Cloudflare 봇 챌린지(403)를 걸어 피드가 끊기므로 Worker가 직접 Bing RSS를 받아 JSON으로 변환한다.
+// 응답 형태는 rss2json과 동일하게 맞춰 index.html의 기존 렌더링 로직을 그대로 쓴다.
+const NEWS_RSS_URL = "https://www.bing.com/news/search?q=data+center+AI+infrastructure&format=RSS&mkt=en-US&setlang=en-US";
+const NEWS_CACHE_SECONDS = 900;
+
+function decodeXmlEntities(s) {
+  return s
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&amp;/g, "&");
+}
+
+function parseRssItems(xml) {
+  const tag = (block, name) => {
+    const m = block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)</${name}>`));
+    return m ? decodeXmlEntities(m[1]).trim() : "";
+  };
+  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, block]) => ({
+    title: tag(block, "title"),
+    link: tag(block, "link"),
+    pubDate: tag(block, "pubDate"),
+    description: tag(block, "description"),
+    author: tag(block, "News:Source"),
+  })).filter((i) => i.title && i.link);
+}
+
+async function handleNews(request, ctx) {
+  const cache = caches.default;
+  const cacheKey = new Request(new URL("/api/news", request.url).toString());
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const res = await fetch(NEWS_RSS_URL, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; GridXBot/1.0)", "Accept": "application/rss+xml, application/xml" },
+    });
+    if (!res.ok) return json({ status: "error", message: `upstream ${res.status}` }, 502);
+    const items = parseRssItems(await res.text());
+    if (!items.length) return json({ status: "error", message: "no items" }, 502);
+
+    const out = json({ status: "ok", items });
+    out.headers.set("Cache-Control", `public, max-age=${NEWS_CACHE_SECONDS}`);
+    ctx.waitUntil(cache.put(cacheKey, out.clone()));
+    return out;
+  } catch {
+    return json({ status: "error", message: "fetch failed" }, 502);
+  }
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/api/chat") {
       return handleChat(request, env);
+    }
+    if (url.pathname === "/api/news") {
+      return handleNews(request, ctx);
     }
     return env.ASSETS.fetch(request);
   },

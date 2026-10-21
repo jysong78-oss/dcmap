@@ -1951,11 +1951,17 @@ function unwrapBingNewsLink(rawUrl) {
 async function fetchNews() {
   const ticker = document.getElementById("news-ticker");
   try {
-    const rssUrl = encodeURIComponent('https://www.bing.com/news/search?q=data+center+AI+infrastructure&format=RSS&mkt=en-US&setlang=en-US');
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
-    
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    // 1순위: 자체 Worker 프록시(/api/news). rss2json은 2026-10부터 봇 챌린지로 막혀 폴백으로만 둔다.
+    let data = null;
+    try {
+      const own = await fetch('/api/news');
+      if (own.ok) data = await own.json();
+    } catch (e) { console.warn("/api/news unavailable", e); }
+    if (!data || data.status !== 'ok') {
+      const rssUrl = encodeURIComponent('https://www.bing.com/news/search?q=data+center+AI+infrastructure&format=RSS&mkt=en-US&setlang=en-US');
+      const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+      data = await response.json();
+    }
     
     if (data.status === 'ok' && data.items && data.items.length > 0) {
       const items = data.items.slice(0, 15);
@@ -1984,7 +1990,7 @@ async function fetchNews() {
            title: item.title,
            koTitle: koTitle,
            link: unwrapBingNewsLink(item.link),
-           author: item.author || timeStr,
+           author: item.author ? `${item.author} · ${timeStr}` : timeStr,
            keywords: extractKeywords(item.title),
            description: (item.description || item.content || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 1500)
         };
