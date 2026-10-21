@@ -9,7 +9,7 @@ const CHAT_SYSTEM_PROMPT = [
   "3. 정확히 알지 못하는 최신 수치나 특정 연도 통계는 지어내지 말고, 확실한 원리·산업 동향 위주로만 답하세요.",
   "4. 핵심 키워드만 <b> 태그로 강조하고, 줄바꿈은 <br>만 사용하세요. 마크다운 문법(*, #, - 등)은 절대 쓰지 마세요.",
   "5. 자연스러운 한국어 존댓말을 사용하세요.",
-  "6. 반드시 순수 한글로만 작성하세요. 密切, 大量처럼 한자(漢字)를 섞어 쓰지 말고, 한자어도 전부 한글로 표기하세요 (예: 密切 -> 밀접, 大量 -> 대량)."
+  "6. 반드시 순수 한글로만 작성하세요. 密切, 大量처럼 한자(漢字)나 러시아어(키릴 문자), 일본어 가나 등 다른 나라 문자를 섞어 쓰지 말고, 한자어도 전부 한글로 표기하세요 (예: 密切 -> 밀접, 大量 -> 대량)."
 ].join("\n");
 
 const SUMMARY_SYSTEM_PROMPT = [
@@ -27,7 +27,7 @@ const SUMMARY_SYSTEM_PROMPT = [
   "5. 정확히 5~7개의 문장으로 작성하세요. 문장 하나마다 반드시 <br> 태그로 구분하고, <br> 구간 하나에는 문장을 정확히 하나만 넣으세요 (두 문장을 이어붙여 한 덩어리로 만들지 마세요).",
   "6. 제목/스니펫에 실제 정보가 거의 없다면, 절대로 그럴듯한 세부사항(정부 지원 계획, 투자 금액, 향후 발표 일정, 기대 효과 등 주어지지 않은 내용)을 지어내서 분량을 채우지 마세요. 이 경우 정확히 2문장만 쓰세요: (1) 제목에 이미 담긴 사실만 한국어로 옮긴 문장 1개, (2) \"기사 본문이 제공되지 않아 이 이상 상세한 요약은 어렵습니다\" 같은 문장 1개. 5~7문장 규칙(위 5번)은 실제 본문 내용이 있을 때만 적용됩니다.",
   "7. 마크다운 문법(*, #, - 등)은 절대 쓰지 말고 HTML 태그(<b>, <br>)만 사용하세요.",
-  "8. 반드시 순수 한글로만 작성하세요. 한자(漢字)를 섞어 쓰지 마세요."
+  "8. 반드시 순수 한글로만 작성하세요. 한자(漢字), 러시아어(키릴 문자), 일본어 가나 등 다른 나라 문자를 섞어 쓰지 마세요. 영문 고유명사·단위(MW, GW, $)는 허용됩니다."
 ].join("\n");
 
 function json(obj, status = 200) {
@@ -37,7 +37,9 @@ function json(obj, status = 200) {
   });
 }
 
-const HANJA_RE = /[一-鿿]/;
+// 모델(Llama)이 한국어 답변 중간에 한자·키릴 문자 등을 섞는 경우가 있어 감지 시 재생성하고,
+// 그래도 남으면 해당 문자열을 제거한다. 라틴 문자(영문 고유명사, 단위)는 허용.
+const FOREIGN_SCRIPT_RE = /[\u0370-\u03FF\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u0900-\u097F\u0E00-\u0E7F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF]+/;
 const SUMMARY_REQUEST_RE = /요약해줘/;
 const URL_LABEL_RE = /(?:링크|출처)\s*:\s*(\S+)/;
 
@@ -169,11 +171,11 @@ async function handleChat(request, env) {
 
   try {
     let text = await generate(env, systemPrompt, history, effectiveQuery, maxTokens);
-    for (let attempt = 0; attempt < maxRetries && text && HANJA_RE.test(text); attempt++) {
+    for (let attempt = 0; attempt < maxRetries && text && FOREIGN_SCRIPT_RE.test(text); attempt++) {
       text = await generate(env, systemPrompt, history, effectiveQuery, maxTokens);
     }
     if (!text) return json({ error: "AI가 응답을 생성하지 못했습니다." }, 502);
-    if (HANJA_RE.test(text)) text = text.replace(new RegExp(HANJA_RE, "g"), "");
+    if (FOREIGN_SCRIPT_RE.test(text)) text = text.replace(new RegExp(FOREIGN_SCRIPT_RE, "g"), "");
     if (summaryMode) text = trimIncompleteEnding(text);
 
     return json({ text });
