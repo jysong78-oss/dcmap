@@ -195,6 +195,8 @@ async function handleChat(request, env) {
     }
     if (!text) return json({ error: "AI가 응답을 생성하지 못했습니다." }, 502);
     if (FOREIGN_SCRIPT_RE.test(text)) text = text.replace(new RegExp(FOREIGN_SCRIPT_RE, "g"), "");
+    // Gemma 4는 마크다운 금지 지시에도 가끔 **굵게**를 써서 채팅창에 별표가 그대로 보이므로 <b>로 바꾼다.
+    text = text.replace(/\*\*([^*\n]+?)\*\*/g, "<b>$1</b>");
     if (summaryMode) text = trimIncompleteEnding(text);
 
     return json({ text });
