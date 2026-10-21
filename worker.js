@@ -38,8 +38,8 @@ function json(obj, status = 200) {
 }
 
 // 모델(Llama)이 한국어 답변 중간에 한자·키릴 문자 등을 섞는 경우가 있어 감지 시 재생성하고,
-// 그래도 남으면 해당 문자열을 제거한다. 라틴 문자(영문 고유명사, 단위)는 허용.
-const FOREIGN_SCRIPT_RE = /[\u0370-\u03FF\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u0900-\u097F\u0E00-\u0E7F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF]+/;
+// 그래도 남으면 해당 문자열을 제거한다. 라틴 문자(영문 고유명사, 단위)는 허용하되 베트남어 전용 성조 문자(ầ, ơ, ư 등)는 감지.
+const FOREIGN_SCRIPT_RE = /[\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9\u0370-\u03FF\u0400-\u04FF\u0590-\u05FF\u0600-\u06FF\u0900-\u097F\u0E00-\u0E7F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF]+/;
 const SUMMARY_REQUEST_RE = /요약해줘/;
 const URL_LABEL_RE = /(?:링크|출처)\s*:\s*(\S+)/;
 
